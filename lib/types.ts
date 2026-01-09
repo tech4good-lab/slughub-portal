@@ -1,7 +1,8 @@
 export type Club = {
-  clubId: string;
-  ownerUserId: string;
-  name: string;
+  recordId?: string; // ✅ Airtable record id (recXXXX)
+  clubId?: string;   // your UUID field
+  ownerUserId?: string;
+  name?: string;
   description?: string;
   contactName?: string;
   contactEmail?: string;
@@ -12,6 +13,7 @@ export type Club = {
   linkedinUrl?: string;
   updatedAt?: string;
 };
+
 
 export type UserRow = {
   userId: string;
