@@ -1,8 +1,16 @@
 import Link from "next/link";
 import type { Club } from "@/lib/types";
 
-export default async function ClubDetailPage({ params }: { params: { clubId: string } }) {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs/${params.clubId}`, { cache: "no-store" });
+export default async function ClubDetailPage({ 
+  params 
+}: { 
+  params: Promise<{ clubId: string }> 
+}) {
+  const { clubId } = await params;
+  
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs/${clubId}`, { 
+    cache: "no-store" 
+  });
 
   if (!res.ok) {
     return (
