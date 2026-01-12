@@ -8,15 +8,23 @@ export async function GET(
   const { clubId } = await params;
 
   try {
+    // clubId is actually the recordId (recXXXX format)
     const record = await base(CLUBS_TABLE).find(clubId);
     const fields: any = record.fields;
 
+    // Only show approved clubs publicly
     if (fields.status !== "approved") {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ club: { recordId: record.id, ...fields } });
-  } catch {
+    return NextResponse.json({ 
+      club: { 
+        recordId: record.id, 
+        ...fields 
+      } 
+    });
+  } catch (error) {
+    console.error("Error fetching club:", error);
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 }
