@@ -5,121 +5,143 @@ import { redirect } from "next/navigation";
 import type { Club } from "@/lib/types";
 import { base, CLUBS_TABLE } from "@/lib/airtable";
 import LogoutButton from "@/app/leader/edit/logout-button";
-import StatusPill from "@/app/components/StatusPill";
-import PendingBadge from "@/app/components/PendingBadge";
+
+const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
+
+function orFormulaForClubIds(clubIds: string[]) {
+  const parts = clubIds.map((id) => `{clubId}="${id}"`);
+  return `OR(${parts.join(",")})`;
+}
+
+function StatusPill({ status }: { status?: any }) {
+  const s = String(status ?? "").toLowerCase();
+  const label = s || "unknown";
+
+  const style: React.CSSProperties =
+    s === "approved"
+      ? { border: "1px solid rgba(34,197,94,0.35)", color: "rgba(34,197,94,0.95)" }
+      : s === "pending"
+      ? { border: "1px solid rgba(251,191,36,0.35)", color: "rgba(251,191,36,0.95)" }
+      : s === "rejected"
+      ? { border: "1px solid rgba(239,68,68,0.35)", color: "rgba(239,68,68,0.95)" }
+      : { border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.75)" };
+
+  return (
+    <span
+      className="small"
+      style={{
+        padding: "4px 10px",
+        borderRadius: 999,
+        textTransform: "capitalize",
+        ...style,
+      }}
+    >
+      {label}
+    </span>
+  );
+}
 
 export default async function LeaderDashboard() {
   const session = await getServerSession(authOptions);
   const userId = (session as any)?.userId;
+  const role = (session as any)?.role;
+
   if (!userId) redirect("/login");
 
-  const isAdmin = (session as any)?.role === "admin";
+  // If you're an admin, show admin links too
+  const isAdmin = role === "admin";
 
-  const records = await base(CLUBS_TABLE)
-    .select({ maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` })
-    .firstPage();
+  // 1) Find memberships for this user
+  const memberRecords = await base(MEMBERS_TABLE)
+    .select({
+      filterByFormula: `{userId}="${userId}"`,
+    })
+    .all();
 
-  const club = (records[0]?.fields ?? null) as any as Club | null;
+  const clubIds = memberRecords
+    .map((r) => String((r.fields as any).clubId ?? ""))
+    .filter(Boolean);
 
-  const status = String((club as any)?.status ?? "").toLowerCase();
-  const isLive = status === "approved";
-  const reviewNotes = String((club as any)?.reviewNotes ?? "");
+  // 2) Fetch clubs for those clubIds
+  let clubs: Club[] = [];
+  if (clubIds.length > 0) {
+    const clubRecords = await base(CLUBS_TABLE)
+      .select({
+        filterByFormula: orFormulaForClubIds(clubIds),
+        sort: [{ field: "updatedAt", direction: "desc" }],
+      })
+      .all();
+
+    clubs = clubRecords.map((r) => ({ recordId: r.id, ...(r.fields as any) })) as any;
+  }
 
   return (
     <main className="container">
       <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
         <h1>Leader Dashboard</h1>
-
         <div className="row">
           {isAdmin && (
-            <Link 
-              className="btn btnPrimary" 
-              href="/admin/review"
-              style={{ position: "relative" }}
-            >
-              Admin Review
-              <PendingBadge />
-            </Link>
+            <>
+              <Link className="btn btnPrimary" href="/admin/review">Club Approvals</Link>
+              <Link className="btn" href="/admin/access">Access Requests</Link>
+            </>
           )}
-
-          <Link className="btn" href="/">Home</Link>
+          <Link className="btn" href="/directory">Directory</Link>
           <LogoutButton />
         </div>
       </div>
-
 
       <div className="card" style={{ marginTop: 14 }}>
         <p className="small" style={{ marginTop: 0 }}>
           Logged in as: {session?.user?.email}
         </p>
 
-        {club ? (
-          <>
-            <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
-              <h2 style={{ margin: 0 }}>{club.name}</h2>
-              <StatusPill status={(club as any).status} />
-            </div>
+        <div className="row" style={{ marginTop: 12, justifyContent: "space-between" }}>
+          <h2 style={{ margin: 0 }}>My Clubs</h2>
+          <Link className="btn btnPrimary" href="/leader/clubs/new">
+            + Create New Club
+          </Link>
+        </div>
 
-            <p className="small" style={{ marginTop: 10 }}>
-              {club.description ?? ""}
-            </p>
-
-            {status === "pending" && (
-              <div
-                className="card"
-                style={{
-                  marginTop: 12,
-                  border: "1px solid rgba(234,179,8,0.25)",
-                  background: "rgba(255,255,255,0.03)",
-                }}
-              >
-                <p className="small" style={{ margin: 0 }}>
-                  Your club profile is pending admin approval. It won't appear in the public directory until approved.
-                </p>
-              </div>
-            )}
-
-            {status === "rejected" && (
-              <div
-                className="card"
-                style={{
-                  marginTop: 12,
-                  border: "1px solid rgba(239,68,68,0.25)",
-                  background: "rgba(255,255,255,0.03)",
-                }}
-              >
-                <p className="small" style={{ margin: 0 }}>
-                  Your club profile was rejected. Please edit and resubmit.
-                </p>
-                {reviewNotes && (
-                  <p className="small" style={{ marginTop: 10, opacity: 0.9 }}>
-                    <strong>Admin notes:</strong> {reviewNotes}
-                  </p>
-                )}
-              </div>
-            )}
-
-            <div className="row" style={{ marginTop: 12 }}>
-              <Link className="btn btnPrimary" href="/leader/edit">Edit Club Profile</Link>
-
-              {isLive ? (
-                <Link className="btn" href={`/clubs/${records[0]?.id}`}>View Public Page</Link>
-              ) : (
-                <span className="small" style={{ alignSelf: "center", opacity: 0.8 }}>
-                  Public page not live yet
-                </span>
-              )}
-            </div>
-          </>
+        {clubs.length === 0 ? (
+          <p className="small" style={{ marginTop: 12 }}>
+            You don’t have any club access yet.
+          </p>
         ) : (
-          <>
-            <p className="small">You don't have a club profile yet.</p>
-            <div className="row" style={{ marginTop: 12 }}>
-              <Link className="btn btnPrimary" href="/leader/edit">Create Club Profile</Link>
-            </div>
-          </>
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 12 }}>
+            {clubs.map((club: any) => (
+              <div
+                key={club.clubId ?? club.recordId}
+                className="card"
+                style={{ background: "rgba(255,255,255,0.02)" }}
+              >
+                <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div className="row" style={{ alignItems: "center", gap: 10 }}>
+                      <h3 style={{ margin: 0 }}>{club.name ?? "Untitled Club"}</h3>
+                      <StatusPill status={club.status} />
+                    </div>
+                    <p className="small" style={{ marginTop: 6 }}>
+                      {(club.description ?? "").slice(0, 140) || "No description yet."}
+                      {(club.description ?? "").length > 140 ? "..." : ""}
+                    </p>
+                  </div>
+
+                  <div className="row">
+                    <Link className="btn btnPrimary" href={`/leader/clubs/${club.clubId}/edit`}>
+                      Edit
+                    </Link>
+                    <Link className="btn" href={`/clubs/${club.clubId ?? club.recordId}`}>
+                      View Public
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </main>
   );
 }
+

@@ -63,7 +63,12 @@ export default async function HomePage() {
       {/* Club cards */}
       <div className="grid">
         {clubs.map((c) => (
-          <Link key={c.recordId} href={`/clubs/${c.recordId}`} className="card">
+          <Link
+            key={c.recordId}
+            href={`/clubs/${(c as any).clubId ?? c.recordId}`}
+            className="card"
+          >
+
             <h2 style={{ marginBottom: 8 }}>{c.name}</h2>
             <p className="small" style={{ margin: 0, lineHeight: 1.6 }}>
               {(c.description ?? "").slice(0, 140) || "No description yet."}
@@ -134,16 +139,18 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
       <nav className="row">
         {session ? (
           <>
-            {isAdmin && (
-              <Link 
-                className="btn" 
-                href="/admin/review"
-                style={{ position: "relative" }}
-              >
-                Admin Review
+          {isAdmin && (
+            <>
+              <Link className="btn" href="/admin/review" style={{ position: "relative" }}>
+                Club Approvals
                 <PendingBadge />
               </Link>
-            )}
+              <Link className="btn" href="/admin/access">
+                Access Requests
+              </Link>
+            </>
+          )}
+
             <Link className="btn" href="/leader/dashboard">Dashboard</Link>
           </>
         ) : (

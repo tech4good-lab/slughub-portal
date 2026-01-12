@@ -1,0 +1,57 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { base } from "@/lib/airtable";
+
+const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
+const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
+
+export async function POST(
+  req: Request,
+  { params }: { params: Promise<{ requestId: string }> }
+) {
+  const session = await getServerSession(authOptions);
+  const role = (session as any)?.role;
+  if (role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { requestId } = await params;
+  const body = await req.json().catch(() => ({}));
+  const reviewNotes = String(body.reviewNotes ?? "");
+  const nowIso = new Date().toISOString();
+
+  const record = await base(REQUESTS_TABLE).find(requestId);
+  const f = record.fields as any;
+
+  const clubId = String(f.clubId ?? "");
+  const userId = String(f.requesterUserId ?? "");
+  if (!clubId || !userId) {
+    return NextResponse.json({ error: "Malformed request record." }, { status: 400 });
+  }
+
+  // create membership if not exists
+  const existingMember = await base(MEMBERS_TABLE)
+    .select({
+      maxRecords: 1,
+      filterByFormula: `AND({clubId}="${clubId}", {userId}="${userId}")`,
+    })
+    .firstPage();
+
+  if (existingMember.length === 0) {
+    await base(MEMBERS_TABLE).create([
+      { fields: { clubId, userId, memberRole: "leader", createdAt: nowIso } },
+    ]);
+  }
+
+  const updated = await base(REQUESTS_TABLE).update([
+    {
+      id: requestId,
+      fields: {
+        status: "approved",
+        reviewedAt: nowIso,
+        reviewNotes,
+      },
+    },
+  ]);
+
+  return NextResponse.json({ request: { recordId: updated[0].id, ...updated[0].fields } });
+}
