@@ -179,17 +179,26 @@ textarea.input {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: #000;
+  font-weight: 700;
 }
 
 .btnPrimary:hover {
   background: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
+  color: #000;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
 }
 
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
+}
+
+.btn:disabled:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: none;
 }
 
 /* Divider */
@@ -264,5 +273,3 @@ a:hover {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
-
-/* Status pills remain the same as they work well */

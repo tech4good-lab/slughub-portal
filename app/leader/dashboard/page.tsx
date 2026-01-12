@@ -103,7 +103,7 @@ export default async function LeaderDashboard() {
               <Link className="btn btnPrimary" href="/leader/edit">Edit Club Profile</Link>
 
               {isLive ? (
-                <Link className="btn" href={`/clubs/${club.recordId}`}>View Public Page</Link>
+                <Link className="btn" href={`/clubs/${records[0]?.id}`}>View Public Page</Link>
               ) : (
                 <span className="small" style={{ alignSelf: "center", opacity: 0.8 }}>
                   Public page not live yet

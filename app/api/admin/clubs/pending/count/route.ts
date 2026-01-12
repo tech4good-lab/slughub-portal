@@ -15,7 +15,7 @@ export async function GET() {
     const records = await base(CLUBS_TABLE)
       .select({
         filterByFormula: `{status} = "pending"`,
-        fields: ["clubId"], // Only fetch minimal data for count
+        fields: ["clubId"],
       })
       .firstPage();
 

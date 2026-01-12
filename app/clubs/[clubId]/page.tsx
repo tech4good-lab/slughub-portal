@@ -35,50 +35,58 @@ export default async function ClubDetailPage({
         ← Back to Directory
       </Link>
 
-      {/* Hero section */}
-      <div className="card" style={{ 
-        marginTop: 20,
-        background: "linear-gradient(135deg, rgba(251,191,36,0.08), rgba(59,130,246,0.08))",
-        borderColor: "rgba(251,191,36,0.2)"
-      }}>
-        <h1 style={{ marginBottom: 12 }}>{club.name}</h1>
+      {/* Hero section - cleaner layout */}
+      <div className="card" style={{ marginTop: 20 }}>
+        <h1 style={{ marginBottom: 16, fontSize: 36 }}>{club.name}</h1>
         <p style={{ 
           fontSize: 16,
           lineHeight: 1.7,
           color: "rgba(255,255,255,0.85)",
-          margin: 0
+          marginBottom: 24,
+          paddingBottom: 24,
+          borderBottom: "1px solid rgba(255,255,255,0.1)"
         }}>
           {club.description || "No description provided."}
         </p>
-      </div>
 
-      {/* Contact & Links */}
-      <div className="grid" style={{ marginTop: 24 }}>
-        <InfoCard 
-          title="Point of Contact"
-          content={
-            <>
-              <div style={{ fontWeight: 600, marginBottom: 4 }}>
-                {club.contactName || "—"}
-              </div>
-              <a 
-                href={club.contactEmail ? `mailto:${club.contactEmail}` : "#"}
-                style={{ 
-                  fontSize: 14,
-                  color: "rgba(251,191,36,0.9)",
-                  textDecoration: "none"
-                }}
-              >
-                {club.contactEmail || "—"}
-              </a>
-            </>
-          }
-        />
+        {/* Contact & Links - all in one card */}
+        <div className="grid" style={{ marginTop: 0 }}>
+          <div>
+            <div className="small" style={{ 
+              fontWeight: 700, 
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              marginBottom: 8,
+              color: "rgba(251,191,36,0.8)"
+            }}>
+              Point of Contact
+            </div>
+            <div style={{ fontWeight: 600, marginBottom: 4 }}>
+              {club.contactName || "—"}
+            </div>
+            <a 
+              href={club.contactEmail ? `mailto:${club.contactEmail}` : "#"}
+              style={{ 
+                fontSize: 14,
+                color: "rgba(251,191,36,0.9)",
+                textDecoration: "none"
+              }}
+            >
+              {club.contactEmail || "—"}
+            </a>
+          </div>
 
-        <InfoCard
-          title="Calendar"
-          content={
-            club.calendarUrl ? (
+          <div>
+            <div className="small" style={{ 
+              fontWeight: 700, 
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              marginBottom: 8,
+              color: "rgba(251,191,36,0.8)"
+            }}>
+              Calendar
+            </div>
+            {club.calendarUrl ? (
               <a 
                 className="btn btnPrimary" 
                 href={club.calendarUrl} 
@@ -90,14 +98,20 @@ export default async function ClubDetailPage({
               </a>
             ) : (
               <span className="small">No calendar available</span>
-            )
-          }
-        />
+            )}
+          </div>
 
-        <InfoCard
-          title="Discord"
-          content={
-            club.discordUrl ? (
+          <div>
+            <div className="small" style={{ 
+              fontWeight: 700, 
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              marginBottom: 8,
+              color: "rgba(251,191,36,0.8)"
+            }}>
+              Discord
+            </div>
+            {club.discordUrl ? (
               <a 
                 className="btn btnPrimary" 
                 href={club.discordUrl} 
@@ -109,13 +123,19 @@ export default async function ClubDetailPage({
               </a>
             ) : (
               <span className="small">No Discord server</span>
-            )
-          }
-        />
+            )}
+          </div>
 
-        <InfoCard
-          title="Links"
-          content={
+          <div>
+            <div className="small" style={{ 
+              fontWeight: 700, 
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              marginBottom: 8,
+              color: "rgba(251,191,36,0.8)"
+            }}>
+              Links
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
               {club.websiteUrl && (
                 <a className="btn" href={club.websiteUrl} target="_blank" rel="noreferrer">
@@ -133,42 +153,16 @@ export default async function ClubDetailPage({
                 </a>
               )}
               {!club.websiteUrl && !club.instagramUrl && !club.linkedinUrl && (
-                <span className="small">No social links available</span>
+                <span className="small">No social links</span>
               )}
             </div>
-          }
-        />
-      </div>
+          </div>
+        </div>
 
-      <p className="small" style={{ marginTop: 32, textAlign: "center", opacity: 0.5 }}>
-        Last updated: {club.updatedAt ? new Date(club.updatedAt).toLocaleDateString() : "—"}
-      </p>
+        <p className="small" style={{ marginTop: 24, textAlign: "center", opacity: 0.5 }}>
+          Last updated: {club.updatedAt ? new Date(club.updatedAt).toLocaleDateString() : "—"}
+        </p>
+      </div>
     </main>
-  );
-}
-
-function InfoCard({ title, content }: { 
-  title: string; 
-  content: React.ReactNode 
-}) {
-  return (
-    <div className="card" style={{ 
-      display: "flex", 
-      flexDirection: "column",
-      minHeight: 160
-    }}>
-      <div className="small" style={{ 
-        fontWeight: 700, 
-        textTransform: "uppercase",
-        letterSpacing: "0.05em",
-        marginBottom: 8,
-        color: "rgba(251,191,36,0.8)"
-      }}>
-        {title}
-      </div>
-      <div style={{ marginTop: "auto" }}>
-        {content}
-      </div>
-    </div>
   );
 }
