@@ -16,7 +16,6 @@ export default async function AdminReviewPage() {
       <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
         <h1>Admin: Pending Club Approvals</h1>
         <div className="row">
-          <Link className="btn" href="/directory">Directory</Link>
           <Link className="btn" href="/">Home</Link>
         </div>
       </div>

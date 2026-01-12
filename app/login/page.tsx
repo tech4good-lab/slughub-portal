@@ -33,8 +33,8 @@ export default function LoginPage() {
   return (
     <main className="container">
       <div className="row" style={{ justifyContent: "space-between" }}>
-        <h1>Login</h1>
-        <Link className="btn" href="/">Home</Link>
+        <h1>Club Lead Login</h1>
+        <Link className="btn" href="/">← Home</Link>
       </div>
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onLogin}>
