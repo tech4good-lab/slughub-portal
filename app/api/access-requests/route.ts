@@ -83,7 +83,7 @@ export async function POST(req: Request) {
           status: "pending",
           message,
           reviewNotes: "",
-          reviewedAt: null, // IMPORTANT: use null, not ""
+          reviewedAt: undefined, // IMPORTANT: use null, not ""
           createdAt: nowIso,
         },
       },
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
         status: "pending",
         reviewNotes: "",
         createdAt: nowIso,
-        reviewedAt: null, // IMPORTANT: use null, not ""
+        reviewedAt: undefined, // IMPORTANT: use null, not ""
       },
     },
   ]);
