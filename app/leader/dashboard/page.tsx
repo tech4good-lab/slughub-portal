@@ -6,11 +6,14 @@ import type { Club } from "@/lib/types";
 import { base, CLUBS_TABLE } from "@/lib/airtable";
 import LogoutButton from "@/app/leader/edit/logout-button";
 import StatusPill from "@/app/components/StatusPill";
+import PendingBadge from "@/app/components/PendingBadge";
 
 export default async function LeaderDashboard() {
   const session = await getServerSession(authOptions);
   const userId = (session as any)?.userId;
   if (!userId) redirect("/login");
+
+  const isAdmin = (session as any)?.role === "admin";
 
   const records = await base(CLUBS_TABLE)
     .select({ maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` })
@@ -28,13 +31,18 @@ export default async function LeaderDashboard() {
         <h1>Leader Dashboard</h1>
 
         <div className="row">
-          {(session as any)?.role === "admin" && (
-            <Link className="btn btnPrimary" href="/admin/review">
+          {isAdmin && (
+            <Link 
+              className="btn btnPrimary" 
+              href="/admin/review"
+              style={{ position: "relative" }}
+            >
               Admin Review
+              <PendingBadge />
             </Link>
           )}
 
-          <Link className="btn" href="/directory">Directory</Link>
+          <Link className="btn" href="/">Home</Link>
           <LogoutButton />
         </div>
       </div>
@@ -56,7 +64,6 @@ export default async function LeaderDashboard() {
               {club.description ?? ""}
             </p>
 
-            {/* Helpful explanation so leaders know why it’s not visible */}
             {status === "pending" && (
               <div
                 className="card"
@@ -67,7 +74,7 @@ export default async function LeaderDashboard() {
                 }}
               >
                 <p className="small" style={{ margin: 0 }}>
-                  Your club profile is pending admin approval. It won’t appear in the public directory until approved.
+                  Your club profile is pending admin approval. It won't appear in the public directory until approved.
                 </p>
               </div>
             )}
@@ -95,9 +102,8 @@ export default async function LeaderDashboard() {
             <div className="row" style={{ marginTop: 12 }}>
               <Link className="btn btnPrimary" href="/leader/edit">Edit Club Profile</Link>
 
-              {/* Only show public link when approved, so it’s not confusing */}
               {isLive ? (
-                <Link className="btn" href={`/clubs/${club.clubId}`}>View Public Page</Link>
+                <Link className="btn" href={`/clubs/${club.recordId}`}>View Public Page</Link>
               ) : (
                 <span className="small" style={{ alignSelf: "center", opacity: 0.8 }}>
                   Public page not live yet
@@ -107,7 +113,7 @@ export default async function LeaderDashboard() {
           </>
         ) : (
           <>
-            <p className="small">You don’t have a club profile yet.</p>
+            <p className="small">You don't have a club profile yet.</p>
             <div className="row" style={{ marginTop: 12 }}>
               <Link className="btn btnPrimary" href="/leader/edit">Create Club Profile</Link>
             </div>

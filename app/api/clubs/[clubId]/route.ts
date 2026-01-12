@@ -8,9 +8,11 @@ export async function GET(
   const { clubId } = await params;
 
   try {
+    // Use Airtable's .find() method with clubId (which contains recXXXX)
     const record = await base(CLUBS_TABLE).find(clubId);
     const fields: any = record.fields;
 
+    // Only show approved clubs publicly
     if (fields.status !== "approved") {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }

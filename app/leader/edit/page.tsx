@@ -100,7 +100,6 @@ export default function EditClubPage() {
   const [err, setErr] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  // ✅ new: status + review notes shown to leader
   const [status, setStatus] = useState<string>("");
   const [reviewNotes, setReviewNotes] = useState<string>("");
 
@@ -117,7 +116,6 @@ export default function EditClubPage() {
         return;
       }
 
-      // If forbidden (viewer), send to a friendly page (optional)
       if (res.status === 403) {
         window.location.href = "/forbidden";
         return;
@@ -172,16 +170,14 @@ export default function EditClubPage() {
       return;
     }
 
-    // ✅ Update status immediately from server response
     const updated = data?.club as any;
     const nextStatus = String(updated?.status ?? "pending");
     setStatus(nextStatus);
     setReviewNotes(String(updated?.reviewNotes ?? ""));
 
-    // ✅ Explain what happened
     if (nextStatus === "pending") {
       setMsg(
-        "Saved! Your changes were submitted for admin approval. They won’t appear in the public club directory until approved."
+        "Saved! Your changes were submitted for admin approval. They won't appear in the public club directory until approved."
       );
     } else if (nextStatus === "approved") {
       setMsg("Saved! Your club profile is live in the public directory.");
@@ -192,9 +188,6 @@ export default function EditClubPage() {
     }
 
     setSaving(false);
-
-    // Optional: if you still want to redirect, do it after a short delay
-    // setTimeout(() => (window.location.href = "/leader/dashboard"), 800);
   };
 
   if (loading) {
@@ -219,13 +212,12 @@ export default function EditClubPage() {
           <Link className="btn" href="/leader/dashboard">
             Dashboard
           </Link>
-          <Link className="btn" href="/directory">
-            Directory
+          <Link className="btn" href="/">
+            Home
           </Link>
         </div>
       </div>
 
-      {/* ✅ Sticky “what happened” card */}
       {(err || msg || (status?.toLowerCase() === "rejected" && reviewNotes)) && (
         <div
           className="card"

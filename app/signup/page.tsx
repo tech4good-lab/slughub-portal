@@ -32,8 +32,8 @@ export default function SignupPage() {
   return (
     <main className="container">
       <div className="row" style={{ justifyContent: "space-between" }}>
-        <h1>Sign up</h1>
-        <Link className="btn" href="/">Home</Link>
+        <h1>Club Lead Sign Up</h1>
+        <Link className="btn" href="/">← Home</Link>
       </div>
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onSignup}>
