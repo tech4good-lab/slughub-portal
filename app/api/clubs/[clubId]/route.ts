@@ -8,7 +8,7 @@ export async function GET(
   const { clubId } = await params;
 
   try {
-    // Use Airtable's .find() method with clubId (which contains recXXXX)
+    // clubId is actually the recordId (recXXXX format)
     const record = await base(CLUBS_TABLE).find(clubId);
     const fields: any = record.fields;
 
@@ -17,8 +17,14 @@ export async function GET(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ club: { recordId: record.id, ...fields } });
-  } catch {
+    return NextResponse.json({ 
+      club: { 
+        recordId: record.id, 
+        ...fields 
+      } 
+    });
+  } catch (error) {
+    console.error("Error fetching club:", error);
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 }

@@ -31,20 +31,33 @@ export default async function HomePage() {
     <main className="container">
       <Header session={session} isAdmin={isAdmin} />
       
-      {/* Hero section */}
+      {/* Credit line */}
       <div style={{ 
         marginBottom: 40,
         paddingBottom: 32,
         borderBottom: "1px solid rgba(255,255,255,0.1)"
       }}>
-        <h2 style={{ 
-          fontSize: 18,
+        <p style={{ 
+          fontSize: 16,
           fontWeight: 500,
-          color: "rgba(255,255,255,0.7)",
-          marginTop: 12
+          color: "rgba(255,255,255,0.6)",
+          marginTop: 12,
+          textAlign: "center"
         }}>
-          Discover and connect with student organizations making an impact through technology and social good
-        </h2>
+          Made with ❤️ from the{" "}
+          <a 
+            href="https://tech4good.soe.ucsc.edu/" 
+            target="_blank" 
+            rel="noreferrer"
+            style={{
+              color: "rgba(251,191,36,0.9)",
+              textDecoration: "none",
+              fontWeight: 600
+            }}
+          >
+            CommunityRAG Team
+          </a>
+        </p>
       </div>
 
       {/* Club cards */}
@@ -77,7 +90,6 @@ export default async function HomePage() {
           padding: 60,
           background: "linear-gradient(135deg, rgba(251,191,36,0.03), rgba(59,130,246,0.03))"
         }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🌱</div>
           <h2 style={{ marginBottom: 8 }}>No clubs yet</h2>
           <p className="small" style={{ margin: 0 }}>
             Be the first to register your club and start building community.
