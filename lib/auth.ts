@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { base, USERS_TABLE } from "@/lib/airtable";
+import { USERS_TABLE, cachedFirstPage } from "@/lib/airtable";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -17,14 +17,9 @@ export const authOptions: NextAuthOptions = {
         const password = String(credentials?.password ?? "");
         if (!email || !password) return null;
 
-        const records = await base(USERS_TABLE)
-          .select({
-            maxRecords: 1,
-            filterByFormula: `{email} = "${email}"`,
-          })
-          .firstPage();
+        const records = await cachedFirstPage(USERS_TABLE, { maxRecords: 1, filterByFormula: `{email} = "${email}"` }, 5);
 
-        if (records.length === 0) return null;
+        if (!records || records.length === 0) return null;
 
         const fields = records[0].fields as any;
         const ok = await bcrypt.compare(password, fields.passwordHash);

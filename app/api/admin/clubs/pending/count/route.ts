@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE } from "@/lib/airtable";
+import { CLUBS_TABLE, cachedCount } from "@/lib/airtable";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -12,14 +12,13 @@ export async function GET() {
   }
 
   try {
-    const records = await base(CLUBS_TABLE)
-      .select({
-        filterByFormula: `{status} = "pending"`,
-        fields: ["clubId"],
-      })
-      .firstPage();
+    const count = await cachedCount(
+      CLUBS_TABLE,
+      { filterByFormula: `{status} = "pending"`, fields: ["clubId"] },
+      20
+    );
 
-    return NextResponse.json({ count: records.length });
+    return NextResponse.json({ count });
   } catch (error) {
     console.error("Failed to get pending count:", error);
     return NextResponse.json({ count: 0 });

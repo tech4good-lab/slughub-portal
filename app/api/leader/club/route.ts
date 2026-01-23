@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE } from "@/lib/airtable";
+import { base, CLUBS_TABLE, cachedFirstPage, invalidateTable } from "@/lib/airtable";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -14,15 +14,11 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const records = await base(CLUBS_TABLE)
-    .select({ maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` })
-    .firstPage();
+  const records = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 15);
 
-  if (records.length === 0) return NextResponse.json({ club: null });
+  if (!records || records.length === 0) return NextResponse.json({ club: null });
 
-  return NextResponse.json({
-    club: { recordId: records[0].id, ...records[0].fields },
-  });
+  return NextResponse.json({ club: { recordId: records[0].id, ...records[0].fields } });
 }
 
 export async function POST(req: Request) {
@@ -56,9 +52,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Club name is required." }, { status: 400 });
     }
 
-    const existing = await base(CLUBS_TABLE)
-      .select({ maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` })
-      .firstPage();
+    const existing = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 15);
 
     const nowIso = new Date().toISOString();
 
@@ -78,6 +72,13 @@ export async function POST(req: Request) {
       };
 
       const created = await base(CLUBS_TABLE).create([{ fields: payload }]);
+
+      try {
+        invalidateTable(CLUBS_TABLE);
+      } catch (e) {
+        console.warn("Failed to invalidate clubs cache after create", e);
+      }
+
       return NextResponse.json({ club: { recordId: created[0].id, ...created[0].fields } });
     } else {
       const recId = existing[0].id;
@@ -95,6 +96,13 @@ export async function POST(req: Request) {
       // We intentionally do NOT touch reviewedAt here at all.
 
       const updated = await base(CLUBS_TABLE).update([{ id: recId, fields: payload }]);
+
+      try {
+        invalidateTable(CLUBS_TABLE);
+      } catch (e) {
+        console.warn("Failed to invalidate clubs cache after update", e);
+      }
+
       return NextResponse.json({ club: { recordId: updated[0].id, ...updated[0].fields } });
     }
   } catch (e: any) {

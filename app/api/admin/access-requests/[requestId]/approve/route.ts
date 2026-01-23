@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base } from "@/lib/airtable";
+import { base, invalidateTable } from "@/lib/airtable";
 
 const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
@@ -52,6 +52,14 @@ export async function POST(
       },
     },
   ]);
+
+  // Invalidate related caches so list/count endpoints return fresh data
+  try {
+    invalidateTable(REQUESTS_TABLE);
+    invalidateTable(MEMBERS_TABLE);
+  } catch (e) {
+    console.warn("Failed to invalidate cache after approve", e);
+  }
 
   return NextResponse.json({ request: { recordId: updated[0].id, ...updated[0].fields } });
 }

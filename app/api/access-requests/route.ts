@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, ACCESS_REQUESTS_TABLE } from "@/lib/airtable";
+import { base, ACCESS_REQUESTS_TABLE, invalidateTable } from "@/lib/airtable";
 
 function requireAuth(session: any) {
   const userId = session?.userId;
@@ -108,6 +108,13 @@ export async function POST(req: Request) {
   ]);
 
   return NextResponse.json({ request: { recordId: created[0].id, ...created[0].fields } });
+  
+  // Invalidate cache for access requests lists/counts
+  try {
+    invalidateTable(ACCESS_REQUESTS_TABLE);
+  } catch (e) {
+    console.warn("Failed to invalidate access requests cache", e);
+  }
 }
 
 

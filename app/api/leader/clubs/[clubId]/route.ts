@@ -1,31 +1,21 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE } from "@/lib/airtable";
+import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable } from "@/lib/airtable";
 
 async function isLeaderForClub(userId: string, clubId: string) {
-  const memberRows = await base(CLUB_MEMBERS_TABLE)
-    .select({
-      maxRecords: 1,
-      filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")`,
-    })
-    .firstPage();
+  const memberRows = await cachedFirstPage(CLUB_MEMBERS_TABLE, { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` }, 15);
 
-  if (memberRows.length === 0) return false;
+  if (!memberRows || memberRows.length === 0) return false;
 
   const role = (memberRows[0].fields as any)?.memberRole;
   return role === "leader" || role === "admin";
 }
 
 async function getClubRecordByClubId(clubId: string) {
-  const clubs = await base(CLUBS_TABLE)
-    .select({
-      maxRecords: 1,
-      filterByFormula: `{clubId} = "${clubId}"`,
-    })
-    .firstPage();
+  const clubs = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{clubId} = "${clubId}"` }, 20);
 
-  return clubs[0] ?? null;
+  return clubs && clubs[0] ? clubs[0] : null;
 }
 
 export async function GET(
@@ -107,9 +97,13 @@ export async function POST(
     payload.reviewNotes = "";      // reset notes on resubmission
   }
 
-  const updated = await base(CLUBS_TABLE).update([
-    { id: clubRec.id, fields: payload },
-  ]);
+  const updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: payload }]);
+
+  try {
+    invalidateTable(CLUBS_TABLE);
+  } catch (e) {
+    console.warn("Failed to invalidate clubs cache after leader update", e);
+  }
 
   return NextResponse.json({ club: { recordId: updated[0].id, ...updated[0].fields } });
 }
