@@ -11,7 +11,7 @@ export async function GET() {
   const records = await cachedFirstPage(
     CLUBS_TABLE,
     { filterByFormula: `{status} = "pending"`, sort: [{ field: "submittedAt", direction: "desc" }] },
-    20
+    600
   );
 
   const clubs = records.map((r: any) => ({ recordId: r.id, ...r.fields }));

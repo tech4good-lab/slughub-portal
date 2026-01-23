@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, invalidateTable, noteCall } from "@/lib/airtable";
+import { base, invalidateTable, noteCall, cachedFind, cachedFirstPage } from "@/lib/airtable";
 
 const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
@@ -19,8 +19,7 @@ export async function POST(
   const reviewNotes = String(body.reviewNotes ?? "");
   const nowIso = new Date().toISOString();
 
-  noteCall(REQUESTS_TABLE);
-  const record = await base(REQUESTS_TABLE).find(requestId);
+  const record = await cachedFind(REQUESTS_TABLE, requestId, 5);
   const f = record.fields as any;
 
   const clubId = String(f.clubId ?? "");
@@ -30,13 +29,11 @@ export async function POST(
   }
 
   // create membership if not exists
-  noteCall(MEMBERS_TABLE);
-  const existingMember = await base(MEMBERS_TABLE)
-    .select({
-      maxRecords: 1,
-      filterByFormula: `AND({clubId}="${clubId}", {userId}="${userId}")`,
-    })
-    .firstPage();
+  const existingMember = await cachedFirstPage(
+    MEMBERS_TABLE,
+    { maxRecords: 1, filterByFormula: `AND({clubId}="${clubId}", {userId}="${userId}")` },
+    2
+  );
 
   if (existingMember.length === 0) {
     noteCall(MEMBERS_TABLE);

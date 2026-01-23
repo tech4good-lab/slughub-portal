@@ -33,7 +33,7 @@ export async function GET(req: Request) {
       filterByFormula: `AND({clubId} = "${clubId}", {requesterUserId} = "${auth.userId}")`,
       sort: [{ field: "createdAt", direction: "desc" }],
     },
-    5
+    600
   );
 
   const r = records[0];
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       filterByFormula: `AND({clubId} = "${clubId}", {requesterUserId} = "${auth.userId}")`,
       sort: [{ field: "createdAt", direction: "desc" }],
     },
-    5
+    600
   );
 
   if (existing.length > 0) {

@@ -13,7 +13,7 @@ export async function GET() {
   const records = await cachedAll(
     REQUESTS_TABLE,
     { filterByFormula: `LOWER(TRIM({status})) = "pending"`, sort: [{ field: "createdAt", direction: "desc" }] },
-    20
+    600
   );
 
   const requests = records.map((r: any) => ({ recordId: r.id, ...r.fields }));

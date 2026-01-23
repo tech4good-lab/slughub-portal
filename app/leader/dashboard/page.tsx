@@ -52,7 +52,7 @@ export default async function LeaderDashboard() {
   const isAdmin = role === "admin";
 
   // 1) Find memberships for this user
-  const memberRecords = await cachedAll(MEMBERS_TABLE, { filterByFormula: `{userId}="${userId}"` }, 15);
+  const memberRecords = await cachedAll(MEMBERS_TABLE, { filterByFormula: `{userId}="${userId}"` }, 300);
 
   const clubIds = (memberRecords || [])
     .map((r: any) => String((r.fields as any).clubId ?? ""))
@@ -61,7 +61,7 @@ export default async function LeaderDashboard() {
   // 2) Fetch clubs for those clubIds
   let clubs: Club[] = [];
   if (clubIds.length > 0) {
-    const clubRecords = await cachedAll(CLUBS_TABLE, { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] }, 20);
+    const clubRecords = await cachedAll(CLUBS_TABLE, { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] }, 600);
 
     clubs = (clubRecords || []).map((r: any) => ({ recordId: r.id, ...(r.fields as any) })) as any;
   }

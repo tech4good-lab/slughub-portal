@@ -28,7 +28,7 @@ export async function GET() {
   const records = await cachedAll(
     CLUBS_TABLE,
     { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] },
-    20
+    600
   );
 
   const clubs = (records || []).map((r: any) => ({ recordId: r.id, ...r.fields }));
