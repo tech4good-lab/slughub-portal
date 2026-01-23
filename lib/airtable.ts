@@ -12,29 +12,35 @@ export const CLUB_MEMBERS_TABLE = process.env.AIRTABLE_CLUB_MEMBERS_TABLE ?? "Cl
 export const ACCESS_REQUESTS_TABLE = process.env.AIRTABLE_ACCESS_REQUESTS_TABLE ?? "AccessRequests";
 export const USERS_TABLE = process.env.AIRTABLE_USERS_TABLE ?? "Users";
 
-// Simple in-memory stats for instrumentation (useful for local measurement)
-export const airtableStats: { calls: number; perTable: Record<string, number> } = {
-	calls: 0,
-	perTable: {},
-};
-
-export function noteCall(table: string) {
-	airtableStats.calls++;
-	airtableStats.perTable[table] = (airtableStats.perTable[table] || 0) + 1;
-}
-
-// Runtime toggle to force bypassing the in-memory cache (useful for before/after tests)
-let forceNoCache = false;
-export function setForceNoCache(v: boolean) {
-	forceNoCache = !!v;
-}
-
 type CacheEntry = { expires: number; data: any };
 
 const cache = new Map<string, CacheEntry>();
 
 function makeKey(table: string, params: any) {
 	return `${table}:${JSON.stringify(params ?? {})}`;
+}
+
+// Simple in-memory stats for instrumentation
+export const airtableStats: { calls: number; perTable: Record<string, number> } = {
+	calls: 0,
+	perTable: {},
+};
+
+// Increment upstream Airtable counter and log
+export function noteCall(table?: string) {
+	airtableStats.calls += 1;
+	if (table) airtableStats.perTable[table] = (airtableStats.perTable[table] || 0) + 1;
+	console.log(`AIRTABLE CALL +1 table=${table ?? "<unknown>"} total=${airtableStats.calls}`);
+}
+
+let forceNoCache = false;
+export function setForceNoCache(v: boolean) {
+	forceNoCache = !!v;
+}
+
+export function resetStats() {
+	airtableStats.calls = 0;
+	airtableStats.perTable = {};
 }
 
 export function invalidateTable(table?: string) {
@@ -51,9 +57,12 @@ export async function cachedFirstPage(table: string, selectOptions: any = {}, tt
 	const key = makeKey(table, { method: "firstPage", selectOptions });
 	const now = Date.now();
 	const entry = cache.get(key);
-	if (!forceNoCache && entry && entry.expires > now) return entry.data;
+	if (!forceNoCache && entry && entry.expires > now) {
+		console.log(`CACHE HIT table=${table} key=${key} — HIT`);
+		return entry.data;
+	}
 
-	// If forcing no-cache, or cache miss -> call Airtable directly and optionally cache
+	// cache miss -> call Airtable
 	noteCall(table);
 	const records = await base(table).select(selectOptions).firstPage();
 	const data = records.map((r: any) => ({ id: r.id, fields: r.fields }));
@@ -65,7 +74,10 @@ export async function cachedCount(table: string, selectOptions: any = {}, ttlSec
 	const key = makeKey(table, { method: "count", selectOptions });
 	const now = Date.now();
 	const entry = cache.get(key);
-	if (!forceNoCache && entry && entry.expires > now) return entry.data as number;
+	if (!forceNoCache && entry && entry.expires > now) {
+		console.log(`CACHE HIT table=${table} key=${key} — HIT`);
+		return entry.data as number;
+	}
 
 	noteCall(table);
 	const records = await base(table).select(selectOptions).firstPage();
@@ -78,7 +90,10 @@ export async function cachedAll(table: string, selectOptions: any = {}, ttlSecon
 	const key = makeKey(table, { method: "all", selectOptions });
 	const now = Date.now();
 	const entry = cache.get(key);
-	if (!forceNoCache && entry && entry.expires > now) return entry.data;
+	if (!forceNoCache && entry && entry.expires > now) {
+		console.log(`CACHE HIT table=${table} key=${key} — HIT`);
+		return entry.data;
+	}
 
 	noteCall(table);
 	const records = await base(table).select(selectOptions).all();
@@ -91,7 +106,10 @@ export async function cachedFind(table: string, id: string, ttlSeconds = 30) {
 	const key = makeKey(table, { method: "find", id });
 	const now = Date.now();
 	const entry = cache.get(key);
-	if (!forceNoCache && entry && entry.expires > now) return entry.data;
+	if (!forceNoCache && entry && entry.expires > now) {
+		console.log(`CACHE HIT table=${table} key=${key} — HIT`);
+		return entry.data;
+	}
 
 	noteCall(table);
 	const record = await base(table).find(id);
