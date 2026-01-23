@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE } from "@/lib/airtable";
+import { base, CLUBS_TABLE, cachedAll, invalidateTable } from "@/lib/airtable";
 import { getUserClubIds } from "@/lib/permissions";
 
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
@@ -25,14 +25,13 @@ export async function GET() {
   const clubIds = await getUserClubIds(userId);
   if (clubIds.length === 0) return NextResponse.json({ clubs: [] });
 
-  const records = await base(CLUBS_TABLE)
-    .select({
-      filterByFormula: orFormulaForClubIds(clubIds),
-      sort: [{ field: "updatedAt", direction: "desc" }],
-    })
-    .all();
+  const records = await cachedAll(
+    CLUBS_TABLE,
+    { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] },
+    20
+  );
 
-  const clubs = records.map((r) => ({ recordId: r.id, ...r.fields }));
+  const clubs = (records || []).map((r: any) => ({ recordId: r.id, ...r.fields }));
   return NextResponse.json({ clubs });
 }
 
@@ -87,9 +86,14 @@ export async function POST(req: Request) {
       },
     ]);
 
-    return NextResponse.json({
-      club: { recordId: created[0].id, ...created[0].fields },
-    });
+    try {
+      invalidateTable(CLUBS_TABLE);
+      invalidateTable(MEMBERS_TABLE);
+    } catch (e) {
+      console.warn("Failed to invalidate leader clubs cache", e);
+    }
+
+    return NextResponse.json({ club: { recordId: created[0].id, ...created[0].fields } });
   } catch (e: any) {
     console.error(e);
     return NextResponse.json({ error: e?.message ?? "Internal error" }, { status: 500 });

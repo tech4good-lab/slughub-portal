@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { base, CLUBS_TABLE } from "@/lib/airtable";
+import { CLUBS_TABLE, cachedFirstPage, cachedFind } from "@/lib/airtable";
 
 export async function GET(
   _req: Request,
@@ -10,11 +10,10 @@ export async function GET(
   try {
     // Case A: Airtable record id (legacy links) look like "recXXXXXXXX..."
     if (clubId.startsWith("rec")) {
-      const record = await base(CLUBS_TABLE).find(clubId);
-      const fields = record.fields as any;
+      const record = await cachedFind(CLUBS_TABLE, clubId, 30);
 
       // Public route: only show approved
-      if (fields.status !== "approved") {
+      if (record.fields?.status !== "approved") {
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       }
 
@@ -22,14 +21,13 @@ export async function GET(
     }
 
     // Case B: UUID clubId stored in a field called "clubId"
-    const records = await base(CLUBS_TABLE)
-      .select({
-        maxRecords: 1,
-        filterByFormula: `AND({clubId} = "${clubId}", {status} = "approved")`,
-      })
-      .firstPage();
+    const records = await cachedFirstPage(
+      CLUBS_TABLE,
+      { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {status} = "approved")` },
+      30
+    );
 
-    if (records.length === 0) {
+    if (!records || records.length === 0) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
