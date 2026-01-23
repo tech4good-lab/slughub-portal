@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable } from "@/lib/airtable";
+import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 async function isLeaderForClub(userId: string, clubId: string) {
   const memberRows = await cachedFirstPage(CLUB_MEMBERS_TABLE, { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` }, 15);
@@ -97,6 +97,7 @@ export async function POST(
     payload.reviewNotes = "";      // reset notes on resubmission
   }
 
+  noteCall(CLUBS_TABLE);
   const updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: payload }]);
 
   try {

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, cachedFirstPage, invalidateTable } from "@/lib/airtable";
+import { base, CLUBS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -71,6 +71,7 @@ export async function POST(req: Request) {
         // reviewedAt is admin-only and should only be set on approve/reject
       };
 
+      noteCall(CLUBS_TABLE);
       const created = await base(CLUBS_TABLE).create([{ fields: payload }]);
 
       try {
@@ -95,6 +96,7 @@ export async function POST(req: Request) {
       // Optional: if leader edits, clear previous reviewedAt (ADMIN-only behavior usually)
       // We intentionally do NOT touch reviewedAt here at all.
 
+      noteCall(CLUBS_TABLE);
       const updated = await base(CLUBS_TABLE).update([{ id: recId, fields: payload }]);
 
       try {

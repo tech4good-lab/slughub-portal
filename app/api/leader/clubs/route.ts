@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, cachedAll, invalidateTable } from "@/lib/airtable";
+import { base, CLUBS_TABLE, cachedAll, invalidateTable, noteCall } from "@/lib/airtable";
 import { getUserClubIds } from "@/lib/permissions";
 
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
@@ -72,9 +72,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Club name is required." }, { status: 400 });
     }
 
+    noteCall(CLUBS_TABLE);
     const created = await base(CLUBS_TABLE).create([{ fields: payload }]);
 
     // Add membership so creator can manage this club
+    noteCall(MEMBERS_TABLE);
     await base(MEMBERS_TABLE).create([
       {
         fields: {
