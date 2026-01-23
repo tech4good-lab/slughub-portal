@@ -14,7 +14,7 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const records = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 15);
+  const records = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 600);
 
   if (!records || records.length === 0) return NextResponse.json({ club: null });
 
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Club name is required." }, { status: 400 });
     }
 
-    const existing = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 15);
+    const existing = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 600);
 
     const nowIso = new Date().toISOString();
 

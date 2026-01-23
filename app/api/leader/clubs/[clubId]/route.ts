@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 async function isLeaderForClub(userId: string, clubId: string) {
-  const memberRows = await cachedFirstPage(CLUB_MEMBERS_TABLE, { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` }, 15);
+  const memberRows = await cachedFirstPage(CLUB_MEMBERS_TABLE, { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` }, 300);
 
   if (!memberRows || memberRows.length === 0) return false;
 
@@ -13,7 +13,7 @@ async function isLeaderForClub(userId: string, clubId: string) {
 }
 
 async function getClubRecordByClubId(clubId: string) {
-  const clubs = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{clubId} = "${clubId}"` }, 20);
+  const clubs = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{clubId} = "${clubId}"` }, 600);
 
   return clubs && clubs[0] ? clubs[0] : null;
 }

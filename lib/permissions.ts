@@ -3,10 +3,11 @@ import { cachedFirstPage, cachedAll } from "@/lib/airtable";
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
 
 export async function isClubLeaderMember(userId: string, clubId: string) {
-  const records = await cachedFirstPage(MEMBERS_TABLE, {
-    maxRecords: 1,
-    filterByFormula: `AND({userId}="${userId}", {clubId}="${clubId}")`,
-  });
+  const records = await cachedFirstPage(
+    MEMBERS_TABLE,
+    { maxRecords: 1, filterByFormula: `AND({userId}="${userId}", {clubId}="${clubId}")` },
+    300
+  );
 
   if (!records || records.length === 0) return false;
 
@@ -15,7 +16,7 @@ export async function isClubLeaderMember(userId: string, clubId: string) {
 }
 
 export async function getUserClubIds(userId: string) {
-  const records = await cachedAll(MEMBERS_TABLE, { filterByFormula: `{userId}="${userId}"` }, 15);
+  const records = await cachedAll(MEMBERS_TABLE, { filterByFormula: `{userId}="${userId}"` }, 300);
 
   // only allow leader/admin memberships
   return (records || [])
