@@ -12,6 +12,23 @@ export const CLUB_MEMBERS_TABLE = process.env.AIRTABLE_CLUB_MEMBERS_TABLE ?? "Cl
 export const ACCESS_REQUESTS_TABLE = process.env.AIRTABLE_ACCESS_REQUESTS_TABLE ?? "AccessRequests";
 export const USERS_TABLE = process.env.AIRTABLE_USERS_TABLE ?? "Users";
 
+// Simple in-memory stats for instrumentation (useful for local measurement)
+export const airtableStats: { calls: number; perTable: Record<string, number> } = {
+	calls: 0,
+	perTable: {},
+};
+
+export function noteCall(table: string) {
+	airtableStats.calls++;
+	airtableStats.perTable[table] = (airtableStats.perTable[table] || 0) + 1;
+}
+
+// Runtime toggle to force bypassing the in-memory cache (useful for before/after tests)
+let forceNoCache = false;
+export function setForceNoCache(v: boolean) {
+	forceNoCache = !!v;
+}
+
 type CacheEntry = { expires: number; data: any };
 
 const cache = new Map<string, CacheEntry>();
@@ -34,11 +51,13 @@ export async function cachedFirstPage(table: string, selectOptions: any = {}, tt
 	const key = makeKey(table, { method: "firstPage", selectOptions });
 	const now = Date.now();
 	const entry = cache.get(key);
-	if (entry && entry.expires > now) return entry.data;
+	if (!forceNoCache && entry && entry.expires > now) return entry.data;
 
+	// If forcing no-cache, or cache miss -> call Airtable directly and optionally cache
+	noteCall(table);
 	const records = await base(table).select(selectOptions).firstPage();
 	const data = records.map((r: any) => ({ id: r.id, fields: r.fields }));
-	cache.set(key, { expires: now + ttlSeconds * 1000, data });
+	if (!forceNoCache) cache.set(key, { expires: now + ttlSeconds * 1000, data });
 	return data;
 }
 
@@ -46,11 +65,12 @@ export async function cachedCount(table: string, selectOptions: any = {}, ttlSec
 	const key = makeKey(table, { method: "count", selectOptions });
 	const now = Date.now();
 	const entry = cache.get(key);
-	if (entry && entry.expires > now) return entry.data as number;
+	if (!forceNoCache && entry && entry.expires > now) return entry.data as number;
 
+	noteCall(table);
 	const records = await base(table).select(selectOptions).firstPage();
 	const count = records.length;
-	cache.set(key, { expires: now + ttlSeconds * 1000, data: count });
+	if (!forceNoCache) cache.set(key, { expires: now + ttlSeconds * 1000, data: count });
 	return count;
 }
 
@@ -58,11 +78,12 @@ export async function cachedAll(table: string, selectOptions: any = {}, ttlSecon
 	const key = makeKey(table, { method: "all", selectOptions });
 	const now = Date.now();
 	const entry = cache.get(key);
-	if (entry && entry.expires > now) return entry.data;
+	if (!forceNoCache && entry && entry.expires > now) return entry.data;
 
+	noteCall(table);
 	const records = await base(table).select(selectOptions).all();
 	const data = records.map((r: any) => ({ id: r.id, fields: r.fields }));
-	cache.set(key, { expires: now + ttlSeconds * 1000, data });
+	if (!forceNoCache) cache.set(key, { expires: now + ttlSeconds * 1000, data });
 	return data;
 }
 
@@ -70,10 +91,11 @@ export async function cachedFind(table: string, id: string, ttlSeconds = 30) {
 	const key = makeKey(table, { method: "find", id });
 	const now = Date.now();
 	const entry = cache.get(key);
-	if (entry && entry.expires > now) return entry.data;
+	if (!forceNoCache && entry && entry.expires > now) return entry.data;
 
+	noteCall(table);
 	const record = await base(table).find(id);
 	const data = { id: record.id, fields: record.fields };
-	cache.set(key, { expires: now + ttlSeconds * 1000, data });
+	if (!forceNoCache) cache.set(key, { expires: now + ttlSeconds * 1000, data });
 	return data;
 }

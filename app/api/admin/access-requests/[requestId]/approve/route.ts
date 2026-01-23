@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, invalidateTable } from "@/lib/airtable";
+import { base, invalidateTable, noteCall } from "@/lib/airtable";
 
 const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
@@ -19,6 +19,7 @@ export async function POST(
   const reviewNotes = String(body.reviewNotes ?? "");
   const nowIso = new Date().toISOString();
 
+  noteCall(REQUESTS_TABLE);
   const record = await base(REQUESTS_TABLE).find(requestId);
   const f = record.fields as any;
 
@@ -29,6 +30,7 @@ export async function POST(
   }
 
   // create membership if not exists
+  noteCall(MEMBERS_TABLE);
   const existingMember = await base(MEMBERS_TABLE)
     .select({
       maxRecords: 1,
@@ -37,11 +39,13 @@ export async function POST(
     .firstPage();
 
   if (existingMember.length === 0) {
+    noteCall(MEMBERS_TABLE);
     await base(MEMBERS_TABLE).create([
       { fields: { clubId, userId, memberRole: "leader", createdAt: nowIso } },
     ]);
   }
 
+  noteCall(REQUESTS_TABLE);
   const updated = await base(REQUESTS_TABLE).update([
     {
       id: requestId,

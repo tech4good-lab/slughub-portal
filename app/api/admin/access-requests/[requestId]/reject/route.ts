@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, invalidateTable } from "@/lib/airtable";
+import { base, invalidateTable, noteCall } from "@/lib/airtable";
 
 const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
 
@@ -18,6 +18,7 @@ export async function POST(
   const reviewNotes = String(body.reviewNotes ?? "");
   const nowIso = new Date().toISOString();
 
+  noteCall(REQUESTS_TABLE);
   const updated = await base(REQUESTS_TABLE).update([
     {
       id: requestId,

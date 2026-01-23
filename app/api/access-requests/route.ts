@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, ACCESS_REQUESTS_TABLE, invalidateTable } from "@/lib/airtable";
+import { base, ACCESS_REQUESTS_TABLE, invalidateTable, noteCall } from "@/lib/airtable";
 
 function requireAuth(session: any) {
   const userId = session?.userId;
@@ -26,6 +26,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "clubId is required" }, { status: 400 });
   }
 
+  noteCall(ACCESS_REQUESTS_TABLE);
   const records = await base(ACCESS_REQUESTS_TABLE)
     .select({
       maxRecords: 1,
@@ -58,6 +59,7 @@ export async function POST(req: Request) {
   const nowIso = new Date().toISOString();
 
   // Upsert: if they already requested for this club, update it
+  noteCall(ACCESS_REQUESTS_TABLE);
   const existing = await base(ACCESS_REQUESTS_TABLE)
     .select({
       maxRecords: 1,
@@ -76,6 +78,7 @@ export async function POST(req: Request) {
     }
 
     // If rejected/pending, resubmit as pending (clear reviewed fields safely)
+    noteCall(ACCESS_REQUESTS_TABLE);
     const updated = await base(ACCESS_REQUESTS_TABLE).update([
       {
         id: rec.id,
@@ -92,6 +95,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ request: { recordId: updated[0].id, ...updated[0].fields } });
   }
 
+  noteCall(ACCESS_REQUESTS_TABLE);
   const created = await base(ACCESS_REQUESTS_TABLE).create([
     {
       fields: {
