@@ -160,8 +160,8 @@ export default function EditClubPage() {
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Description</label>
-        <textarea
+        <label className="label">Description *</label>
+        <textarea required
           className="input"
           rows={4}
           value={draft.description}
@@ -170,13 +170,15 @@ export default function EditClubPage() {
 
         <hr />
 
-        <label className="label">Point of Contact Name</label>
-        <input className="input" value={draft.contactName} onChange={(e) => set("contactName", e.target.value)} />
+        <label className="label">Point of Contact Name *</label>
+        <input className="input" value={draft.contactName} onChange={(e) => set("contactName", e.target.value)} required />
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Point of Contact Email</label>
-        <input className="input" value={draft.contactEmail} onChange={(e) => set("contactEmail", e.target.value)} />
+        <label className="label">Point of Contact Email *</label>
+        <input 
+        
+        className="input" value={draft.contactEmail} onChange={(e) => set("contactEmail", e.target.value)} required />
 
         <hr />
 
