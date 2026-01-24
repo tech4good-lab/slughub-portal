@@ -29,13 +29,12 @@ export async function POST(
       },
     },
   ]);
-
-  return NextResponse.json({ request: { recordId: updated[0].id, ...updated[0].fields } });
-  
   // Invalidate cache for access requests so lists/counts refresh
   try {
     invalidateTable(REQUESTS_TABLE);
   } catch (e) {
     console.warn("Failed to invalidate cache after reject", e);
   }
+
+  return NextResponse.json({ request: { recordId: updated[0].id, ...updated[0].fields } });
 }
