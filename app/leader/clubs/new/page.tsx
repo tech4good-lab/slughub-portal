@@ -1,12 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getSession } from "next-auth/react";
 
 export default function NewClubPage() {
   const [name, setName] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const s = await getSession();
+      const email = (s as any)?.user?.email;
+      const userName = (s as any)?.user?.name;
+      if (email) setContactEmail(email);
+      if (userName) {
+        setContactName(userName);
+      } else if (email) {
+        const local = String(email).split("@")[0] || "";
+        const derived = local.replace(/[._\-+]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+        setContactName(derived);
+      }
+    })();
+  }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +35,7 @@ export default function NewClubPage() {
     const res = await fetch("/api/leader/clubs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, contactName, contactEmail }),
     });
 
     const data = await res.json().catch(() => ({}));
@@ -51,6 +70,16 @@ export default function NewClubPage() {
         <label className="label">Club Name *</label>
         <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
 
+        <div style={{ height: 10 }} />
+
+        <label className="label">Point of Contact Name *</label>
+        <input className="input" value={contactName} onChange={(e) => setContactName(e.target.value)} required />
+
+        <div style={{ height: 10 }} />
+
+        <label className="label">Point of Contact Email *</label>
+        <input className="input" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required />
+
         {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
 
         <div className="row" style={{ marginTop: 12 }}>
@@ -63,3 +92,5 @@ export default function NewClubPage() {
     </main>
   );
 }
+
+// (prefill handled inside the component)
