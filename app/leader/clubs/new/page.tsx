@@ -8,6 +8,7 @@ export default function NewClubPage() {
   const [name, setName] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
+  const [category, setCategory] = useState("Club");
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -35,7 +36,7 @@ export default function NewClubPage() {
     const res = await fetch("/api/leader/clubs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, contactName, contactEmail }),
+      body: JSON.stringify({ name, contactName, contactEmail, category }),
     });
 
     const data = await res.json().catch(() => ({}));
@@ -79,6 +80,16 @@ export default function NewClubPage() {
 
         <label className="label">Point of Contact Email *</label>
         <input className="input" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required />
+
+        <div style={{ height: 10 }} />
+
+        <label className="label">Category</label>
+        <select className="input" value={category} onChange={(e) => setCategory(e.target.value)} required>
+          <option>Club</option>
+          <option>Org</option>
+          <option>Athletic</option>
+          <option>Unofficial</option>
+        </select>
 
         {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
 

@@ -39,7 +39,8 @@ export async function GET(
   const clubRec = await getClubRecordByClubId(clubId);
   if (!clubRec) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  return NextResponse.json({ club: { recordId: clubRec.id, ...clubRec.fields } });
+  const f = clubRec.fields as any;
+  return NextResponse.json({ club: { recordId: clubRec.id, ...f, category: f.Category ?? f.category } });
 }
 
 export async function POST(
@@ -70,6 +71,7 @@ export async function POST(
     description: String(body.description ?? "").trim(),
     contactName: String(body.contactName ?? "").trim(),
     contactEmail: String(body.contactEmail ?? "").trim(),
+    category: String(body.category ?? "").trim(),
     calendarUrl: String(body.calendarUrl ?? "").trim(),
     discordUrl: String(body.discordUrl ?? "").trim(),
     websiteUrl: String(body.websiteUrl ?? "").trim(),
@@ -98,7 +100,19 @@ export async function POST(
   }
 
   noteCall(CLUBS_TABLE);
-  const updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: payload }]);
+  let updated: any;
+  try {
+    updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: payload }]);
+  } catch (err: any) {
+    const msg = String(err?.message ?? "");
+    if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
+      const fallback = { ...payload };
+      delete (fallback as any).category;
+      updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: fallback }]);
+    } else {
+      throw err;
+    }
+  }
 
   try {
     invalidateTable(CLUBS_TABLE);
@@ -106,5 +120,6 @@ export async function POST(
     console.warn("Failed to invalidate clubs cache after leader update", e);
   }
 
-  return NextResponse.json({ club: { recordId: updated[0].id, ...updated[0].fields } });
+  const updatedFields = updated[0].fields as any;
+  return NextResponse.json({ club: { recordId: updated[0].id, ...updatedFields, category: updatedFields.Category ?? updatedFields.category } });
 }

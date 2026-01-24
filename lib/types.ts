@@ -6,6 +6,7 @@ export type Club = {
   description?: string;
   contactName?: string;
   contactEmail?: string;
+  category?: string;
   calendarUrl?: string;
   discordUrl?: string;
   websiteUrl?: string;

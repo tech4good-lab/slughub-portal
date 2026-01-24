@@ -8,7 +8,10 @@ export async function GET() {
     600
   );
 
-  const clubs = records.map((r: any) => ({ recordId: r.id, ...r.fields }));
+  const clubs = records.map((r: any) => {
+    const f = r.fields as any;
+    return { recordId: r.id, ...f, category: f.Category ?? f.category };
+  });
 
   return NextResponse.json({ clubs });
 

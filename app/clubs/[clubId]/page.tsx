@@ -38,6 +38,27 @@ export default async function ClubDetailPage({
 
       {/* Hero section - cleaner layout */}
       <div className="card" style={{ marginTop: 20 }}>
+        {club.category && (
+          <div style={{ marginBottom: 12 }}>
+            <span
+              style={{
+                display: "inline-block",
+                padding: "6px 10px",
+                borderRadius: 8,
+                fontWeight: 700,
+                fontSize: 12,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                background: club.category === "Athletic Team" ? "rgba(59,130,246,0.12)" : club.category === "Social Community" ? "rgba(168,85,247,0.08)" : "rgba(249,115,22,0.08)",
+                color: club.category === "Athletic Team" ? "rgba(59,130,246,0.95)" : club.category === "Social Community" ? "rgba(168,85,247,0.95)" : "rgba(249,115,22,0.95)",
+                border: "1px solid rgba(255,255,255,0.04)"
+              }}
+            >
+              {club.category}
+            </span>
+          </div>
+        )}
+
         <h1 style={{ marginBottom: 16, fontSize: 36 }}>{club.name}</h1>
         <p
           style={{
