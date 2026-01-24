@@ -34,5 +34,6 @@ export async function POST(
     console.warn("Failed to invalidate clubs cache after approve", e);
   }
 
-  return NextResponse.json({ club: { recordId: updated[0].id, ...updated[0].fields } });
+  const f = updated[0].fields as any;
+  return NextResponse.json({ club: { recordId: updated[0].id, ...f, category: f.Category ?? f.category } });
 }

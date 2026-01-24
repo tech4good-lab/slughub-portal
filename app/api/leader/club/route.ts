@@ -40,6 +40,7 @@ export async function POST(req: Request) {
       description: String(body.description ?? "").trim(),
       contactName: String(body.contactName ?? "").trim(),
       contactEmail: String(body.contactEmail ?? "").trim(),
+      category: String(body.category ?? "").trim(),
       calendarUrl: String(body.calendarUrl ?? "").trim(),
       discordUrl: String(body.discordUrl ?? "").trim(),
       websiteUrl: String(body.websiteUrl ?? "").trim(),
@@ -72,7 +73,19 @@ export async function POST(req: Request) {
       };
 
       noteCall(CLUBS_TABLE);
-      const created = await base(CLUBS_TABLE).create([{ fields: payload }]);
+      let created: any;
+      try {
+        created = await base(CLUBS_TABLE).create([{ fields: payload }]);
+      } catch (err: any) {
+        const msg = String(err?.message ?? "");
+        if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
+          const fallback = { ...payload };
+          delete (fallback as any).category;
+          created = await base(CLUBS_TABLE).create([{ fields: fallback }]);
+        } else {
+          throw err;
+        }
+      }
 
       try {
         invalidateTable(CLUBS_TABLE);
@@ -80,7 +93,8 @@ export async function POST(req: Request) {
         console.warn("Failed to invalidate clubs cache after create", e);
       }
 
-      return NextResponse.json({ club: { recordId: created[0].id, ...created[0].fields } });
+      const cf = created[0].fields as any;
+      return NextResponse.json({ club: { recordId: created[0].id, ...cf, category: cf.Category ?? cf.category } });
     } else {
       const recId = existing[0].id;
       const existingFields = existing[0].fields as any;
@@ -97,7 +111,19 @@ export async function POST(req: Request) {
       // We intentionally do NOT touch reviewedAt here at all.
 
       noteCall(CLUBS_TABLE);
-      const updated = await base(CLUBS_TABLE).update([{ id: recId, fields: payload }]);
+      let updated: any;
+      try {
+        updated = await base(CLUBS_TABLE).update([{ id: recId, fields: payload }]);
+      } catch (err: any) {
+        const msg = String(err?.message ?? "");
+        if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
+          const fallback = { ...payload };
+          delete (fallback as any).category;
+          updated = await base(CLUBS_TABLE).update([{ id: recId, fields: fallback }]);
+        } else {
+          throw err;
+        }
+      }
 
       try {
         invalidateTable(CLUBS_TABLE);
@@ -105,7 +131,8 @@ export async function POST(req: Request) {
         console.warn("Failed to invalidate clubs cache after update", e);
       }
 
-      return NextResponse.json({ club: { recordId: updated[0].id, ...updated[0].fields } });
+      const uf = updated[0].fields as any;
+      return NextResponse.json({ club: { recordId: updated[0].id, ...uf, category: uf.Category ?? uf.category } });
     }
   } catch (e: any) {
     console.error(e);

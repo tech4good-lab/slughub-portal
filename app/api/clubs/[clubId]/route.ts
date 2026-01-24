@@ -17,7 +17,8 @@ export async function GET(
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       }
 
-      return NextResponse.json({ club: { recordId: record.id, ...record.fields } });
+      const f = record.fields as any;
+      return NextResponse.json({ club: { recordId: record.id, ...f, category: f.Category ?? f.category } });
     }
 
     // Case B: UUID clubId stored in a field called "clubId"
@@ -32,7 +33,8 @@ export async function GET(
     }
 
     const r = records[0];
-    return NextResponse.json({ club: { recordId: r.id, ...r.fields } });
+    const f = r.fields as any;
+    return NextResponse.json({ club: { recordId: r.id, ...f, category: f.Category ?? f.category } });
   } catch {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
