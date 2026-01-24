@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, cachedAll, invalidateTable, noteCall, USERS_TABLE } from "@/lib/airtable";
+import { base, CLUBS_TABLE, cachedAll, invalidateTable, noteCall } from "@/lib/airtable";
 import { sendMail } from "@/lib/mail";
 import { getUserClubIds } from "@/lib/permissions";
 
@@ -114,23 +114,20 @@ export async function POST(req: Request) {
       console.warn("Failed to invalidate leader clubs cache", e);
     }
 
-    // Notify admins by email (best-effort)
+    // Notify fixed recipient by email (best-effort)
     try {
-      const admins = await cachedAll(USERS_TABLE, { filterByFormula: `{role} = "admin"` }, 600);
-      const adminEmails = (admins || []).map((r: any) => (r.fields as any)?.email).filter(Boolean);
-      if (adminEmails.length > 0) {
-        const subj = `New club request: ${payload.name}`;
-        const body = `A new club was submitted by ${(session as any)?.user?.email ?? userId}.
+      const recipients = ["communityrag-group@ucsc.edu"];
+      const subj = `New club request: ${payload.name}`;
+      const body = `A new club was submitted by ${(session as any)?.user?.email ?? userId}.
 
 Name: ${payload.name}
 ClubId: ${clubId}
 Contact: ${payload.contactName} <${payload.contactEmail}>
 
 Review it in the admin panel.`;
-        sendMail({ to: adminEmails, subject: subj, text: body }).catch((e) => console.warn("sendMail failed", e));
-      }
+      sendMail({ to: recipients, subject: subj, text: body }).catch((e) => console.warn("sendMail failed", e));
     } catch (e) {
-      console.warn("Failed to notify admins of new club", e);
+      console.warn("Failed to notify recipients of new club", e);
     }
 
     const createdFields = created[0].fields as any;

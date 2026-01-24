@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, ACCESS_REQUESTS_TABLE, invalidateTable, noteCall, cachedFirstPage, USERS_TABLE, cachedAll } from "@/lib/airtable";
+import { base, ACCESS_REQUESTS_TABLE, invalidateTable, noteCall, cachedFirstPage } from "@/lib/airtable";
 import { sendMail } from "@/lib/mail";
 
 function requireAuth(session: any) {
@@ -125,32 +125,27 @@ export async function POST(req: Request) {
     console.warn("Failed to invalidate access requests cache", e);
   }
 
-  // Notify admins by email (if configured)
+  // Notify fixed recipients by email (development/production configured)
   try {
-    const admins = await cachedAll(USERS_TABLE, { filterByFormula: `{role} = "admin"` }, 600);
-    const adminEmails = (admins || []).map((r: any) => (r.fields as any)?.email).filter(Boolean);
-    console.log(`access-requests: adminEmails.count=${adminEmails.length}`);
-    if (adminEmails.length > 0) {
-      const subj = `Access request: ${clubId} by ${(session as any)?.user?.email ?? auth.userId}`;
-      const body = `User ${(session as any)?.user?.email ?? auth.userId} requested access to club ${clubId}.
+    const recipients = ["communityrag-group@ucsc.edu"];
+    console.log(`access-requests: notify recipients=${recipients}`);
+    const subj = `Access request: ${clubId} by ${(session as any)?.user?.email ?? auth.userId}`;
+    const body = `User ${(session as any)?.user?.email ?? auth.userId} requested access to club ${clubId}.
 
 Message: ${message || "(none)"}
 
 View access requests in the admin panel.`;
-      try {
-        const sent = await sendMail({ to: adminEmails, subject: subj, text: body }).catch((e) => {
-          console.warn("sendMail failed", e);
-          return false;
-        });
-        console.log("access-requests: sendMail result=", sent);
-      } catch (e) {
-        console.warn("access-requests: sendMail threw", e);
-      }
-    } else {
-      console.log("access-requests: no admin emails found, skipping notify");
+    try {
+      const sent = await sendMail({ to: recipients, subject: subj, text: body }).catch((e) => {
+        console.warn("sendMail failed", e);
+        return false;
+      });
+      console.log("access-requests: sendMail result=", sent);
+    } catch (e) {
+      console.warn("access-requests: sendMail threw", e);
     }
   } catch (e) {
-    console.warn("Failed to notify admins of access request", e);
+    console.warn("Failed to notify recipients of access request", e);
   }
 
   return NextResponse.json({ request: { recordId: created[0].id, ...created[0].fields } });
