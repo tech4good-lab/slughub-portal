@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, ACCESS_REQUESTS_TABLE } from "@/lib/airtable";
+import { base, ACCESS_REQUESTS_TABLE, invalidateTable, noteCall, cachedFirstPage } from "@/lib/airtable";
+import { sendMail } from "@/lib/mail";
 
 function requireAuth(session: any) {
   const userId = session?.userId;
@@ -26,13 +27,15 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "clubId is required" }, { status: 400 });
   }
 
-  const records = await base(ACCESS_REQUESTS_TABLE)
-    .select({
+  const records = await cachedFirstPage(
+    ACCESS_REQUESTS_TABLE,
+    {
       maxRecords: 1,
       filterByFormula: `AND({clubId} = "${clubId}", {requesterUserId} = "${auth.userId}")`,
       sort: [{ field: "createdAt", direction: "desc" }],
-    })
-    .firstPage();
+    },
+    600
+  );
 
   const r = records[0];
   return NextResponse.json({
@@ -58,13 +61,15 @@ export async function POST(req: Request) {
   const nowIso = new Date().toISOString();
 
   // Upsert: if they already requested for this club, update it
-  const existing = await base(ACCESS_REQUESTS_TABLE)
-    .select({
+  const existing = await cachedFirstPage(
+    ACCESS_REQUESTS_TABLE,
+    {
       maxRecords: 1,
       filterByFormula: `AND({clubId} = "${clubId}", {requesterUserId} = "${auth.userId}")`,
       sort: [{ field: "createdAt", direction: "desc" }],
-    })
-    .firstPage();
+    },
+    600
+  );
 
   if (existing.length > 0) {
     const rec = existing[0];
@@ -76,6 +81,7 @@ export async function POST(req: Request) {
     }
 
     // If rejected/pending, resubmit as pending (clear reviewed fields safely)
+    noteCall(ACCESS_REQUESTS_TABLE);
     const updated = await base(ACCESS_REQUESTS_TABLE).update([
       {
         id: rec.id,
@@ -89,9 +95,16 @@ export async function POST(req: Request) {
       },
     ]);
 
+    try {
+      invalidateTable(ACCESS_REQUESTS_TABLE);
+    } catch (e) {
+      console.warn("Failed to invalidate access requests cache", e);
+    }
+
     return NextResponse.json({ request: { recordId: updated[0].id, ...updated[0].fields } });
   }
 
+  noteCall(ACCESS_REQUESTS_TABLE);
   const created = await base(ACCESS_REQUESTS_TABLE).create([
     {
       fields: {
@@ -106,6 +119,34 @@ export async function POST(req: Request) {
       },
     },
   ]);
+  try {
+    invalidateTable(ACCESS_REQUESTS_TABLE);
+  } catch (e) {
+    console.warn("Failed to invalidate access requests cache", e);
+  }
+
+  // Notify fixed recipients by email (development/production configured)
+  try {
+    const recipients = ["communityrag-group@ucsc.edu"];
+    console.log(`access-requests: notify recipients=${recipients}`);
+    const subj = `Access request: ${clubId} by ${(session as any)?.user?.email ?? auth.userId}`;
+    const body = `User ${(session as any)?.user?.email ?? auth.userId} requested access to club ${clubId}.
+
+Message: ${message || "(none)"}
+
+View access requests in the admin panel.`;
+    try {
+      const sent = await sendMail({ to: recipients, subject: subj, text: body }).catch((e) => {
+        console.warn("sendMail failed", e);
+        return false;
+      });
+      console.log("access-requests: sendMail result=", sent);
+    } catch (e) {
+      console.warn("access-requests: sendMail threw", e);
+    }
+  } catch (e) {
+    console.warn("Failed to notify recipients of access request", e);
+  }
 
   return NextResponse.json({ request: { recordId: created[0].id, ...created[0].fields } });
 }

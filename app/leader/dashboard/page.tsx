@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import type { Club } from "@/lib/types";
-import { base, CLUBS_TABLE } from "@/lib/airtable";
+import { CLUBS_TABLE, cachedAll } from "@/lib/airtable";
 import LogoutButton from "@/app/leader/edit/logout-button";
 
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
@@ -52,27 +52,18 @@ export default async function LeaderDashboard() {
   const isAdmin = role === "admin";
 
   // 1) Find memberships for this user
-  const memberRecords = await base(MEMBERS_TABLE)
-    .select({
-      filterByFormula: `{userId}="${userId}"`,
-    })
-    .all();
+  const memberRecords = await cachedAll(MEMBERS_TABLE, { filterByFormula: `{userId}="${userId}"` }, 300);
 
-  const clubIds = memberRecords
-    .map((r) => String((r.fields as any).clubId ?? ""))
+  const clubIds = (memberRecords || [])
+    .map((r: any) => String((r.fields as any).clubId ?? ""))
     .filter(Boolean);
 
   // 2) Fetch clubs for those clubIds
   let clubs: Club[] = [];
   if (clubIds.length > 0) {
-    const clubRecords = await base(CLUBS_TABLE)
-      .select({
-        filterByFormula: orFormulaForClubIds(clubIds),
-        sort: [{ field: "updatedAt", direction: "desc" }],
-      })
-      .all();
+    const clubRecords = await cachedAll(CLUBS_TABLE, { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] }, 600);
 
-    clubs = clubRecords.map((r) => ({ recordId: r.id, ...(r.fields as any) })) as any;
+    clubs = (clubRecords || []).map((r: any) => ({ recordId: r.id, ...(r.fields as any) })) as any;
   }
 
   return (

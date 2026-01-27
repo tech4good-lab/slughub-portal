@@ -1,31 +1,21 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE } from "@/lib/airtable";
+import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 async function isLeaderForClub(userId: string, clubId: string) {
-  const memberRows = await base(CLUB_MEMBERS_TABLE)
-    .select({
-      maxRecords: 1,
-      filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")`,
-    })
-    .firstPage();
+  const memberRows = await cachedFirstPage(CLUB_MEMBERS_TABLE, { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` }, 300);
 
-  if (memberRows.length === 0) return false;
+  if (!memberRows || memberRows.length === 0) return false;
 
   const role = (memberRows[0].fields as any)?.memberRole;
   return role === "leader" || role === "admin";
 }
 
 async function getClubRecordByClubId(clubId: string) {
-  const clubs = await base(CLUBS_TABLE)
-    .select({
-      maxRecords: 1,
-      filterByFormula: `{clubId} = "${clubId}"`,
-    })
-    .firstPage();
+  const clubs = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{clubId} = "${clubId}"` }, 600);
 
-  return clubs[0] ?? null;
+  return clubs && clubs[0] ? clubs[0] : null;
 }
 
 export async function GET(
@@ -49,7 +39,8 @@ export async function GET(
   const clubRec = await getClubRecordByClubId(clubId);
   if (!clubRec) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  return NextResponse.json({ club: { recordId: clubRec.id, ...clubRec.fields } });
+  const f = clubRec.fields as any;
+  return NextResponse.json({ club: { recordId: clubRec.id, ...f, category: f.Category ?? f.category } });
 }
 
 export async function POST(
@@ -80,6 +71,7 @@ export async function POST(
     description: String(body.description ?? "").trim(),
     contactName: String(body.contactName ?? "").trim(),
     contactEmail: String(body.contactEmail ?? "").trim(),
+    category: String(body.category ?? "").trim(),
     calendarUrl: String(body.calendarUrl ?? "").trim(),
     discordUrl: String(body.discordUrl ?? "").trim(),
     websiteUrl: String(body.websiteUrl ?? "").trim(),
@@ -107,9 +99,27 @@ export async function POST(
     payload.reviewNotes = "";      // reset notes on resubmission
   }
 
-  const updated = await base(CLUBS_TABLE).update([
-    { id: clubRec.id, fields: payload },
-  ]);
+  noteCall(CLUBS_TABLE);
+  let updated: any;
+  try {
+    updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: payload }]);
+  } catch (err: any) {
+    const msg = String(err?.message ?? "");
+    if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
+      const fallback = { ...payload };
+      delete (fallback as any).category;
+      updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: fallback }]);
+    } else {
+      throw err;
+    }
+  }
 
-  return NextResponse.json({ club: { recordId: updated[0].id, ...updated[0].fields } });
+  try {
+    invalidateTable(CLUBS_TABLE);
+  } catch (e) {
+    console.warn("Failed to invalidate clubs cache after leader update", e);
+  }
+
+  const updatedFields = updated[0].fields as any;
+  return NextResponse.json({ club: { recordId: updated[0].id, ...updatedFields, category: updatedFields.Category ?? updatedFields.category } });
 }

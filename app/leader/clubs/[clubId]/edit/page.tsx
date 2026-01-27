@@ -10,6 +10,7 @@ type ClubDraft = {
   description: string;
   contactName: string;
   contactEmail: string;
+  category: string;
   calendarUrl: string;
   discordUrl: string;
   websiteUrl: string;
@@ -22,6 +23,7 @@ const emptyDraft: ClubDraft = {
   description: "",
   contactName: "",
   contactEmail: "",
+  category: "Club",
   calendarUrl: "",
   discordUrl: "",
   websiteUrl: "",
@@ -81,6 +83,7 @@ export default function EditClubPage() {
           description: (club.description ?? "") as string,
           contactName: (club.contactName ?? "") as string,
           contactEmail: (club.contactEmail ?? "") as string,
+          category: (club.category ?? "Club") as string,
           calendarUrl: (club.calendarUrl ?? "") as string,
           discordUrl: (club.discordUrl ?? "") as string,
           websiteUrl: (club.websiteUrl ?? "") as string,
@@ -160,8 +163,8 @@ export default function EditClubPage() {
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Description</label>
-        <textarea
+        <label className="label">Description *</label>
+        <textarea required
           className="input"
           rows={4}
           value={draft.description}
@@ -170,13 +173,25 @@ export default function EditClubPage() {
 
         <hr />
 
-        <label className="label">Point of Contact Name</label>
-        <input className="input" value={draft.contactName} onChange={(e) => set("contactName", e.target.value)} />
+        <label className="label">Point of Contact Name *</label>
+        <input className="input" value={draft.contactName} onChange={(e) => set("contactName", e.target.value)} required />
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Point of Contact Email</label>
-        <input className="input" value={draft.contactEmail} onChange={(e) => set("contactEmail", e.target.value)} />
+        <label className="label">Point of Contact Email *</label>
+        <input 
+        
+        className="input" value={draft.contactEmail} onChange={(e) => set("contactEmail", e.target.value)} required />
+
+        <div style={{ height: 10 }} />
+
+        <label className="label">Category</label>
+        <select className="input" value={draft.category} onChange={(e) => set("category", e.target.value)} required>
+          <option>Club</option>
+          <option>Org</option>
+          <option>Athletic</option>
+          <option>Unofficial</option>
+        </select>
 
         <hr />
 

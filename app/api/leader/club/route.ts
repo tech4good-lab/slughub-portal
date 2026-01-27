@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE } from "@/lib/airtable";
+import { base, CLUBS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -14,15 +14,11 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const records = await base(CLUBS_TABLE)
-    .select({ maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` })
-    .firstPage();
+  const records = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 600);
 
-  if (records.length === 0) return NextResponse.json({ club: null });
+  if (!records || records.length === 0) return NextResponse.json({ club: null });
 
-  return NextResponse.json({
-    club: { recordId: records[0].id, ...records[0].fields },
-  });
+  return NextResponse.json({ club: { recordId: records[0].id, ...records[0].fields } });
 }
 
 export async function POST(req: Request) {
@@ -44,6 +40,7 @@ export async function POST(req: Request) {
       description: String(body.description ?? "").trim(),
       contactName: String(body.contactName ?? "").trim(),
       contactEmail: String(body.contactEmail ?? "").trim(),
+      category: String(body.category ?? "").trim(),
       calendarUrl: String(body.calendarUrl ?? "").trim(),
       discordUrl: String(body.discordUrl ?? "").trim(),
       websiteUrl: String(body.websiteUrl ?? "").trim(),
@@ -56,9 +53,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Club name is required." }, { status: 400 });
     }
 
-    const existing = await base(CLUBS_TABLE)
-      .select({ maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` })
-      .firstPage();
+    const existing = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 600);
 
     const nowIso = new Date().toISOString();
 
@@ -77,8 +72,29 @@ export async function POST(req: Request) {
         // reviewedAt is admin-only and should only be set on approve/reject
       };
 
-      const created = await base(CLUBS_TABLE).create([{ fields: payload }]);
-      return NextResponse.json({ club: { recordId: created[0].id, ...created[0].fields } });
+      noteCall(CLUBS_TABLE);
+      let created: any;
+      try {
+        created = await base(CLUBS_TABLE).create([{ fields: payload }]);
+      } catch (err: any) {
+        const msg = String(err?.message ?? "");
+        if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
+          const fallback = { ...payload };
+          delete (fallback as any).category;
+          created = await base(CLUBS_TABLE).create([{ fields: fallback }]);
+        } else {
+          throw err;
+        }
+      }
+
+      try {
+        invalidateTable(CLUBS_TABLE);
+      } catch (e) {
+        console.warn("Failed to invalidate clubs cache after create", e);
+      }
+
+      const cf = created[0].fields as any;
+      return NextResponse.json({ club: { recordId: created[0].id, ...cf, category: cf.Category ?? cf.category } });
     } else {
       const recId = existing[0].id;
       const existingFields = existing[0].fields as any;
@@ -94,8 +110,29 @@ export async function POST(req: Request) {
       // Optional: if leader edits, clear previous reviewedAt (ADMIN-only behavior usually)
       // We intentionally do NOT touch reviewedAt here at all.
 
-      const updated = await base(CLUBS_TABLE).update([{ id: recId, fields: payload }]);
-      return NextResponse.json({ club: { recordId: updated[0].id, ...updated[0].fields } });
+      noteCall(CLUBS_TABLE);
+      let updated: any;
+      try {
+        updated = await base(CLUBS_TABLE).update([{ id: recId, fields: payload }]);
+      } catch (err: any) {
+        const msg = String(err?.message ?? "");
+        if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
+          const fallback = { ...payload };
+          delete (fallback as any).category;
+          updated = await base(CLUBS_TABLE).update([{ id: recId, fields: fallback }]);
+        } else {
+          throw err;
+        }
+      }
+
+      try {
+        invalidateTable(CLUBS_TABLE);
+      } catch (e) {
+        console.warn("Failed to invalidate clubs cache after update", e);
+      }
+
+      const uf = updated[0].fields as any;
+      return NextResponse.json({ club: { recordId: updated[0].id, ...uf, category: uf.Category ?? uf.category } });
     }
   } catch (e: any) {
     console.error(e);

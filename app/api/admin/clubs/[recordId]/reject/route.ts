@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE } from "@/lib/airtable";
+import { base, CLUBS_TABLE, invalidateTable, noteCall } from "@/lib/airtable";
 
 export async function POST(
   req: Request,
@@ -15,6 +15,7 @@ export async function POST(
   const body = await req.json().catch(() => ({}));
   const reviewNotes = String(body.reviewNotes ?? "");
 
+  noteCall(CLUBS_TABLE);
   const updated = await base(CLUBS_TABLE).update([
     {
       id: recordId,
@@ -26,5 +27,12 @@ export async function POST(
     },
   ]);
 
-  return NextResponse.json({ club: { recordId: updated[0].id, ...updated[0].fields } });
+  try {
+    invalidateTable(CLUBS_TABLE);
+  } catch (e) {
+    console.warn("Failed to invalidate clubs cache after reject", e);
+  }
+
+  const f = updated[0].fields as any;
+  return NextResponse.json({ club: { recordId: updated[0].id, ...f, category: f.Category ?? f.category } });
 }
