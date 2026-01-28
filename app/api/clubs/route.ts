@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { CLUBS_TABLE, cachedFirstPage } from "@/lib/airtable";
+import { CLUBS_TABLE, cachedAll } from "@/lib/airtable";
 
 export async function GET() {
-  const records = await cachedFirstPage(
+  const records = await cachedAll(
     CLUBS_TABLE,
     { filterByFormula: `{status} = "approved"`, sort: [{ field: "updatedAt", direction: "desc" }] },
     600
