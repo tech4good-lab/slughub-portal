@@ -177,7 +177,7 @@ export default function EditClubPage() {
 
     if (nextStatus === "pending") {
       setMsg(
-        "Saved! Your changes were submitted for admin approval. They won't appear in the public club directory until approved."
+        "Saved! Your changes were submitted for admin approval. They won't appear in the public community directory until approved."
       );
     } else if (nextStatus === "approved") {
       setMsg("Saved! Your club profile is live in the public directory.");
