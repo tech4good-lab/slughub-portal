@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -11,16 +10,7 @@ export default async function AdminReviewPage() {
   if (!session) redirect("/login");
   if (role !== "admin") redirect("/forbidden");
 
-  return (
-    <main className="container">
-      <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-        <h1>Admin: Pending Club Approvals</h1>
-        <div className="row">
-          <Link className="btn" href="/">Home</Link>
-        </div>
-      </div>
+  const email = (session as any)?.user?.email ?? "";
 
-      <PendingApprovals />
-    </main>
-  );
+  return <PendingApprovals email={email} />;
 }

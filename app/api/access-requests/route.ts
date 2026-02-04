@@ -1,16 +1,32 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, ACCESS_REQUESTS_TABLE, invalidateTable, noteCall, cachedFirstPage } from "@/lib/airtable";
+import {
+  base,
+  ACCESS_REQUESTS_TABLE,
+  invalidateTable,
+  noteCall,
+  cachedFirstPage,
+} from "@/lib/airtable";
 import { sendMail } from "@/lib/mail";
 
 function requireAuth(session: any) {
   const userId = session?.userId;
   const role = session?.role;
-  if (!userId) return { ok: false, res: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
-  if (role !== "leader" && role !== "admin") {
-    return { ok: false, res: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
+
+  if (!userId) {
+    return {
+      ok: false,
+      res: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
+    };
   }
+  if (role !== "leader" && role !== "admin") {
+    return {
+      ok: false,
+      res: NextResponse.json({ error: "Forbidden" }, { status: 403 }),
+    };
+  }
+
   return { ok: true, userId, role };
 }
 
@@ -27,6 +43,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "clubId is required" }, { status: 400 });
   }
 
+  // Latest request for (clubId, requesterUserId)
   const records = await cachedFirstPage(
     ACCESS_REQUESTS_TABLE,
     {
@@ -38,6 +55,7 @@ export async function GET(req: Request) {
   );
 
   const r = records[0];
+
   return NextResponse.json({
     request: r ? { recordId: r.id, ...r.fields } : null,
   });
@@ -76,12 +94,13 @@ export async function POST(req: Request) {
     const fields: any = rec.fields;
 
     // If approved already, just return it (don’t spam requests)
-    if (fields.status === "approved") {
+    if (fields?.status === "approved") {
       return NextResponse.json({ request: { recordId: rec.id, ...rec.fields } });
     }
 
     // If rejected/pending, resubmit as pending (clear reviewed fields safely)
     noteCall(ACCESS_REQUESTS_TABLE);
+
     const updated = await base(ACCESS_REQUESTS_TABLE).update([
       {
         id: rec.id,
@@ -89,7 +108,8 @@ export async function POST(req: Request) {
           status: "pending",
           message,
           reviewNotes: "",
-          reviewedAt: undefined, // IMPORTANT: use null, not ""
+          // IMPORTANT: Airtable clears fields with null (undefined is ignored)
+          reviewedAt: null,
           createdAt: nowIso,
         },
       },
@@ -101,24 +121,30 @@ export async function POST(req: Request) {
       console.warn("Failed to invalidate access requests cache", e);
     }
 
-    return NextResponse.json({ request: { recordId: updated[0].id, ...updated[0].fields } });
+    return NextResponse.json({
+      request: { recordId: updated[0].id, ...updated[0].fields },
+    });
   }
 
+  // Create new request
   noteCall(ACCESS_REQUESTS_TABLE);
+
   const created = await base(ACCESS_REQUESTS_TABLE).create([
     {
       fields: {
         clubId,
         requesterUserId: auth.userId,
-        requesterEmail: session?.user?.email ?? "",
+        requesterEmail: (session as any)?.user?.email ?? "",
         message,
         status: "pending",
         reviewNotes: "",
         createdAt: nowIso,
-        reviewedAt: undefined, // IMPORTANT: use null, not ""
+        // IMPORTANT: use null to clear (or leave out), not undefined
+        reviewedAt: null,
       },
     },
   ]);
+
   try {
     invalidateTable(ACCESS_REQUESTS_TABLE);
   } catch (e) {
@@ -129,14 +155,17 @@ export async function POST(req: Request) {
   try {
     const recipients = ["communityrag-group@ucsc.edu"];
     console.log(`access-requests: notify recipients=${recipients}`);
-    const subj = `Access request: ${clubId} by ${(session as any)?.user?.email ?? auth.userId}`;
-    const body = `User ${(session as any)?.user?.email ?? auth.userId} requested access to club ${clubId}.
+
+    const requester = (session as any)?.user?.email ?? auth.userId;
+    const subj = `Access request: ${clubId} by ${requester}`;
+    const text = `User ${requester} requested access to club ${clubId}.
 
 Message: ${message || "(none)"}
 
 View access requests in the admin panel.`;
+
     try {
-      const sent = await sendMail({ to: recipients, subject: subj, text: body }).catch((e) => {
+      const sent = await sendMail({ to: recipients, subject: subj, text }).catch((e) => {
         console.warn("sendMail failed", e);
         return false;
       });
@@ -148,7 +177,7 @@ View access requests in the admin panel.`;
     console.warn("Failed to notify recipients of access request", e);
   }
 
-  return NextResponse.json({ request: { recordId: created[0].id, ...created[0].fields } });
+  return NextResponse.json({
+    request: { recordId: created[0].id, ...created[0].fields },
+  });
 }
-
-
