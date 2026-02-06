@@ -92,70 +92,70 @@ export default function PendingApprovals({ email }: { email?: string }) {
   }
 
   return (
-    <>
-      {err && (
-        <div className="card" style={{ marginTop: 14, border: "1px solid rgba(239,68,68,0.25)" }}>
-          <p className="small" style={{ margin: 0 }}>{err}</p>
+    <div style={{ position: 'fixed', inset: 0, background: '#EDF4FF', overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      {/* Decorative bubbles */}
+      <div style={{ position: 'absolute', width: 41, height: 41, left: '5%', top: '15%', opacity: 0.5, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 100, height: 100, left: '75%', top: '10%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '70%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 39, height: 39, left: '80%', top: '75%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 22, height: 22, left: '12%', top: '50%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 75, height: 75, left: '85%', top: '45%', opacity: 0.3, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 17, height: 17, left: '15%', top: '85%', opacity: 0.5, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 26, height: 26, left: '82%', top: '65%', opacity: 0.4, background: '#FDF0A6', borderRadius: '50%' }} />
+      
+      <div style={{ width: '100%', maxWidth: 900, background: 'white', borderRadius: 25, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', padding: '40px', position: 'relative', zIndex: 10 }}>
+        {err && (
+          <div style={{ marginBottom: 20, padding: 15, background: '#FEE2E2', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, color: '#DC2626', fontSize: 14, fontFamily: 'Sarabun' }}>
+            {err}
+          </div>
+        )}
+
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10, position: 'relative' }}>
+          <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50, marginRight: 15 }} />
+          <div>
+            <div style={{ color: 'black', fontSize: 28, fontFamily: 'Sarabun', fontWeight: '700', margin: 0 }}>Admin: Pending Club Approvals</div>
+            <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>Logged in as: {email ?? '<email>'}</div>
+          </div>
+          <div style={{ position: 'absolute', right: 0, top: 5, width: 80, height: 32, background: '#FDF0A6', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <Link href='/' style={{ color: 'black', fontFamily: 'Sarabun', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>↤ Home</Link>
+          </div>
         </div>
-      )}
 
-      <div style={{ position: 'fixed', inset: 0, background: '#EDF4FF', overflow: 'auto' }}>
-        <div style={{ width: 951, height: 539, margin: '48px auto', position: 'relative' }}>
-          <div style={{ width: 951, height: 525, left: 0, top: 1, position: "absolute", background: "#EDF4FF", border: "none", boxSizing: 'border-box' }} />
-          <div style={{ width: 553, height: 69, left: 70, top: 36, position: "absolute", color: "black", fontSize: 35, fontFamily: "Sarabun", fontWeight: "500", wordWrap: "break-word" }}>Admin: Pending Club Approvals</div>
-          <div style={{ left: 69, top: 86, position: "absolute", color: "black", fontSize: 13, fontFamily: "Sarabun", fontWeight: "400", wordWrap: "break-word" }}>Logged in as: {email ?? ""}</div>
-          <div style={{ left: 69, top: 106, position: 'absolute', width: 770, height: 2, background: 'rgba(0,0,0,0.25)' }} />
-          <div style={{ width: 79, height: 30, left: 861, top: 11, position: 'absolute', background: '#FDF0A6', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)', borderRadius: 25, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Link href='/' style={{ color: 'black', fontFamily: 'Sarabun', fontWeight: 400 }}>Home</Link>
-          </div>
-          <div style={{ width: 41, height: 41, left: 762, top: 144, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 41, height: 41, left: 616, top: 485, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 41, height: 41, left: 542, top: 0, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 22, height: 17, left: 729, top: 277, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 100, height: 100, left: 838, top: 426, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 39, height: 27, left: 651, top: 373, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #FDF0A6 0%, #FDF0A6 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 17, height: 17, left: 913, top: 426, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #FDF0A6 0%, #FDF0A6 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 26, height: 26, left: 883, top: 316, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #FDF0A6 0%, #FDF0A6 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 100, height: 100, left: 551, top: 214, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 17, height: 20, left: 657, top: 413, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 17, height: 20, left: 583, top: 26, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #FDF0A6 0%, #FDF0A6 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 75, height: 75, left: 828, top: 214, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ width: 41, height: 41, left: 504, top: 443, position: "absolute", opacity: 0.75, background: "linear-gradient(0deg, #D0E2FF 0%, #D0E2FF 100%), #D9D9D9", borderRadius: 9999 }} />
-          <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', bottom: 12, fontSize: 15, fontFamily: 'Sarabun', color: 'black' }}>
-            Made with ❤️ from the <a href="#" style={{ color: '#69A1FF', textDecoration: 'underline' }}>Community RAG Team</a>
-          </div>
+        {/* Divider */}
+        <div style={{ width: '100%', height: 1, background: '#E5E7EB', margin: '20px 0 30px 0' }} />
 
+        {/* Clubs List */}
+        <div>
           {clubs.length === 0 ? (
-            <>
-              <div style={{ width: 770, height: 59, left: 83, top: 132, position: "absolute", opacity: 0.75, background: "#FAFAFA", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 15 }} />
-              <div style={{ width: 600, height: 25, left: 93, top: 140, position: "absolute", color: "black", fontSize: 16, fontFamily: "Sarabun", fontWeight: "400", whiteSpace: 'nowrap' }}>No pending clubs!</div>
-            </>
+            <div style={{ padding: '40px 20px', textAlign: 'center', color: '#999', fontSize: 16, fontFamily: 'Sarabun' }}>
+              No pending clubs!
+            </div>
           ) : (
-            clubs.map((c, i) => {
-              const top = 132 + i * 77;
-              const bg = i % 2 === 0 ? "#FAFAFA" : "#ECECEC";
-              return (
-                <div key={c.recordId}>
-                  <div style={{ width: 770, height: 59, left: 83, top: top, position: "absolute", opacity: 0.75, background: bg, boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 15 }} />
-                  <div style={{ width: 96, height: 25, left: 93, top: top + 8, position: "absolute", color: "black", fontSize: 16, fontFamily: "Sarabun", fontWeight: "400", wordWrap: "break-word" }}>{c.name ?? "Untitled club"}</div>
-                  <div style={{ left: 106, top: top + 33, position: "absolute", color: "black", fontSize: 12, fontFamily: "Sarabun", fontWeight: "400", wordWrap: "break-word" }}>{c.description ?? "Club description..."}</div>
-
-                  <div style={{ width: 68, height: 24, left: 716, top: top + 12, position: "absolute", opacity: 0.75, background: "#FDF0A6", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer' }} onClick={() => !busy[c.recordId] && act(c.recordId, 'approve')}>
-                    <div style={{ color: 'black', fontSize: 15, fontFamily: 'Sarabun' }}>{busy[c.recordId] ? 'Working...' : 'Approve'}</div>
-                  </div>
-
-                  <div style={{ width: 52, height: 24, left: 792, top: top + 12, position: "absolute", opacity: 0.75, background: "#D9D9D9", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", borderRadius: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer' }} onClick={() => !busy[c.recordId] && act(c.recordId, 'reject')}>
-                    <div style={{ color: 'black', fontSize: 15, fontFamily: 'Sarabun' }}>{busy[c.recordId] ? 'Working...' : 'Reject'}</div>
-                  </div>
-
-                  <span className="small" style={{ left: 380, top: top + 33, position: 'absolute', opacity: 0.7 }}>{c.submittedAt ? new Date(c.submittedAt).toLocaleString() : ''}</span>
+            clubs.map((c, i) => (
+              <div key={c.recordId} style={{ marginBottom: 12, padding: '16px 20px', background: i % 2 === 0 ? '#FAFAFA' : '#F3F4F6', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ color: 'black', fontSize: 16, fontFamily: 'Sarabun', fontWeight: '600', margin: 0 }}>{c.name ?? 'Untitled club'}</div>
+                  <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>{c.description ?? 'Club description...'}</div>
                 </div>
-              );
-            })
+                <div style={{ display: 'flex', gap: 10, marginLeft: 20 }}>
+                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'approve')} disabled={busy[c.recordId]} style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
+                    {busy[c.recordId] ? 'Working...' : 'Approve'}
+                  </button>
+                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'reject')} disabled={busy[c.recordId]} style={{ padding: '8px 20px', background: '#D9D9D9', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
+                    {busy[c.recordId] ? 'Working...' : 'Reject'}
+                  </button>
+                </div>
+              </div>
+            ))
           )}
+        </div>
 
+        {/* Footer */}
+        <div style={{ marginTop: 40, paddingTop: 20, borderTop: '1px solid #E5E7EB', textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#666' }}>
+          Made with ❤️ from the <a href="#" style={{ color: '#69A1FF', textDecoration: 'underline' }}>Community RAG Team</a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
