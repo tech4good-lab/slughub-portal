@@ -109,7 +109,7 @@ export async function POST(req: Request) {
           message,
           reviewNotes: "",
           // IMPORTANT: Airtable clears fields with null (undefined is ignored)
-          reviewedAt: null,
+          reviewedAt: null as any,
           createdAt: nowIso,
         },
       },
@@ -140,7 +140,7 @@ export async function POST(req: Request) {
         reviewNotes: "",
         createdAt: nowIso,
         // IMPORTANT: use null to clear (or leave out), not undefined
-        reviewedAt: null,
+        reviewedAt: null as any,
       },
     },
   ]);
