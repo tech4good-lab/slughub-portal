@@ -67,72 +67,110 @@ export default async function LeaderDashboard() {
   }
 
   return (
-    <main className="container">
-      <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-        <h1>Leader Dashboard</h1>
-        <div className="row">
+    <div style={{ position: 'fixed', inset: 0, background: '#EDF4FF', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+      {/* Decorative bubbles */}
+      <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '5%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 30, height: 30, left: '65%', top: '3%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 50, height: 50, left: '75%', top: '12%', opacity: 0.3, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 70, height: 70, left: '80%', top: '55%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 35, height: 35, left: '85%', top: '75%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 25, height: 25, left: '15%', top: '80%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30, position: 'relative', zIndex: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
+          <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50 }} />
+          <h1 style={{ fontSize: 36, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>Leader Dashboard</h1>
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
           {isAdmin && (
             <>
-              <Link className="btn btnPrimary" href="/admin/review">Club Approvals</Link>
-              <Link className="btn" href="/admin/access">Access Requests</Link>
+              <Link href="/admin/review" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                Club Approvals
+              </Link>
+              <Link href="/admin/access" style={{ padding: '8px 16px', background: '#E5E7EB', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                Access Requests
+              </Link>
             </>
           )}
-          <Link className="btn" href="/directory">Directory</Link>
+          <Link href="/directory" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+            Directory
+          </Link>
           <LogoutButton />
         </div>
       </div>
 
-      <div className="card" style={{ marginTop: 14 }}>
-        <p className="small" style={{ marginTop: 0 }}>
+      {/* Logged in info and divider */}
+      <div style={{ position: 'relative', zIndex: 10, marginBottom: 20 }}>
+        <p style={{ color: 'black', fontSize: 14, fontFamily: 'Sarabun', margin: '0 0 15px 0' }}>
           Logged in as: {session?.user?.email}
         </p>
+        <div style={{ width: '100%', height: 1, background: '#333' }} />
+      </div>
 
-        <div className="row" style={{ marginTop: 12, justifyContent: "space-between" }}>
-          <h2 style={{ margin: 0 }}>My Clubs</h2>
-          <Link className="btn btnPrimary" href="/leader/clubs/new">
-            + Create New Club
-          </Link>
-        </div>
+      {/* Main card container */}
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 10, minHeight: 0 }}>
+        <div style={{ width: '100%', maxWidth: 900, background: 'white', borderRadius: 25, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', padding: '40px', display: 'flex', flexDirection: 'column' }}>
+          {/* Section header*/}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30 }}>
+            <h2 style={{ fontSize: 24, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>My Clubs</h2>
+            <Link href="/leader/clubs/new" style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+              Create New Club
+            </Link>
+          </div>
 
-        {clubs.length === 0 ? (
-          <p className="small" style={{ marginTop: 12 }}>
-            You don’t have any club access yet.
-          </p>
-        ) : (
-          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 12 }}>
-            {clubs.map((club: any) => (
+          {/* Clubs list */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, overflow: 'auto' }}>
+            {clubs.length === 0 ? (
+              <p style={{ color: '#666', fontSize: 14, fontFamily: 'Sarabun', textAlign: 'center', padding: '40px 20px' }}>
+                You don't have any club access yet.
+              </p>
+            ) : (
+              clubs.map((club: any) => {
+                return (
               <div
                 key={club.clubId ?? club.recordId}
-                className="card"
-                style={{ background: "rgba(255,255,255,0.02)" }}
+                style={{
+                  padding: '16px 20px',
+                  background: '#FAFAFA',
+                  borderRadius: 12,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 20
+                }}
               >
-                <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <div className="row" style={{ alignItems: "center", gap: 10 }}>
-                      <h3 style={{ margin: 0 }}>{club.name ?? "Untitled Club"}</h3>
+                <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
+                      <h3 style={{ fontSize: 16, fontFamily: 'Sarabun', fontWeight: 600, margin: 0, color: 'black' }}>{club.name ?? 'Untitled Club'}</h3>
                       <StatusPill status={club.status} />
                     </div>
-                    <p className="small" style={{ marginTop: 6 }}>
-                      {(club.description ?? "").slice(0, 140) || "No description yet."}
+                    <p style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', margin: 0 }}>
+                      {(club.description ?? "").slice(0, 140) || "Club description..."}
                       {(club.description ?? "").length > 140 ? "..." : ""}
                     </p>
-                  </div>
-
-                  <div className="row">
-                    <Link className="btn btnPrimary" href={`/leader/clubs/${club.clubId}/edit`}>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <Link href={`/leader/clubs/${club.clubId}/edit`} style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
                       Edit
                     </Link>
-                    <Link className="btn" href={`/clubs/${club.clubId ?? club.recordId}`}>
+                    <Link href={`/clubs/${club.clubId ?? club.recordId}`} style={{ padding: '8px 16px', background: '#E5E7EB', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
                       View Public
                     </Link>
                   </div>
                 </div>
               </div>
-            ))}
+                );
+              })
+            )}
           </div>
-        )}
+        </div>
       </div>
-    </main>
+
+      {/* Footer */}
+      <div style={{ textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#333', marginTop: 20, position: 'relative', zIndex: 10 }}>
+        Made with ❤️ from the <a href="#" style={{ color: '#69A1FF', textDecoration: 'underline' }}>Community RAG Team</a>
+      </div>
+    </div>
   );
 }
 
