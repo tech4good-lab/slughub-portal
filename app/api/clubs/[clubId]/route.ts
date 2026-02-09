@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { CLUBS_TABLE, cachedFirstPage, cachedFind } from "@/lib/airtable";
+import { CLUBS_TABLE, cachedAll } from "@/lib/airtable";
 
 export async function GET(
   _req: Request,
@@ -8,34 +8,25 @@ export async function GET(
   const { clubId } = await params;
 
   try {
-    // Case A: Airtable record id (legacy links) look like "recXXXXXXXX..."
-    if (clubId.startsWith("rec")) {
-      const record = await cachedFind(CLUBS_TABLE, clubId, 600, { scope: "public", allowStale: true });
-
-      // Public route: only show approved
-      if (record.fields?.status !== "approved") {
-        return NextResponse.json({ error: "Not found" }, { status: 404 });
-      }
-
-      const f = record.fields as any;
-      return NextResponse.json({ club: { recordId: record.id, ...f, category: f.Category ?? f.category } });
-    }
-
-    // Case B: UUID clubId stored in a field called "clubId"
-    const records = await cachedFirstPage(
+    const records = await cachedAll(
       CLUBS_TABLE,
-      { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {status} = "approved")` },
+      { filterByFormula: `{status} = "approved"`, sort: [{ field: "updatedAt", direction: "desc" }] },
       600,
       { scope: "public", allowStale: true }
     );
 
-    if (!records || records.length === 0) {
+    const match = (records || []).find((r: any) => {
+      const f = r.fields as any;
+      if (clubId.startsWith("rec")) return r.id === clubId;
+      return String(f?.clubId ?? "") === clubId;
+    });
+
+    if (!match) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    const r = records[0];
-    const f = r.fields as any;
-    return NextResponse.json({ club: { recordId: r.id, ...f, category: f.Category ?? f.category } });
+    const f = match.fields as any;
+    return NextResponse.json({ club: { recordId: match.id, ...f, category: f.Category ?? f.category } });
   } catch {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
