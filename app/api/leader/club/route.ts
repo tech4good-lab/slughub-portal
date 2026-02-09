@@ -17,8 +17,7 @@ export async function GET() {
   const records = await cachedFirstPage(
     CLUBS_TABLE,
     { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` },
-    600,
-    { scope: "leader", allowStale: true }
+    600
   );
 
   if (!records || records.length === 0) return NextResponse.json({ club: null });
@@ -61,8 +60,7 @@ export async function POST(req: Request) {
     const existing = await cachedFirstPage(
       CLUBS_TABLE,
       { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` },
-      600,
-      { scope: "leader", allowStale: true }
+      600
     );
 
     const nowIso = new Date().toISOString();
@@ -111,10 +109,8 @@ export async function POST(req: Request) {
       ]);
 
       try {
-        invalidateTable(CLUBS_TABLE, "leader");
-        invalidateTable(CLUB_MEMBERS_TABLE, "leader");
-        invalidateTable(CLUBS_TABLE, "clubs");
-        invalidateTable(CLUBS_TABLE, "admin");
+        invalidateTable(CLUBS_TABLE);
+        invalidateTable(CLUB_MEMBERS_TABLE);
       } catch (e) {
         console.warn("Failed to invalidate clubs cache after create", e);
       }
@@ -152,9 +148,7 @@ export async function POST(req: Request) {
       }
 
       try {
-        invalidateTable(CLUBS_TABLE, "leader");
-        invalidateTable(CLUBS_TABLE, "clubs");
-        invalidateTable(CLUBS_TABLE, "admin");
+        invalidateTable(CLUBS_TABLE);
       } catch (e) {
         console.warn("Failed to invalidate clubs cache after update", e);
       }

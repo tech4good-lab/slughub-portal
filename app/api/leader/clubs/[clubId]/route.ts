@@ -7,8 +7,7 @@ async function isLeaderForClub(userId: string, clubId: string) {
   const memberRows = await cachedAll(
     CLUB_MEMBERS_TABLE,
     { filterByFormula: `{userId} = "${userId}"` },
-    300,
-    { scope: "leader", allowStale: true }
+    300
   );
 
   const match = (memberRows || []).find(
@@ -24,8 +23,7 @@ async function getClubRecordByClubId(clubId: string) {
   const clubs = await cachedAll(
     CLUBS_TABLE,
     { sort: [{ field: "updatedAt", direction: "desc" }] },
-    600,
-    { scope: "clubs", allowStale: true }
+    600
   );
 
   const match = (clubs || []).find((r: any) => String((r.fields as any)?.clubId ?? "") === clubId);
@@ -131,9 +129,7 @@ export async function POST(
   }
 
   try {
-    invalidateTable(CLUBS_TABLE, "leader");
-    invalidateTable(CLUBS_TABLE, "clubs");
-    invalidateTable(CLUBS_TABLE, "admin");
+    invalidateTable(CLUBS_TABLE);
   } catch (e) {
     console.warn("Failed to invalidate clubs cache after leader update", e);
   }

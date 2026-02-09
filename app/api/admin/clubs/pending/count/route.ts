@@ -15,8 +15,7 @@ export async function GET() {
     const records = await cachedAll(
       CLUBS_TABLE,
       { sort: [{ field: "updatedAt", direction: "desc" }] },
-      600,
-      { scope: "clubs", allowStale: true }
+      60
     );
 
     const count = (records || []).filter(
