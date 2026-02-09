@@ -10,12 +10,19 @@ export async function GET() {
 
   const records = await cachedAll(
     CLUBS_TABLE,
-    { filterByFormula: `{status} = "pending"`, sort: [{ field: "submittedAt", direction: "desc" }] },
+    { sort: [{ field: "updatedAt", direction: "desc" }] },
     600,
-    { scope: "admin", allowStale: true }
+    { scope: "clubs", allowStale: true }
   );
 
-  const clubs = records.map((r: any) => ({ recordId: r.id, ...r.fields }));
+  const clubs = records
+    .filter((r: any) => String((r.fields as any)?.status ?? "").toLowerCase() === "pending")
+    .sort((a: any, b: any) => {
+      const aTime = Date.parse(String((a.fields as any)?.submittedAt ?? "")) || 0;
+      const bTime = Date.parse(String((b.fields as any)?.submittedAt ?? "")) || 0;
+      return bTime - aTime;
+    })
+    .map((r: any) => ({ recordId: r.id, ...r.fields }));
 
   return NextResponse.json({ clubs });
 }
