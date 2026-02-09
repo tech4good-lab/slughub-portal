@@ -9,6 +9,7 @@ export default function NewClubPage() {
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [category, setCategory] = useState("Club");
+  const [clubIcebreakers, setClubIcebreakers] = useState("");
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -33,28 +34,15 @@ export default function NewClubPage() {
     setErr(null);
     setSaving(true);
 
-    const res = await fetch("/api/leader/clubs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, contactName, contactEmail, category }),
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-      setErr(data?.error ?? "Failed to create club.");
+    try {
+      const draft = { name, contactName, contactEmail, category, clubIcebreakers };
+      localStorage.setItem("clubDraft", JSON.stringify(draft));
+      window.location.href = "/leader/clubs/draft/edit";
+    } catch {
+      setErr("Failed to save draft locally.");
       setSaving(false);
       return;
     }
-
-    const clubId = data?.club?.clubId;
-    if (!clubId) {
-      setErr("Created club, but missing clubId.");
-      setSaving(false);
-      return;
-    }
-
-    window.location.href = `/leader/clubs/${clubId}/edit`;
   };
 
   return (
@@ -90,6 +78,17 @@ export default function NewClubPage() {
           <option>Athletic</option>
           <option>Unofficial</option>
         </select>
+
+        <div style={{ height: 10 }} />
+
+        <label className="label">Club Icebreakers</label>
+        <textarea
+          className="input"
+          value={clubIcebreakers}
+          onChange={(e) => setClubIcebreakers(e.target.value)}
+          placeholder={"what would you like to learn from students attending your event?"}
+          style={{ minHeight: 120 }}
+        />
 
         {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
 

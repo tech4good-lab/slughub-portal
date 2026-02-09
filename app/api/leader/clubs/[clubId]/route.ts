@@ -1,21 +1,33 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
+import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedAll, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 async function isLeaderForClub(userId: string, clubId: string) {
-  const memberRows = await cachedFirstPage(CLUB_MEMBERS_TABLE, { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` }, 300);
+  const memberRows = await cachedAll(
+    CLUB_MEMBERS_TABLE,
+    { filterByFormula: `{userId} = "${userId}"` },
+    300
+  );
 
-  if (!memberRows || memberRows.length === 0) return false;
+  const match = (memberRows || []).find(
+    (r: any) => String((r.fields as any)?.clubId ?? "") === clubId
+  );
+  if (!match) return false;
 
-  const role = (memberRows[0].fields as any)?.memberRole;
+  const role = (match.fields as any)?.memberRole;
   return role === "leader" || role === "admin";
 }
 
 async function getClubRecordByClubId(clubId: string) {
-  const clubs = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{clubId} = "${clubId}"` }, 600);
+  const clubs = await cachedAll(
+    CLUBS_TABLE,
+    { sort: [{ field: "updatedAt", direction: "desc" }] },
+    600
+  );
 
-  return clubs && clubs[0] ? clubs[0] : null;
+  const match = (clubs || []).find((r: any) => String((r.fields as any)?.clubId ?? "") === clubId);
+  return match ?? null;
 }
 
 export async function GET(
@@ -69,6 +81,7 @@ export async function POST(
   const payload: any = {
     name: String(body.name ?? "").trim(),
     description: String(body.description ?? "").trim(),
+    clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
     contactName: String(body.contactName ?? "").trim(),
     contactEmail: String(body.contactEmail ?? "").trim(),
     category: String(body.category ?? "").trim(),
@@ -108,6 +121,7 @@ export async function POST(
     if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
       const fallback = { ...payload };
       delete (fallback as any).category;
+      delete (fallback as any).clubIcebreakers;
       updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: fallback }]);
     } else {
       throw err;

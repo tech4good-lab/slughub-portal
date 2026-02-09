@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
+import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -14,7 +14,11 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const records = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 600);
+  const records = await cachedFirstPage(
+    CLUBS_TABLE,
+    { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` },
+    600
+  );
 
   if (!records || records.length === 0) return NextResponse.json({ club: null });
 
@@ -53,7 +57,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Club name is required." }, { status: 400 });
     }
 
-    const existing = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` }, 600);
+    const existing = await cachedFirstPage(
+      CLUBS_TABLE,
+      { maxRecords: 1, filterByFormula: `{ownerUserId} = "${userId}"` },
+      600
+    );
 
     const nowIso = new Date().toISOString();
 
@@ -87,8 +95,22 @@ export async function POST(req: Request) {
         }
       }
 
+      // Add membership so creator can manage this club
+      noteCall(CLUB_MEMBERS_TABLE);
+      await base(CLUB_MEMBERS_TABLE).create([
+        {
+          fields: {
+            clubId,
+            userId,
+            memberRole: "leader",
+            createdAt: nowIso,
+          },
+        },
+      ]);
+
       try {
         invalidateTable(CLUBS_TABLE);
+        invalidateTable(CLUB_MEMBERS_TABLE);
       } catch (e) {
         console.warn("Failed to invalidate clubs cache after create", e);
       }

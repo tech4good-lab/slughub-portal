@@ -8,6 +8,7 @@ import type { Club } from "@/lib/types";
 type ClubDraft = {
   name: string;
   description: string;
+  clubIcebreakers: string;
   contactName: string;
   contactEmail: string;
   category: string;
@@ -21,6 +22,7 @@ type ClubDraft = {
 const emptyDraft: ClubDraft = {
   name: "",
   description: "",
+  clubIcebreakers: "",
   contactName: "",
   contactEmail: "",
   category: "Club",
@@ -45,6 +47,35 @@ export default function EditClubPage() {
 
   useEffect(() => {
     if (!clubId) return;
+
+    if (clubId === "draft") {
+      setLoading(true);
+      setErr(null);
+      try {
+        const raw = localStorage.getItem("clubDraft");
+        const saved = raw ? (JSON.parse(raw) as Partial<ClubDraft>) : null;
+        if (saved) {
+          setDraft((d) => ({
+            ...d,
+            name: saved.name ?? "",
+            description: saved.description ?? "",
+            clubIcebreakers: saved.clubIcebreakers ?? "",
+            contactName: saved.contactName ?? "",
+            contactEmail: saved.contactEmail ?? "",
+            category: saved.category ?? "Club",
+            calendarUrl: saved.calendarUrl ?? "",
+            discordUrl: saved.discordUrl ?? "",
+            websiteUrl: saved.websiteUrl ?? "",
+            instagramUrl: saved.instagramUrl ?? "",
+            linkedinUrl: saved.linkedinUrl ?? "",
+          }));
+        }
+      } catch {
+        setErr("Failed to load draft.");
+      }
+      setLoading(false);
+      return;
+    }
 
     (async () => {
       setLoading(true);
@@ -81,6 +112,7 @@ export default function EditClubPage() {
         setDraft({
           name: (club.name ?? "") as string,
           description: (club.description ?? "") as string,
+          clubIcebreakers: (club.clubIcebreakers ?? "") as string,
           contactName: (club.contactName ?? "") as string,
           contactEmail: (club.contactEmail ?? "") as string,
           category: (club.category ?? "Club") as string,
@@ -106,7 +138,10 @@ export default function EditClubPage() {
     setMsg(null);
     setSaving(true);
 
-    const res = await fetch(`/api/leader/clubs/${clubId}`, {
+    const endpoint =
+      clubId === "draft" ? "/api/leader/clubs" : `/api/leader/clubs/${clubId}`;
+
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(draft),
@@ -125,8 +160,16 @@ export default function EditClubPage() {
       return;
     }
 
-    // If you want the leader to clearly see "pending", show a sticky message instead of redirecting instantly:
-    setMsg("Submitted! Your changes are pending admin approval.");
+    if (clubId === "draft") {
+      try {
+        localStorage.removeItem("clubDraft");
+      } catch {
+        // ignore
+      }
+      setMsg("Submitted! Your new club is pending admin approval.");
+    } else {
+      setMsg("Submitted! Your changes are pending admin approval.");
+    }
     setSaving(false);
 
     // Optional: redirect after a short delay
@@ -169,6 +212,17 @@ export default function EditClubPage() {
           rows={4}
           value={draft.description}
           onChange={(e) => set("description", e.target.value)}
+        />
+
+        <div style={{ height: 10 }} />
+
+        <label className="label">Club Icebreakers</label>
+        <textarea
+          className="input"
+          value={draft.clubIcebreakers}
+          onChange={(e) => set("clubIcebreakers", e.target.value)}
+          placeholder={"what would you like to learn from students attending your event?"}
+          style={{ minHeight: 120 }}
         />
 
         <hr />

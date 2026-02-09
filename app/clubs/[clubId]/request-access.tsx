@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 async function safeJson(res: Response) {
@@ -15,7 +15,8 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -26,21 +27,19 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
     if (res.status === 401) {
       setInfo({ unauth: true });
       setLoading(false);
+      setLoaded(true);
       return;
     }
     if (!res.ok) {
       setErr(data?.error ?? "Failed to load request status.");
       setLoading(false);
+      setLoaded(true);
       return;
     }
     setInfo(data);
     setLoading(false);
+    setLoaded(true);
   };
-
-  useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clubId]);
 
   const submit = async () => {
     setBusy(true);
@@ -76,6 +75,24 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
     return (
       <div className="card" style={{ marginTop: 14 }}>
         <p className="small">Loading access status…</p>
+      </div>
+    );
+  }
+
+  if (!loaded) {
+    return (
+      <div className="card" style={{ marginTop: 14 }}>
+        <h3 style={{ marginTop: 0 }}>Leader access</h3>
+        <p className="small" style={{ marginTop: 8 }}>
+          Check whether you already have leader access for this club, or request it.
+        </p>
+        <div className="row" style={{ marginTop: 12 }}>
+          <button className="btn btnPrimary" onClick={load}>
+            Check access status
+          </button>
+          <Link className="btn" href="/login">Log in</Link>
+          <Link className="btn" href="/signup">Sign up</Link>
+        </div>
       </div>
     );
   }

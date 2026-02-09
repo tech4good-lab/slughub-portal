@@ -151,7 +151,7 @@ export async function POST(req: Request) {
     console.warn("Failed to invalidate access requests cache", e);
   }
 
-  // Notify fixed recipients by email (development/production configured)
+  // Notify recipients by email
   try {
     const recipients = ["communityrag-group@ucsc.edu"];
     console.log(`access-requests: notify recipients=${recipients}`);
