@@ -34,28 +34,15 @@ export default function NewClubPage() {
     setErr(null);
     setSaving(true);
 
-    const res = await fetch("/api/leader/clubs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, contactName, contactEmail, category, clubIcebreakers }),
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-      setErr(data?.error ?? "Failed to create club.");
+    try {
+      const draft = { name, contactName, contactEmail, category, clubIcebreakers };
+      localStorage.setItem("clubDraft", JSON.stringify(draft));
+      window.location.href = "/leader/clubs/draft/edit";
+    } catch {
+      setErr("Failed to save draft locally.");
       setSaving(false);
       return;
     }
-
-    const clubId = data?.club?.clubId;
-    if (!clubId) {
-      setErr("Created club, but missing clubId.");
-      setSaving(false);
-      return;
-    }
-
-    window.location.href = `/leader/clubs/${clubId}/edit`;
   };
 
   return (
