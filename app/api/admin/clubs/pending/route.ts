@@ -11,7 +11,8 @@ export async function GET() {
   const records = await cachedAll(
     CLUBS_TABLE,
     { filterByFormula: `{status} = "pending"`, sort: [{ field: "submittedAt", direction: "desc" }] },
-    600
+    600,
+    { scope: "admin", allowStale: true }
   );
 
   const clubs = records.map((r: any) => ({ recordId: r.id, ...r.fields }));

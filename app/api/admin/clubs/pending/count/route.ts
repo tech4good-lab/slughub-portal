@@ -15,7 +15,8 @@ export async function GET() {
     const count = await cachedCount(
       CLUBS_TABLE,
       { filterByFormula: `{status} = "pending"`, fields: ["clubId"] },
-      600
+      600,
+      { scope: "admin", allowStale: true }
     );
 
     return NextResponse.json({ count });

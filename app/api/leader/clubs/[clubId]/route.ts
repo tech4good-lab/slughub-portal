@@ -4,7 +4,12 @@ import { authOptions } from "@/lib/auth";
 import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 async function isLeaderForClub(userId: string, clubId: string) {
-  const memberRows = await cachedFirstPage(CLUB_MEMBERS_TABLE, { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` }, 300);
+  const memberRows = await cachedFirstPage(
+    CLUB_MEMBERS_TABLE,
+    { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` },
+    300,
+    { scope: "leader", allowStale: true }
+  );
 
   if (!memberRows || memberRows.length === 0) return false;
 
@@ -13,7 +18,12 @@ async function isLeaderForClub(userId: string, clubId: string) {
 }
 
 async function getClubRecordByClubId(clubId: string) {
-  const clubs = await cachedFirstPage(CLUBS_TABLE, { maxRecords: 1, filterByFormula: `{clubId} = "${clubId}"` }, 600);
+  const clubs = await cachedFirstPage(
+    CLUBS_TABLE,
+    { maxRecords: 1, filterByFormula: `{clubId} = "${clubId}"` },
+    600,
+    { scope: "leader", allowStale: true }
+  );
 
   return clubs && clubs[0] ? clubs[0] : null;
 }
@@ -117,7 +127,8 @@ export async function POST(
   }
 
   try {
-    invalidateTable(CLUBS_TABLE);
+    invalidateTable(CLUBS_TABLE, "leader");
+    invalidateTable(CLUBS_TABLE, "admin");
   } catch (e) {
     console.warn("Failed to invalidate clubs cache after leader update", e);
   }

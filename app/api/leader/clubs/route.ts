@@ -29,7 +29,8 @@ export async function GET() {
   const records = await cachedAll(
     CLUBS_TABLE,
     { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] },
-    600
+    600,
+    { scope: "leader", allowStale: true }
   );
 
   const clubs = (records || []).map((r: any) => {
@@ -110,8 +111,9 @@ export async function POST(req: Request) {
     ]);
 
     try {
-      invalidateTable(CLUBS_TABLE);
-      invalidateTable(MEMBERS_TABLE);
+      invalidateTable(CLUBS_TABLE, "leader");
+      invalidateTable(MEMBERS_TABLE, "leader");
+      invalidateTable(CLUBS_TABLE, "admin");
     } catch (e) {
       console.warn("Failed to invalidate leader clubs cache", e);
     }
