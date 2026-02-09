@@ -48,6 +48,35 @@ export default function EditClubPage() {
   useEffect(() => {
     if (!clubId) return;
 
+    if (clubId === "draft") {
+      setLoading(true);
+      setErr(null);
+      try {
+        const raw = localStorage.getItem("clubDraft");
+        const saved = raw ? (JSON.parse(raw) as Partial<ClubDraft>) : null;
+        if (saved) {
+          setDraft((d) => ({
+            ...d,
+            name: saved.name ?? "",
+            description: saved.description ?? "",
+            clubIcebreakers: saved.clubIcebreakers ?? "",
+            contactName: saved.contactName ?? "",
+            contactEmail: saved.contactEmail ?? "",
+            category: saved.category ?? "Club",
+            calendarUrl: saved.calendarUrl ?? "",
+            discordUrl: saved.discordUrl ?? "",
+            websiteUrl: saved.websiteUrl ?? "",
+            instagramUrl: saved.instagramUrl ?? "",
+            linkedinUrl: saved.linkedinUrl ?? "",
+          }));
+        }
+      } catch {
+        setErr("Failed to load draft.");
+      }
+      setLoading(false);
+      return;
+    }
+
     (async () => {
       setLoading(true);
       setErr(null);
@@ -109,7 +138,10 @@ export default function EditClubPage() {
     setMsg(null);
     setSaving(true);
 
-    const res = await fetch(`/api/leader/clubs/${clubId}`, {
+    const endpoint =
+      clubId === "draft" ? "/api/leader/clubs" : `/api/leader/clubs/${clubId}`;
+
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(draft),
@@ -128,8 +160,16 @@ export default function EditClubPage() {
       return;
     }
 
-    // If you want the leader to clearly see "pending", show a sticky message instead of redirecting instantly:
-    setMsg("Submitted! Your changes are pending admin approval.");
+    if (clubId === "draft") {
+      try {
+        localStorage.removeItem("clubDraft");
+      } catch {
+        // ignore
+      }
+      setMsg("Submitted! Your new club is pending admin approval.");
+    } else {
+      setMsg("Submitted! Your changes are pending admin approval.");
+    }
     setSaving(false);
 
     // Optional: redirect after a short delay
