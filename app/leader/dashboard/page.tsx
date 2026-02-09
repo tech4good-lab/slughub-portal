@@ -70,7 +70,7 @@ export default async function LeaderDashboard() {
       CLUBS_TABLE,
       { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] },
       600,
-      { scope: "leader", allowStale: true }
+      { scope: "clubs", allowStale: true }
     );
 
     clubs = (clubRecords || []).map((r: any) => ({ recordId: r.id, ...(r.fields as any) })) as any;
