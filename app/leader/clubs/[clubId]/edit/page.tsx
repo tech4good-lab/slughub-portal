@@ -8,6 +8,7 @@ import type { Club } from "@/lib/types";
 type ClubDraft = {
   name: string;
   description: string;
+  clubIcebreakers: string;
   contactName: string;
   contactEmail: string;
   category: string;
@@ -21,6 +22,7 @@ type ClubDraft = {
 const emptyDraft: ClubDraft = {
   name: "",
   description: "",
+  clubIcebreakers: "",
   contactName: "",
   contactEmail: "",
   category: "Club",
@@ -81,6 +83,7 @@ export default function EditClubPage() {
         setDraft({
           name: (club.name ?? "") as string,
           description: (club.description ?? "") as string,
+          clubIcebreakers: (club.clubIcebreakers ?? "") as string,
           contactName: (club.contactName ?? "") as string,
           contactEmail: (club.contactEmail ?? "") as string,
           category: (club.category ?? "Club") as string,
@@ -169,6 +172,17 @@ export default function EditClubPage() {
           rows={4}
           value={draft.description}
           onChange={(e) => set("description", e.target.value)}
+        />
+
+        <div style={{ height: 10 }} />
+
+        <label className="label">Club Icebreakers</label>
+        <textarea
+          className="input"
+          value={draft.clubIcebreakers}
+          onChange={(e) => set("clubIcebreakers", e.target.value)}
+          placeholder={"what would you like to learn from students attending your event?"}
+          style={{ minHeight: 120 }}
         />
 
         <hr />

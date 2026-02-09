@@ -69,6 +69,7 @@ export async function POST(
   const payload: any = {
     name: String(body.name ?? "").trim(),
     description: String(body.description ?? "").trim(),
+    clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
     contactName: String(body.contactName ?? "").trim(),
     contactEmail: String(body.contactEmail ?? "").trim(),
     category: String(body.category ?? "").trim(),
@@ -108,6 +109,7 @@ export async function POST(
     if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
       const fallback = { ...payload };
       delete (fallback as any).category;
+      delete (fallback as any).clubIcebreakers;
       updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: fallback }]);
     } else {
       throw err;
