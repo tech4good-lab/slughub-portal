@@ -10,7 +10,7 @@ export async function GET(
   try {
     // Case A: Airtable record id (legacy links) look like "recXXXXXXXX..."
     if (clubId.startsWith("rec")) {
-      const record = await cachedFind(CLUBS_TABLE, clubId, 600);
+      const record = await cachedFind(CLUBS_TABLE, clubId, 600, { scope: "public", allowStale: true });
 
       // Public route: only show approved
       if (record.fields?.status !== "approved") {
@@ -25,7 +25,8 @@ export async function GET(
     const records = await cachedFirstPage(
       CLUBS_TABLE,
       { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {status} = "approved")` },
-      600
+      600,
+      { scope: "public", allowStale: true }
     );
 
     if (!records || records.length === 0) {

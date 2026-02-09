@@ -28,7 +28,8 @@ export async function POST(
   ]);
 
   try {
-    invalidateTable(CLUBS_TABLE);
+    invalidateTable(CLUBS_TABLE, "leader");
+    invalidateTable(CLUBS_TABLE, "admin");
   } catch (e) {
     console.warn("Failed to invalidate clubs cache after reject", e);
   }
