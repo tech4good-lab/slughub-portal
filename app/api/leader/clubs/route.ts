@@ -58,6 +58,7 @@ export async function POST(req: Request) {
       clubId,
       name: String(body.name ?? "").trim(),
       description: String(body.description ?? "").trim(),
+    clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
       // Use Airtable field name 'category' (lowercase) as created in your table.
       category: String(body.category ?? "").trim(),
       contactName: String(body.contactName ?? "").trim(),
@@ -88,6 +89,7 @@ export async function POST(req: Request) {
         // Retry without the category field in case the Airtable table doesn't have that column yet.
         const fallback = { ...payload };
         delete (fallback as any).category;
+        delete (fallback as any).clubIcebreakers;
         created = await base(CLUBS_TABLE).create([{ fields: fallback }]);
       } else {
         throw err;
