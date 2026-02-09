@@ -1,31 +1,35 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
+import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedAll, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 async function isLeaderForClub(userId: string, clubId: string) {
-  const memberRows = await cachedFirstPage(
+  const memberRows = await cachedAll(
     CLUB_MEMBERS_TABLE,
-    { maxRecords: 1, filterByFormula: `AND({clubId} = "${clubId}", {userId} = "${userId}")` },
+    { filterByFormula: `{userId} = "${userId}"` },
     300,
     { scope: "leader", allowStale: true }
   );
 
-  if (!memberRows || memberRows.length === 0) return false;
+  const match = (memberRows || []).find(
+    (r: any) => String((r.fields as any)?.clubId ?? "") === clubId
+  );
+  if (!match) return false;
 
-  const role = (memberRows[0].fields as any)?.memberRole;
+  const role = (match.fields as any)?.memberRole;
   return role === "leader" || role === "admin";
 }
 
 async function getClubRecordByClubId(clubId: string) {
-  const clubs = await cachedFirstPage(
+  const clubs = await cachedAll(
     CLUBS_TABLE,
-    { maxRecords: 1, filterByFormula: `{clubId} = "${clubId}"` },
+    { sort: [{ field: "updatedAt", direction: "desc" }] },
     600,
-    { scope: "leader", allowStale: true }
+    { scope: "clubs", allowStale: true }
   );
 
-  return clubs && clubs[0] ? clubs[0] : null;
+  const match = (clubs || []).find((r: any) => String((r.fields as any)?.clubId ?? "") === clubId);
+  return match ?? null;
 }
 
 export async function GET(
