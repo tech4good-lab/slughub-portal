@@ -132,7 +132,7 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
           WebkitTextFillColor: "transparent",
           backgroundClip: "text"
         }}>
-          Club Directory
+          Community Directory
         </h1>
       </div>
       

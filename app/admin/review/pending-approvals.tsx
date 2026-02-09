@@ -31,7 +31,7 @@ async function safeJson(res: Response) {
   }
 }
 
-export default function PendingApprovals() {
+export default function PendingApprovals({ email }: { email?: string }) {
   const [clubs, setClubs] = useState<PendingClub[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -92,82 +92,70 @@ export default function PendingApprovals() {
   }
 
   return (
-    <>
-      {err && (
-        <div className="card" style={{ marginTop: 14, border: "1px solid rgba(239,68,68,0.25)" }}>
-          <p className="small" style={{ margin: 0 }}>{err}</p>
+    <div style={{ position: 'fixed', inset: 0, background: '#EDF4FF', overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      {/* Decorative bubbles */}
+      <div style={{ position: 'absolute', width: 41, height: 41, left: '5%', top: '15%', opacity: 0.5, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 100, height: 100, left: '75%', top: '10%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '70%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 39, height: 39, left: '80%', top: '75%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 22, height: 22, left: '12%', top: '50%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 75, height: 75, left: '85%', top: '45%', opacity: 0.3, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 17, height: 17, left: '15%', top: '85%', opacity: 0.5, background: '#D0E2FF', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', width: 26, height: 26, left: '82%', top: '65%', opacity: 0.4, background: '#FDF0A6', borderRadius: '50%' }} />
+      
+      <div style={{ width: '100%', maxWidth: 900, background: 'white', borderRadius: 25, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', padding: '40px', position: 'relative', zIndex: 10 }}>
+        {err && (
+          <div style={{ marginBottom: 20, padding: 15, background: '#FEE2E2', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, color: '#DC2626', fontSize: 14, fontFamily: 'Sarabun' }}>
+            {err}
+          </div>
+        )}
+
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10, position: 'relative' }}>
+          <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50, marginRight: 15 }} />
+          <div>
+            <div style={{ color: 'black', fontSize: 28, fontFamily: 'Sarabun', fontWeight: '700', margin: 0 }}>Admin: Pending Club Approvals</div>
+            <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>Logged in as: {email ?? '<email>'}</div>
+          </div>
+          <div style={{ position: 'absolute', right: 0, top: 5, width: 80, height: 32, background: '#FDF0A6', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <Link href='/' style={{ color: 'black', fontFamily: 'Sarabun', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>↤ Home</Link>
+          </div>
         </div>
-      )}
 
-      {clubs.length === 0 ? (
-        <div className="card" style={{ marginTop: 14 }}>
-          <p className="small" style={{ margin: 0 }}>No pending clubs 🎉</p>
-        </div>
-      ) : (
-        <div className="grid" style={{ marginTop: 14 }}>
-          {clubs.map((c) => (
-            <div key={c.recordId} className="card">
-              <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-                <h2 style={{ margin: 0 }}>{c.name ?? "Untitled club"}</h2>
-                <span className="small" style={{ opacity: 0.75 }}>
-                  {c.submittedAt ? new Date(c.submittedAt).toLocaleString() : ""}
-                </span>
-              </div>
+        {/* Divider */}
+        <div style={{ width: '100%', height: 1, background: '#E5E7EB', margin: '20px 0 30px 0' }} />
 
-              <p className="small" style={{ marginTop: 10 }}>
-                {c.description ?? "No description."}
-              </p>
-
-              <div className="card" style={{ marginTop: 10, background: "rgba(255,255,255,0.02)" }}>
-                <p className="small" style={{ margin: 0 }}>
-                  <strong>Contact:</strong> {c.contactName ?? "—"} ({c.contactEmail ?? "—"})
-                </p>
-                <p className="small" style={{ marginTop: 8 }}>
-                  <strong>Links:</strong>{" "}
-                  {c.websiteUrl ? <Link href={c.websiteUrl} target="_blank">Website</Link> : "—"}
-                  {" · "}
-                  {c.discordUrl ? <Link href={c.discordUrl} target="_blank">Discord</Link> : "—"}
-                  {" · "}
-                  {c.calendarUrl ? <Link href={c.calendarUrl} target="_blank">Calendar</Link> : "—"}
-                </p>
-              </div>
-
-              <label className="label" style={{ marginTop: 12 }}>
-                Admin notes (optional)
-              </label>
-              <textarea
-                className="input"
-                rows={3}
-                value={notes[c.recordId] ?? ""}
-                onChange={(e) => setNotes((n) => ({ ...n, [c.recordId]: e.target.value }))}
-                placeholder="Why approved/rejected? Give suggestions if rejected."
-              />
-
-              <div className="row" style={{ marginTop: 12 }}>
-                <button
-                  className="btn btnPrimary"
-                  onClick={() => act(c.recordId, "approve")}
-                  disabled={!!busy[c.recordId]}
-                >
-                  {busy[c.recordId] ? "Working..." : "Approve"}
-                </button>
-
-                <button
-                  className="btn"
-                  onClick={() => act(c.recordId, "reject")}
-                  disabled={!!busy[c.recordId]}
-                >
-                  {busy[c.recordId] ? "Working..." : "Reject"}
-                </button>
-
-                <span className="small" style={{ opacity: 0.7 }}>
-                  recordId: {c.recordId}
-                </span>
-              </div>
+        {/* Clubs List */}
+        <div>
+          {clubs.length === 0 ? (
+            <div style={{ padding: '40px 20px', textAlign: 'center', color: '#999', fontSize: 16, fontFamily: 'Sarabun' }}>
+              No pending clubs!
             </div>
-          ))}
+          ) : (
+            clubs.map((c, i) => (
+              <div key={c.recordId} style={{ marginBottom: 12, padding: '16px 20px', background: i % 2 === 0 ? '#FAFAFA' : '#F3F4F6', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ color: 'black', fontSize: 16, fontFamily: 'Sarabun', fontWeight: '600', margin: 0 }}>{c.name ?? 'Untitled club'}</div>
+                  <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>{c.description ?? 'Club description...'}</div>
+                </div>
+                <div style={{ display: 'flex', gap: 10, marginLeft: 20 }}>
+                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'approve')} disabled={busy[c.recordId]} style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
+                    {busy[c.recordId] ? 'Working...' : 'Approve'}
+                  </button>
+                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'reject')} disabled={busy[c.recordId]} style={{ padding: '8px 20px', background: '#D9D9D9', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
+                    {busy[c.recordId] ? 'Working...' : 'Reject'}
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-      )}
-    </>
+
+        {/* Footer */}
+        <div style={{ marginTop: 40, paddingTop: 20, borderTop: '1px solid #E5E7EB', textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#666' }}>
+          Made with ❤️ from the <a href="#" style={{ color: '#69A1FF', textDecoration: 'underline' }}>Community RAG Team</a>
+        </div>
+      </div>
+    </div>
   );
 }
