@@ -55,8 +55,7 @@ export default async function LeaderDashboard() {
   const memberRecords = await cachedAll(
     MEMBERS_TABLE,
     { filterByFormula: `{userId}="${userId}"` },
-    300,
-    { scope: "leader", allowStale: true }
+    300
   );
 
   const clubIds = (memberRecords || [])
@@ -69,8 +68,7 @@ export default async function LeaderDashboard() {
     const clubRecords = await cachedAll(
       CLUBS_TABLE,
       { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] },
-      600,
-      { scope: "clubs", allowStale: true }
+      600
     );
 
     clubs = (clubRecords || []).map((r: any) => ({ recordId: r.id, ...(r.fields as any) })) as any;

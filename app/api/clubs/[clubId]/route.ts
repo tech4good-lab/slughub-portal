@@ -11,8 +11,7 @@ export async function GET(
     const records = await cachedAll(
       CLUBS_TABLE,
       { sort: [{ field: "updatedAt", direction: "desc" }] },
-      600,
-      { scope: "clubs", allowStale: true }
+      600
     );
 
     const match = (records || []).find((r: any) => {

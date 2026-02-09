@@ -27,12 +27,9 @@ export async function POST(
     },
   ]);
 
-  // Invalidate scope caches so lists/counts refresh
+  // Invalidate clubs cache so lists/counts refresh
   try {
-    invalidateTable(CLUBS_TABLE, "public");
-    invalidateTable(CLUBS_TABLE, "clubs");
-    invalidateTable(CLUBS_TABLE, "leader");
-    invalidateTable(CLUBS_TABLE, "admin");
+    invalidateTable(CLUBS_TABLE);
   } catch (e) {
     console.warn("Failed to invalidate clubs cache after approve", e);
   }
