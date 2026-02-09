@@ -28,6 +28,7 @@ export async function POST(
   ]);
 
   try {
+    invalidateTable(CLUBS_TABLE, "clubs");
     invalidateTable(CLUBS_TABLE, "leader");
     invalidateTable(CLUBS_TABLE, "admin");
   } catch (e) {

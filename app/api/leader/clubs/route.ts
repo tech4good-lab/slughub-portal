@@ -113,6 +113,7 @@ export async function POST(req: Request) {
     try {
       invalidateTable(CLUBS_TABLE, "leader");
       invalidateTable(MEMBERS_TABLE, "leader");
+      invalidateTable(CLUBS_TABLE, "clubs");
       invalidateTable(CLUBS_TABLE, "admin");
     } catch (e) {
       console.warn("Failed to invalidate leader clubs cache", e);
