@@ -12,6 +12,7 @@ export type Club = {
   websiteUrl?: string;
   instagramUrl?: string;
   linkedinUrl?: string;
+  clubIcebreakers?: string;
   updatedAt?: string;
 };
 
