@@ -75,7 +75,7 @@ export default async function LeaderDashboard() {
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#EDF4FF', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'rgb(237, 244, 255)', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
       {/* Decorative bubbles */}
       <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '5%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
       <div style={{ position: 'absolute', width: 30, height: 30, left: '65%', top: '3%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
@@ -104,7 +104,9 @@ export default async function LeaderDashboard() {
           <Link href="/directory" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
             Directory
           </Link>
-          <LogoutButton />
+          <Link href="/login" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+            Logout
+          </Link>
         </div>
       </div>
 
@@ -122,9 +124,14 @@ export default async function LeaderDashboard() {
           {/* Section header*/}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30 }}>
             <h2 style={{ fontSize: 24, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>My Clubs</h2>
-            <Link href="/leader/clubs/new" style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
-              Create New Club
-            </Link>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <Link href="/leader/events/new" style={{ padding: '8px 20px', background: '#E5E7EB', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                Create Event
+              </Link>
+              <Link href="/leader/clubs/new" style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                Create New Club
+              </Link>
+            </div>
           </div>
 
           {/* Clubs list */}

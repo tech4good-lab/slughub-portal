@@ -28,88 +28,74 @@ export default async function HomePage() {
   const clubs = raw.filter((c) => c.recordId && c.name);
 
   return (
-    <main className="container">
+    <main className="container directoryHome">
       <Header session={session} isAdmin={isAdmin} />
-      
-      {/* Credit line */}
-      <div style={{ 
-        marginBottom: 40,
-        paddingBottom: 32,
-        borderBottom: "1px solid rgba(255,255,255,0.1)"
-      }}>
-        <p style={{ 
-          fontSize: 16,
-          fontWeight: 500,
-          color: "rgba(255,255,255,0.6)",
-          marginTop: 12,
-          textAlign: "center"
-        }}>
-          Made with ❤️ from the{" "}
-          <a 
-            href="https://tech4good.soe.ucsc.edu/" 
-            target="_blank" 
-            rel="noreferrer"
-            style={{
-              color: "rgba(251,191,36,0.9)",
-              textDecoration: "none",
-              fontWeight: 600
-            }}
-          >
-            CommunityRAG Team
-          </a>
-        </p>
+
+      <div style={{ marginTop: 6 }}>
+        <p className="directorySubtitle">Search bar or tool so that users can directly find specific clubs</p>
+        <hr />
       </div>
 
-      {/* Club cards */}
-      <div className="grid">
-        {clubs.map((c) => (
-          <Link
-            key={c.recordId}
-            href={`/clubs/${(c as any).clubId ?? c.recordId}`}
-            className="card"
-          >
+      <div className="directoryLayout">
+        <section>
+          <div className="directoryGrid">
+            {clubs.map((c) => (
+              <Link
+                key={c.recordId}
+                href={`/clubs/${(c as any).clubId ?? c.recordId}`}
+                className="card"
+              >
+                <div>
+                  <h2 className="directoryCardTitle">{c.name}</h2>
+                  <p className="small" style={{ margin: 0, lineHeight: 1.6, color: 'rgba(0,0,0,0.6)' }}>
+                    {(c.description ?? "").slice(0, 140) || "No description yet."}
+                    {(c.description ?? "").length > 140 ? "..." : ""}
+                  </p>
+                </div>
 
-            <h2 style={{ marginBottom: 8 }}>{c.name}</h2>
-            <p className="small" style={{ margin: 0, lineHeight: 1.6 }}>
-              {(c.description ?? "").slice(0, 140) || "No description yet."}
-              {(c.description ?? "").length > 140 ? "..." : ""}
-            </p>
-            
-            <div style={{
-              marginTop: 16,
-              paddingTop: 12,
-              borderTop: "1px solid rgba(255,255,255,0.08)",
-              fontSize: 13,
-              color: "rgba(251,191,36,0.8)",
-              fontWeight: 600
-            }}>
-              Learn more →
+                <div className="directoryCardLearn">Learn more ...</div>
+              </Link>
+            ))}
+          </div>
+
+          {clubs.length === 0 && (
+            <div className="card" style={{ textAlign: 'center', padding: 60 }}>
+              <h2 style={{ marginBottom: 8 }}>No clubs yet</h2>
+              <p className="small" style={{ margin: 0 }}>
+                Be the first to register your club and start building community.
+              </p>
+              {!session && (
+                <Link href="/signup" className="btn btnPrimary" style={{ marginTop: 20, display: 'inline-flex' }}>
+                  Register Your Club
+                </Link>
+              )}
             </div>
-          </Link>
-        ))}
-      </div>
-
-      {clubs.length === 0 && (
-        <div className="card" style={{ 
-          textAlign: "center", 
-          padding: 60,
-          background: "linear-gradient(135deg, rgba(251,191,36,0.03), rgba(59,130,246,0.03))"
-        }}>
-          <h2 style={{ marginBottom: 8 }}>No clubs yet</h2>
-          <p className="small" style={{ margin: 0 }}>
-            Be the first to register your club and start building community.
-          </p>
-          {!session && (
-            <Link 
-              href="/signup" 
-              className="btn btnPrimary" 
-              style={{ marginTop: 20, display: "inline-flex" }}
-            >
-              Register Your Club
-            </Link>
           )}
-        </div>
-      )}
+
+          {/* Credit */}
+          <div style={{ marginTop: 36, textAlign: 'center' }}>
+            <p style={{ fontSize: 16, fontWeight: 500, color: 'rgba(0,0,0,0.6)' }}>
+              Made with ❤️ from the{' '}
+              <a href="https://tech4good.soe.ucsc.edu/" target="_blank" rel="noreferrer" style={{ color: 'rgba(251,191,36,0.9)', textDecoration: 'none', fontWeight: 600 }}>
+                CommunityRAG Team
+              </a>
+            </p>
+          </div>
+        </section>
+
+        <aside className="filtersPanel">
+          <div className="filtersHeader">
+            <h3>Filters</h3>
+            <button aria-label="close filters" className="btn" style={{ padding: '6px 8px' }}>✕</button>
+          </div>
+
+          <div className="filtersList">
+            <label className="filterItem"><input type="checkbox" /> Clubs</label>
+            <label className="filterItem"><input type="checkbox" /> Events</label>
+            <label className="filterItem"><input type="checkbox" /> Student Orgs</label>
+          </div>
+        </aside>
+      </div>
     </main>
   );
 }
@@ -127,10 +113,7 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
       <div>
         <h1 style={{ 
           margin: 0,
-          background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text"
+          color: 'black'
         }}>
           Community Directory
         </h1>
@@ -156,7 +139,7 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
         ) : (
           <>
             <Link className="btn" href="/login">Club Lead Login</Link>
-            <Link className="btn btnPrimary" href="/signup">Club Lead Sign Up</Link>
+            <Link className="btn" href="/signup">Club Lead Sign Up</Link>
           </>
         )}
       </nav>
