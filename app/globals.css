@@ -513,7 +513,7 @@ a:hover {
   background: #ffffff; /* white panel */
   border-radius: 18px;
   padding: 18px;
-  box-shadow: 0 10px 24px rgba(16,24,40,0.06);
+  box-shadow: none;
   border: 1px solid rgba(16,24,40,0.04);
   position: sticky;
   top: 24px;
