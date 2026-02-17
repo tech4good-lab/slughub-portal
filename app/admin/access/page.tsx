@@ -12,13 +12,13 @@ export default async function AdminAccessPage() {
   if (role !== "admin") redirect("/forbidden");
 
   return (
-    <main className="container">
+    <main className="container adminAccess">
       <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
         <h1>Admin: Leader Access Requests</h1>
         <div className="row">
-          <Link className="btn" href="/admin/review">Club Approvals</Link>
-          <Link className="btn" href="/directory">Directory</Link>
-          <Link className="btn" href="/">Home</Link>
+          <Link style={{color:"black"}} className="btn" href="/admin/review">Club Approvals</Link>
+          <Link style={{color:"black"}} className="btn" href="/directory">Directory</Link>
+          <Link style={{color:"black"}} className="btn" href="/">Home</Link>
         </div>
       </div>
 
@@ -26,3 +26,4 @@ export default async function AdminAccessPage() {
     </main>
   );
 }
+

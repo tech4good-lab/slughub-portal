@@ -63,7 +63,7 @@ export default function AccessRequestsList() {
 
   if (loading) {
     return (
-      <div className="card" style={{ marginTop: 14 }}>
+      <div className="card" style={{ marginTop: 14, background: "#fff", color: "#000" }}>
         <p className="small">Loading requests…</p>
       </div>
     );
@@ -71,7 +71,7 @@ export default function AccessRequestsList() {
 
   if (requests.length === 0) {
     return (
-      <div className="card" style={{ marginTop: 14 }}>
+      <div className="card" style={{ marginTop: 14, background: "#fff", color: "#000" }}>
         <p className="small" style={{ margin: 0 }}>No pending requests 🎉</p>
       </div>
     );
@@ -80,14 +80,14 @@ export default function AccessRequestsList() {
   return (
     <>
       {err && (
-        <div className="card" style={{ marginTop: 14, border: "1px solid rgba(239,68,68,0.25)" }}>
+        <div className="card" style={{ marginTop: 14, border: "1px solid rgba(239,68,68,0.25)", background: "#fff", color: "#000" }}>
           <p className="small" style={{ margin: 0 }}>{err}</p>
         </div>
       )}
 
       <div className="grid" style={{ marginTop: 14 }}>
         {requests.map((r) => (
-          <div key={r.recordId} className="card">
+          <div key={r.recordId} className="card" style={{ background: "#fff", color: "#000" }}>
             <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
               <h2 style={{ margin: 0 }}>Club: {r.clubId}</h2>
               <span className="small" style={{ opacity: 0.75 }}>
@@ -137,3 +137,4 @@ export default function AccessRequestsList() {
     </>
   );
 }
+
