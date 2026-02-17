@@ -85,30 +85,40 @@ export default async function LeaderDashboard() {
       <div style={{ position: 'absolute', width: 25, height: 25, left: '15%', top: '80%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30, position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-          <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50 }} />
-          <h1 style={{ fontSize: 36, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>Leader Dashboard</h1>
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 32,
+          flexWrap: "wrap",
+          gap: 16,
+          position: "relative",
+          zIndex: 10,
+        }}
+      >
+        <div>
+          <h1 style={{ margin: 0, color: "black" }}>Leader Dashboard</h1>
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <nav className="row">
           {isAdmin && (
             <>
-              <Link href="/admin/review" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+              <Link className="btn" href="/admin/review">
                 Club Approvals
               </Link>
-              <Link href="/admin/access" style={{ padding: '8px 16px', background: '#E5E7EB', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+              <Link className="btn" href="/admin/access">
                 Access Requests
               </Link>
             </>
           )}
-          <Link href="/directory" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+          <Link className="btn" href="/directory">
             Directory
           </Link>
-          <Link href="/login" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+          <Link className="btn" href="/login">
             Logout
           </Link>
-        </div>
-      </div>
+        </nav>
+      </header>
 
       {/* Logged in info and divider */}
       <div style={{ position: 'relative', zIndex: 10, marginBottom: 20 }}>

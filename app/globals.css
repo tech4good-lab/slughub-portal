@@ -9,7 +9,7 @@
   --color-bg: #EDF4FF;
   --color-surface: #1a1a1a;
   --color-border: #EDF4FF;
-  --color-text: rgba(255, 255, 255, 0.95);
+  --color-text: rgba(0, 0, 0, 0.95);
   --color-text-muted: rgba(255, 255, 255, 0.65);
   --color-primary: #fbbf24; /* Warm yellow - optimistic, approachable */
   --color-primary-hover: #f59e0b;
@@ -152,7 +152,7 @@ textarea.input {
   align-items: center;
   gap: 8px;
   padding: 10px 18px;
-  background: transparent;
+  background: #fbbf24;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   color: var(--color-text);
@@ -274,6 +274,53 @@ a:hover {
   outline-offset: 2px;
 }
 
+/* Admin access page overrides */
+.adminAccess {
+  color: #000;
+}
+
+.adminAccess .small {
+  color: #000;
+  opacity: 1 !important;
+}
+
+.adminAccess .label,
+.adminAccess h1,
+.adminAccess h2,
+.adminAccess p,
+.adminAccess span,
+.adminAccess strong,
+.adminAccess textarea,
+.adminAccess input {
+  color: #000;
+}
+
+.adminAccess .input::placeholder {
+  color: #000;
+  opacity: 1;
+}
+
+.adminAccess .btn,
+.adminAccess .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.adminAccess .btn:hover,
+.adminAccess .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.adminAccess .btn:disabled,
+.adminAccess .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
 /* Directory (home) specific styling - lightweight, page-scoped overrides */
 .directoryHome {
   position: relative;
