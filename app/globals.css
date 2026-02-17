@@ -6,10 +6,10 @@
 
 :root {
   /* Tech4Good inspired palette - warm, accessible, purposeful */
-  --color-bg: #0a0a0a;
+  --color-bg: #EDF4FF;
   --color-surface: #1a1a1a;
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-text: rgba(255, 255, 255, 0.95);
+  --color-border: #EDF4FF;
+  --color-text: rgba(0, 0, 0, 0.95);
   --color-text-muted: rgba(255, 255, 255, 0.65);
   --color-primary: #fbbf24; /* Warm yellow - optimistic, approachable */
   --color-primary-hover: #f59e0b;
@@ -152,7 +152,7 @@ textarea.input {
   align-items: center;
   gap: 8px;
   padding: 10px 18px;
-  background: transparent;
+  background: #fbbf24;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   color: var(--color-text);
@@ -273,3 +273,317 @@ a:hover {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+/* Admin access page overrides */
+.adminAccess {
+  color: #000;
+}
+
+.adminAccess .small {
+  color: #000;
+  opacity: 1 !important;
+}
+
+.adminAccess .label,
+.adminAccess h1,
+.adminAccess h2,
+.adminAccess p,
+.adminAccess span,
+.adminAccess strong,
+.adminAccess textarea,
+.adminAccess input {
+  color: #000;
+}
+
+.adminAccess .input::placeholder {
+  color: #000;
+  opacity: 1;
+}
+
+.adminAccess .btn,
+.adminAccess .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.adminAccess .btn:hover,
+.adminAccess .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.adminAccess .btn:disabled,
+.adminAccess .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+/* Leader dashboard overrides */
+.leaderDashboard {
+  color: #000;
+}
+
+.leaderDashboard .small {
+  color: #000;
+  opacity: 1 !important;
+}
+
+.leaderDashboard .label,
+.leaderDashboard h1,
+.leaderDashboard h2,
+.leaderDashboard h3,
+.leaderDashboard p,
+.leaderDashboard span,
+.leaderDashboard strong,
+.leaderDashboard textarea,
+.leaderDashboard input,
+.leaderDashboard a {
+  color: #000;
+}
+
+.leaderDashboard .input::placeholder {
+  color: #000;
+  opacity: 1;
+}
+
+.leaderDashboard .btn,
+.leaderDashboard .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.leaderDashboard .btn:hover,
+.leaderDashboard .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.leaderDashboard .btn:disabled,
+.leaderDashboard .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+/* Auth (login/signup) overrides */
+.authPage {
+  color: #000;
+}
+
+.authPage .small {
+  color: #000;
+  opacity: 1 !important;
+}
+
+.authPage .label,
+.authPage h1,
+.authPage h2,
+.authPage p,
+.authPage span,
+.authPage strong,
+.authPage textarea,
+.authPage input,
+.authPage a {
+  color: #000;
+}
+
+.authPage .input::placeholder {
+  color: #000;
+  opacity: 1;
+}
+
+.authPage .btn,
+.authPage .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.authPage .btn:hover,
+.authPage .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.authPage .btn:disabled,
+.authPage .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.authPage .card {
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.08);
+  color: #000;
+}
+/* Directory (home) specific styling - lightweight, page-scoped overrides */
+.directoryHome {
+  position: relative;
+  background: #EDF4FF; /* match leader dashboard light blue */
+  padding-top: 8px; /* small offset so header sits nicely */
+}
+
+.directoryHome::before {
+  content: '';
+  position: absolute;
+  right: -120px;
+  top: 40px;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle at 30% 30%, rgba(208,226,255,0.12), rgba(253,240,166,0.04) 40%, transparent 60%);
+  filter: blur(12px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.directoryHome header,
+.directoryHome .card,
+.directoryHome .grid,
+.directoryHome .row,
+.directoryHome nav {
+  position: relative;
+  z-index: 1;
+}
+
+.directoryHome h1 {
+  font-size: 48px;
+  margin: 0 0 6px 0;
+}
+
+.directorySubtitle {
+  color: rgba(0,0,0,0.65);
+  margin-bottom: 18px;
+  font-size: 15px;
+}
+
+.directoryLayout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  align-items: start;
+}
+
+.directoryGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px 28px;
+  margin-top: 20px;
+}
+
+.directoryHome .card {
+  background: #ffffff; /* white panels */
+  border: 1px solid rgba(16,24,40,0.04); /* subtle light border, not black */
+  border-radius: 26px;
+  padding: 22px 26px;
+  min-width: 260px;
+  max-width: 340px;
+  box-shadow: 0 10px 20px rgba(16,24,40,0.06);
+  color: #111827;
+}
+
+.directoryHome a.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 30px rgba(16,24,40,0.08);
+}
+
+.directoryCardTitle {
+  font-size: 20px;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.directoryCardLearn {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(16,24,40,0.03);
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.filtersPanel {
+  background: #ffffff; /* white panel */
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(16,24,40,0.06);
+  border: 1px solid rgba(16,24,40,0.04);
+  position: sticky;
+  top: 24px;
+}
+
+/* Ensure divider on directory uses a subtle light border (not black) */
+.directoryHome hr {
+  border-top: 1px solid rgba(16,24,40,0.06);
+}
+
+.filtersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.filtersHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #111827;
+}
+
+.filtersList {
+  margin-top: 8px;
+}
+
+.filterItem {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+  color: #111827;
+}
+
+.directoryHome .btn {
+  border-radius: 20px;
+  padding: 8px 16px;
+  background: #FDF0A6; /* leader dashboard yellow */
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  font-weight: 600;
+}
+
+.directoryHome .btn + .btn {
+  margin-left: 8px;
+  background: rgba(255,255,255,0.9);
+  color: #111827;
+  border: 1px solid rgba(16,24,40,0.06);
+}
+
+@media (max-width: 900px) {
+  .directoryLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .filtersPanel {
+    position: relative;
+    top: 0;
+    margin-top: 12px;
+  }
+
+  .directoryHome h1 {
+    font-size: 34px;
+  }
+
+  .directoryGrid {
+    justify-content: center;
+  }
+}
+
+

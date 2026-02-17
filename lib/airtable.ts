@@ -11,6 +11,7 @@ export const CLUBS_TABLE = process.env.AIRTABLE_CLUBS_TABLE ?? "Clubs";
 export const CLUB_MEMBERS_TABLE = process.env.AIRTABLE_CLUB_MEMBERS_TABLE ?? "ClubMembers";
 export const ACCESS_REQUESTS_TABLE = process.env.AIRTABLE_ACCESS_REQUESTS_TABLE ?? "AccessRequests";
 export const USERS_TABLE = process.env.AIRTABLE_USERS_TABLE ?? "Users";
+export const EVENTS_TABLE = process.env.AIRTABLE_EVENTS_TABLE ?? "Events";
 
 type CacheEntry = { expires: number; data: any };
 

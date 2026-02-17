@@ -75,7 +75,7 @@ export default async function LeaderDashboard() {
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#EDF4FF', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+    <div className="leaderDashboard" style={{ position: 'fixed', inset: 0, background: 'rgb(237, 244, 255)', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
       {/* Decorative bubbles */}
       <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '5%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
       <div style={{ position: 'absolute', width: 30, height: 30, left: '65%', top: '3%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
@@ -85,28 +85,40 @@ export default async function LeaderDashboard() {
       <div style={{ position: 'absolute', width: 25, height: 25, left: '15%', top: '80%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30, position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-          <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50 }} />
-          <h1 style={{ fontSize: 36, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>Leader Dashboard</h1>
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 32,
+          flexWrap: "wrap",
+          gap: 16,
+          position: "relative",
+          zIndex: 10,
+        }}
+      >
+        <div>
+          <h1 style={{ margin: 0, color: "black" }}>Leader Dashboard</h1>
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <nav className="row">
           {isAdmin && (
             <>
-              <Link href="/admin/review" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+              <Link className="btn" href="/admin/review">
                 Club Approvals
               </Link>
-              <Link href="/admin/access" style={{ padding: '8px 16px', background: '#E5E7EB', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+              <Link className="btn" href="/admin/access">
                 Access Requests
               </Link>
             </>
           )}
-          <Link href="/directory" style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+          <Link className="btn" href="/directory">
             Directory
           </Link>
-          <LogoutButton />
-        </div>
-      </div>
+          <Link className="btn" href="/login">
+            Logout
+          </Link>
+        </nav>
+      </header>
 
       {/* Logged in info and divider */}
       <div style={{ position: 'relative', zIndex: 10, marginBottom: 20 }}>
@@ -122,9 +134,14 @@ export default async function LeaderDashboard() {
           {/* Section header*/}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30 }}>
             <h2 style={{ fontSize: 24, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>My Clubs</h2>
-            <Link href="/leader/clubs/new" style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
-              Create New Club
-            </Link>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <Link href="/leader/events/new" style={{ padding: '8px 20px', background: '#E5E7EB', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                Create Event
+              </Link>
+              <Link href="/leader/clubs/new" style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                Create New Club
+              </Link>
+            </div>
           </div>
 
           {/* Clubs list */}
@@ -181,4 +198,5 @@ export default async function LeaderDashboard() {
     </div>
   );
 }
+
 
