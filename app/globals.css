@@ -321,6 +321,109 @@ a:hover {
   border-color: #FDF0A6;
   color: #000;
 }
+/* Leader dashboard overrides */
+.leaderDashboard {
+  color: #000;
+}
+
+.leaderDashboard .small {
+  color: #000;
+  opacity: 1 !important;
+}
+
+.leaderDashboard .label,
+.leaderDashboard h1,
+.leaderDashboard h2,
+.leaderDashboard h3,
+.leaderDashboard p,
+.leaderDashboard span,
+.leaderDashboard strong,
+.leaderDashboard textarea,
+.leaderDashboard input,
+.leaderDashboard a {
+  color: #000;
+}
+
+.leaderDashboard .input::placeholder {
+  color: #000;
+  opacity: 1;
+}
+
+.leaderDashboard .btn,
+.leaderDashboard .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.leaderDashboard .btn:hover,
+.leaderDashboard .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.leaderDashboard .btn:disabled,
+.leaderDashboard .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+/* Auth (login/signup) overrides */
+.authPage {
+  color: #000;
+}
+
+.authPage .small {
+  color: #000;
+  opacity: 1 !important;
+}
+
+.authPage .label,
+.authPage h1,
+.authPage h2,
+.authPage p,
+.authPage span,
+.authPage strong,
+.authPage textarea,
+.authPage input,
+.authPage a {
+  color: #000;
+}
+
+.authPage .input::placeholder {
+  color: #000;
+  opacity: 1;
+}
+
+.authPage .btn,
+.authPage .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.authPage .btn:hover,
+.authPage .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.authPage .btn:disabled,
+.authPage .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.authPage .card {
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.08);
+  color: #000;
+}
 /* Directory (home) specific styling - lightweight, page-scoped overrides */
 .directoryHome {
   position: relative;
@@ -482,3 +585,5 @@ a:hover {
     justify-content: center;
   }
 }
+
+
