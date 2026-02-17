@@ -31,7 +31,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="container">
+    <main className="container authPage">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Club Lead Login</h1>
         <Link className="btn" href="/">← Home</Link>

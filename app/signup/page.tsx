@@ -30,7 +30,7 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="container">
+    <main className="container authPage">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Club Lead Sign Up</h1>
         <Link className="btn" href="/">← Home</Link>
