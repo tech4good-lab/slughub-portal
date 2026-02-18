@@ -28,6 +28,22 @@ export default function NewEventPage() {
     (async () => {
       setLoading(true);
       setErr(null);
+      try {
+        const raw = localStorage.getItem("leaderClubsCache_v1");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const list = (parsed?.clubs ?? []) as ClubOption[];
+          if (Array.isArray(list) && list.length > 0) {
+            setClubs(list);
+            setClubId(String(list[0].clubId ?? ""));
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // ignore cache errors
+      }
+
       const res = await fetch("/api/leader/clubs");
 
       if (res.status === 401) {
@@ -56,6 +72,14 @@ export default function NewEventPage() {
       const list = (data?.clubs ?? []) as ClubOption[];
       setClubs(list);
       if (list.length > 0) setClubId(String(list[0].clubId ?? ""));
+      try {
+        localStorage.setItem(
+          "leaderClubsCache_v1",
+          JSON.stringify({ ts: Date.now(), clubs: list })
+        );
+      } catch {
+        // ignore cache errors
+      }
       setLoading(false);
     })();
   }, [router]);

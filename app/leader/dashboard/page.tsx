@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import type { Club } from "@/lib/types";
 import { CLUBS_TABLE, EVENTS_TABLE, cachedAll } from "@/lib/airtable";
 import EventsCacheClient from "@/app/components/EventsCacheClient";
+import ClubsCacheClient from "@/app/components/ClubsCacheClient";
 import LogoutButton from "@/app/leader/edit/logout-button";
 
 export const dynamic = "force-dynamic";
@@ -94,6 +95,7 @@ export default async function LeaderDashboard() {
 
   return (
     <div className="leaderDashboard" style={{ position: 'fixed', inset: 0, background: 'rgb(237, 244, 255)', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+      <ClubsCacheClient clubs={clubs as any[]} />
       <EventsCacheClient
         events={Object.values(eventsByClub).flat() as any[]}
       />
