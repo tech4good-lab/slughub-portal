@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, EVENTS_TABLE, invalidateTable, noteCall } from "@/lib/airtable";
-import { getUserClubIds } from "@/lib/permissions";
+import { base, EVENTS_TABLE, CLUB_MEMBERS_TABLE, cachedAll, invalidateTable, noteCall } from "@/lib/airtable";
 
 function buildEventDate(date: string, time: string) {
   const d = String(date ?? "").trim();
@@ -43,10 +42,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Event date is required." }, { status: 400 });
     }
 
-    const clubIds = await getUserClubIds(userId);
-    if (!clubIds.includes(clubId)) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const memberRows = await cachedAll(
+      CLUB_MEMBERS_TABLE,
+      { filterByFormula: `{userId}="${userId}"` },
+      300
+    );
+    const isMember = (memberRows || []).some(
+      (r: any) => String((r.fields as any)?.clubId ?? "") === clubId
+    );
+    if (!isMember) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const nowIso = new Date().toISOString();
     const payload: any = {
@@ -57,7 +61,7 @@ export async function POST(req: Request) {
       eventDate: buildEventDate(eventDateRaw, eventTimeRaw),
       eventLocation: String(body.eventLocation ?? "").trim(),
       eventDescription: String(body.eventDescription ?? "").trim(),
-      IceBreakers: String(body.IceBreakers ?? "").trim(),
+      iceBreakers: String(body.IceBreakers ?? body.iceBreakers ?? "").trim(),
       createdAt: nowIso,
     };
 
