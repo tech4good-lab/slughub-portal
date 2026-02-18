@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedAll, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
@@ -97,11 +98,8 @@ export async function POST(
     return NextResponse.json({ error: "Club name is required." }, { status: 400 });
   }
 
-  const existingStatus = (clubRec.fields as any)?.status ?? "approved";
-
-  // Leaders: always go back to pending when they edit
-  // Admins: keep status as-is (or approved)
-  const nextStatus = role === "admin" ? existingStatus : "pending";
+  // Any edit should go back to pending for approval.
+  const nextStatus = "pending";
 
   const nowIso = new Date().toISOString();
   payload.status = nextStatus;
@@ -133,7 +131,14 @@ export async function POST(
   } catch (e) {
     console.warn("Failed to invalidate clubs cache after leader update", e);
   }
+  try {
+    revalidatePath("/leader/dashboard");
+  } catch (e) {
+    console.warn("Failed to revalidate leader dashboard", e);
+  }
 
   const updatedFields = updated[0].fields as any;
-  return NextResponse.json({ club: { recordId: updated[0].id, ...updatedFields, category: updatedFields.Category ?? updatedFields.category } });
+  return NextResponse.json({
+    club: { recordId: updated[0].id, ...updatedFields, category: updatedFields.Category ?? updatedFields.category },
+  });
 }

@@ -87,8 +87,13 @@ export async function cachedCount(table: string, selectOptions: any = {}, ttlSec
 	return count;
 }
 
-export async function cachedAll(table: string, selectOptions: any = {}, ttlSeconds = 15) {
-	const key = makeKey(table, { method: "all", selectOptions });
+export async function cachedAll(
+	table: string,
+	selectOptions: any = {},
+	ttlSeconds = 15,
+	cacheKeyExtra?: any
+) {
+	const key = makeKey(table, { method: "all", selectOptions, cacheKeyExtra });
 	const now = Date.now();
 	const entry = cache.get(key);
 	if (!forceNoCache && entry && entry.expires > now) {

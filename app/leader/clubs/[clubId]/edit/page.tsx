@@ -173,12 +173,15 @@ export default function EditClubPage() {
     setSaving(false);
 
     // Optional: redirect after a short delay
-    setTimeout(() => router.push("/leader/dashboard"), 600);
+    setTimeout(() => {
+      router.push("/leader/dashboard");
+      router.refresh();
+    }, 600);
   };
 
   if (loading) {
     return (
-      <main className="container">
+      <main className="container clubEdit">
         <div className="card">
           <p className="small">Loading...</p>
         </div>
@@ -187,7 +190,7 @@ export default function EditClubPage() {
   }
 
   return (
-    <main className="container">
+    <main className="container clubEdit">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Edit Club Profile</h1>
         <div className="row">
