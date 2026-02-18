@@ -3,7 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import type { Club } from "@/lib/types";
-import { CLUBS_TABLE, cachedAll } from "@/lib/airtable";
+import { CLUBS_TABLE, EVENTS_TABLE, cachedAll } from "@/lib/airtable";
+import EventsCacheClient from "@/app/components/EventsCacheClient";
+import ClubsCacheClient from "@/app/components/ClubsCacheClient";
 import LogoutButton from "@/app/leader/edit/logout-button";
 
 export const dynamic = "force-dynamic";
@@ -66,6 +68,7 @@ export default async function LeaderDashboard() {
 
   // 2) Fetch clubs for those clubIds
   let clubs: Club[] = [];
+  let eventsByClub: Record<string, any[]> = {};
   if (clubIds.length > 0) {
     const clubRecords = await cachedAll(
       CLUBS_TABLE,
@@ -74,10 +77,28 @@ export default async function LeaderDashboard() {
     );
 
     clubs = (clubRecords || []).map((r: any) => ({ recordId: r.id, ...(r.fields as any) })) as any;
+
+    const eventRecords = await cachedAll(
+      EVENTS_TABLE,
+      { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "eventDate", direction: "desc" }] },
+      3600
+    );
+
+    for (const r of eventRecords || []) {
+      const f = (r.fields as any) ?? {};
+      const cid = String(f.clubId ?? "");
+      if (!cid) continue;
+      if (!eventsByClub[cid]) eventsByClub[cid] = [];
+      eventsByClub[cid].push({ recordId: r.id, ...f });
+    }
   }
 
   return (
     <div className="leaderDashboard" style={{ position: 'fixed', inset: 0, background: 'rgb(237, 244, 255)', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+      <ClubsCacheClient clubs={clubs as any[]} />
+      <EventsCacheClient
+        events={Object.values(eventsByClub).flat() as any[]}
+      />
       {/* Decorative bubbles */}
       <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '5%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
       <div style={{ position: 'absolute', width: 30, height: 30, left: '65%', top: '3%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
@@ -154,6 +175,19 @@ export default async function LeaderDashboard() {
               </p>
             ) : (
               clubs.map((club: any) => {
+                const cid = String(club.clubId ?? club.recordId ?? "");
+                const events = eventsByClub[cid] ?? [];
+                const now = new Date();
+                const upcoming = events.filter((e: any) => {
+                  const d = new Date(e.eventDate ?? "");
+                  if (Number.isNaN(d.getTime())) return true;
+                  return d >= now;
+                });
+                const past = events.filter((e: any) => {
+                  const d = new Date(e.eventDate ?? "");
+                  if (Number.isNaN(d.getTime())) return false;
+                  return d < now;
+                });
                 return (
               <div
                 key={club.clubId ?? club.recordId}
@@ -167,7 +201,7 @@ export default async function LeaderDashboard() {
                   gap: 20
                 }}
               >
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
                       <h3 style={{ fontSize: 16, fontFamily: 'Sarabun', fontWeight: 600, margin: 0, color: 'black' }}>{club.name ?? 'Untitled Club'}</h3>
                       <StatusPill status={club.status} />
@@ -185,6 +219,87 @@ export default async function LeaderDashboard() {
                     </Link>
                   </div>
                 </div>
+
+                <details style={{ minWidth: 220 }}>
+                  <summary
+                    style={{
+                      listStyle: "none",
+                      cursor: "pointer",
+                      padding: "6px 14px",
+                      borderRadius: 999,
+                      background: "#FDF0A6",
+                      color: "#000",
+                      fontSize: 13,
+                      fontFamily: "Sarabun",
+                      fontWeight: 600,
+                      textAlign: "center",
+                    }}
+                  >
+                    Events
+                  </summary>
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>Upcoming</div>
+                    {upcoming.length === 0 ? (
+                      <div style={{ fontSize: 12, color: "#666" }}>No upcoming events</div>
+                    ) : (
+                      upcoming.slice(0, 4).map((e: any) => (
+                        <div key={e.recordId} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                            <div style={{ fontWeight: 600 }}>{e.eventTitle ?? e.name ?? "Untitled Event"}</div>
+                            <Link
+                              href={`/leader/events/${e.recordId}/edit`}
+                              style={{
+                                fontSize: 11,
+                                padding: "4px 8px",
+                                borderRadius: 999,
+                                background: "#E5E7EB",
+                                color: "#000",
+                                textDecoration: "none",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              Edit
+                            </Link>
+                          </div>
+                          <div style={{ color: "#666" }}>
+                            {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>Past</div>
+                    {past.length === 0 ? (
+                      <div style={{ fontSize: 12, color: "#666" }}>No past events</div>
+                    ) : (
+                      past.slice(0, 4).map((e: any) => (
+                        <div key={e.recordId} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                            <div style={{ fontWeight: 600 }}>{e.eventTitle ?? e.name ?? "Untitled Event"}</div>
+                            <Link
+                              href={`/leader/events/${e.recordId}/edit`}
+                              style={{
+                                fontSize: 11,
+                                padding: "4px 8px",
+                                borderRadius: 999,
+                                background: "#E5E7EB",
+                                color: "#000",
+                                textDecoration: "none",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              Edit
+                            </Link>
+                          </div>
+                          <div style={{ color: "#666" }}>
+                            {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </details>
               </div>
                 );
               })

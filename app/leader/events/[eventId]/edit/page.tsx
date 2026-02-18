@@ -2,16 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-type ClubOption = {
-  clubId: string;
-  name?: string;
-};
-
-export default function NewEventPage() {
+export default function EditEventPage() {
+  const params = useParams<{ eventId: string }>();
   const router = useRouter();
-  const [clubs, setClubs] = useState<ClubOption[]>([]);
+  const eventId = params?.eventId;
+
   const [clubId, setClubId] = useState("");
   const [eventTitle, setEventTitle] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -25,17 +22,28 @@ export default function NewEventPage() {
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!eventId) return;
     (async () => {
-      setLoading(true);
-      setErr(null);
       try {
-        const raw = localStorage.getItem("leaderClubsCache_v1");
+        const raw = localStorage.getItem("clubEventsCache_v1");
         if (raw) {
           const parsed = JSON.parse(raw);
-          const list = (parsed?.clubs ?? []) as ClubOption[];
-          if (Array.isArray(list) && list.length > 0) {
-            setClubs(list);
-            setClubId(String(list[0].clubId ?? ""));
+          const cached = (parsed?.events ?? []).find(
+            (ev: any) => String(ev?.recordId ?? "") === String(eventId)
+          );
+          if (cached) {
+            setClubId(String(cached.clubId ?? ""));
+            setEventTitle(String(cached.eventTitle ?? cached.name ?? ""));
+            const rawDate = String(cached.eventDate ?? "");
+            if (rawDate.includes("T")) {
+              setEventDate(rawDate.slice(0, 10));
+              setEventTime(rawDate.slice(11, 16));
+            } else {
+              setEventDate(rawDate);
+            }
+            setEventLocation(String(cached.eventLocation ?? ""));
+            setEventDescription(String(cached.eventDescription ?? ""));
+            setIceBreakers(String(cached.iceBreakers ?? ""));
             setLoading(false);
             return;
           }
@@ -44,14 +52,15 @@ export default function NewEventPage() {
         // ignore cache errors
       }
 
-      const res = await fetch("/api/leader/clubs");
-
+      setLoading(true);
+      setErr(null);
+      const res = await fetch(`/api/leader/events/${eventId}`, { cache: "no-store" });
       if (res.status === 401) {
         router.push("/login");
         return;
       }
       if (res.status === 403) {
-        setErr("Forbidden: you don't have access to create events.");
+        setErr("Forbidden: you don't have access to edit this event.");
         setLoading(false);
         return;
       }
@@ -64,37 +73,39 @@ export default function NewEventPage() {
       }
 
       if (!res.ok) {
-        setErr(data?.error ?? "Failed to load clubs.");
+        setErr(data?.error ?? "Failed to load event.");
         setLoading(false);
         return;
       }
 
-      const list = (data?.clubs ?? []) as ClubOption[];
-      setClubs(list);
-      if (list.length > 0) setClubId(String(list[0].clubId ?? ""));
-      try {
-        localStorage.setItem(
-          "leaderClubsCache_v1",
-          JSON.stringify({ ts: Date.now(), clubs: list })
-        );
-      } catch {
-        // ignore cache errors
+      const e = data?.event ?? {};
+      setClubId(String(e.clubId ?? ""));
+      setEventTitle(String(e.eventTitle ?? e.name ?? ""));
+      const rawDate = String(e.eventDate ?? "");
+      if (rawDate.includes("T")) {
+        setEventDate(rawDate.slice(0, 10));
+        setEventTime(rawDate.slice(11, 16));
+      } else {
+        setEventDate(rawDate);
       }
+      setEventLocation(String(e.eventLocation ?? ""));
+      setEventDescription(String(e.eventDescription ?? ""));
+      setIceBreakers(String(e.iceBreakers ?? ""));
       setLoading(false);
     })();
-  }, [router]);
+  }, [eventId, router]);
 
-  const onCreate = async (e: React.FormEvent) => {
+  const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!eventId) return;
     setErr(null);
     setMsg(null);
     setSaving(true);
 
-    const res = await fetch("/api/leader/events", {
+    const res = await fetch(`/api/leader/events/${eventId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        clubId,
         eventTitle,
         eventDate,
         eventTime,
@@ -112,14 +123,44 @@ export default function NewEventPage() {
     }
 
     if (!res.ok) {
-      setErr(data?.error ?? "Failed to create event.");
+      setErr(data?.error ?? "Failed to update event.");
       setSaving(false);
       return;
     }
 
-    setMsg("Event created!");
+    setMsg("Event updated!");
     setSaving(false);
-    setTimeout(() => router.push("/leader/dashboard"), 600);
+    try {
+      const raw = localStorage.getItem("clubEventsCache_v1");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const events = Array.isArray(parsed?.events) ? parsed.events : [];
+        const idx = events.findIndex((ev: any) => String(ev?.recordId ?? "") === String(eventId));
+        const updated = {
+          ...events[idx],
+          recordId: eventId,
+          clubId,
+          eventTitle,
+          name: eventTitle,
+          eventDate: eventDate ? `${eventDate}${eventTime ? `T${eventTime}` : ""}` : "",
+          eventLocation,
+          eventDescription,
+          iceBreakers,
+        };
+        if (idx >= 0) {
+          events[idx] = updated;
+        } else {
+          events.push(updated);
+        }
+        localStorage.setItem("clubEventsCache_v1", JSON.stringify({ ts: Date.now(), events }));
+      }
+    } catch {
+      // ignore cache errors
+    }
+    setTimeout(() => {
+      router.push("/leader/dashboard");
+      router.refresh();
+    }, 600);
   };
 
   if (loading) {
@@ -135,31 +176,16 @@ export default function NewEventPage() {
   return (
     <main className="container clubCreateEvent">
       <div className="row" style={{ justifyContent: "space-between" }}>
-        <h1>Create Event</h1>
+        <h1>Edit Event</h1>
         <div className="row">
           <Link className="btn" href="/leader/dashboard">Dashboard</Link>
           <Link className="btn" href="/directory">Directory</Link>
         </div>
       </div>
 
-      <form className="card" style={{ marginTop: 14 }} onSubmit={onCreate}>
-        <label className="label">Club *</label>
-        <select
-          className="input"
-          value={clubId}
-          onChange={(e) => setClubId(e.target.value)}
-          required
-        >
-          {clubs.length === 0 ? (
-            <option value="">No club access</option>
-          ) : (
-            clubs.map((club) => (
-              <option key={club.clubId} value={club.clubId}>
-                {club.name ?? club.clubId}
-              </option>
-            ))
-          )}
-        </select>
+      <form className="card" style={{ marginTop: 14 }} onSubmit={onSave}>
+        <label className="label">Club</label>
+        <input className="input" value={clubId} disabled />
 
         <div style={{ height: 10 }} />
 
@@ -211,15 +237,11 @@ export default function NewEventPage() {
         {msg && <p className="small" style={{ marginTop: 10 }}>{msg}</p>}
 
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" type="submit" disabled={saving || clubs.length === 0}>
-            {saving ? "Creating..." : "Create Event"}
+          <button className="btn btnPrimary" type="submit" disabled={saving}>
+            {saving ? "Saving..." : "Save Event"}
           </button>
           <Link className="btn" href="/leader/dashboard">Cancel</Link>
         </div>
-
-        <p className="small" style={{ marginTop: 10 }}>
-          Tip: if you include a time, we save it with your date.
-        </p>
       </form>
     </main>
   );
