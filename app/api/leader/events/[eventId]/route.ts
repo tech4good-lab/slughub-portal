@@ -24,7 +24,7 @@ async function isMember(userId: string, clubId: string) {
   );
 }
 
-async function getUserClubIds(userId: string) {
+async function getUserClubIds(userId: string): Promise<string[]> {
   const memberRows = await cachedAll(
     CLUB_MEMBERS_TABLE,
     { filterByFormula: `{userId}="${userId}"` },
@@ -38,7 +38,7 @@ async function getUserClubIds(userId: string) {
 async function getUserEvents(userId: string) {
   const clubIds = await getUserClubIds(userId);
   if (clubIds.length === 0) return [];
-  const parts = clubIds.map((id) => `{clubId}="${id}"`);
+  const parts = clubIds.map((id: string) => `{clubId}="${id}"`);
   const filterByFormula = `OR(${parts.join(",")})`;
   const eventRows = await cachedAll(
     EVENTS_TABLE,
