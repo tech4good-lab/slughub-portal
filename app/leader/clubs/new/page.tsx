@@ -46,7 +46,7 @@ export default function NewClubPage() {
   };
 
   return (
-    <main className="container">
+    <main className="container clubCreate">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Create New Club</h1>
         <div className="row">

@@ -100,7 +100,7 @@ export default function NewEventPage() {
 
   if (loading) {
     return (
-      <main className="container">
+      <main className="container clubCreateEvent">
         <div className="card">
           <p className="small">Loading...</p>
         </div>
@@ -109,7 +109,7 @@ export default function NewEventPage() {
   }
 
   return (
-    <main className="container">
+    <main className="container clubCreateEvent">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Create Event</h1>
         <div className="row">

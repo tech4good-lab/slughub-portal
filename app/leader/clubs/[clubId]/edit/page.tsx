@@ -178,7 +178,7 @@ export default function EditClubPage() {
 
   if (loading) {
     return (
-      <main className="container">
+      <main className="container clubEdit">
         <div className="card">
           <p className="small">Loading...</p>
         </div>
@@ -187,7 +187,7 @@ export default function EditClubPage() {
   }
 
   return (
-    <main className="container">
+    <main className="container clubEdit">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Edit Club Profile</h1>
         <div className="row">

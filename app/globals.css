@@ -424,6 +424,158 @@ a:hover {
   border: 1px solid rgba(16,24,40,0.08);
   color: #000;
 }
+
+/* Club detail overrides */
+.clubDetail {
+  color: #000;
+}
+
+.clubDetail .small {
+  color: rgba(0,0,0,0.6);
+  opacity: 1 !important;
+}
+
+.clubDetail .card {
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.06);
+  color: #000;
+}
+
+.clubDetail .btn,
+.clubDetail .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.clubDetail .btn:hover,
+.clubDetail .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.clubDetail .btn:disabled,
+.clubDetail .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+/* Create new club overrides */
+.clubCreate {
+  color: #000;
+}
+
+.clubCreate .small {
+  color: rgba(0,0,0,0.6);
+  opacity: 1 !important;
+}
+
+.clubCreate .card {
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.06);
+  color: #000;
+}
+
+.clubCreate .btn,
+.clubCreate .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.clubCreate .btn:hover,
+.clubCreate .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.clubCreate .btn:disabled,
+.clubCreate .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+/* Create event overrides */
+.clubCreateEvent {
+  color: #000;
+}
+
+.clubCreateEvent .small {
+  color: rgba(0,0,0,0.6);
+  opacity: 1 !important;
+}
+
+.clubCreateEvent .card {
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.06);
+  color: #000;
+}
+
+.clubCreateEvent .btn,
+.clubCreateEvent .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.clubCreateEvent .btn:hover,
+.clubCreateEvent .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.clubCreateEvent .btn:disabled,
+.clubCreateEvent .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+/* Edit club profile overrides */
+.clubEdit {
+  color: #000;
+}
+
+.clubEdit .small {
+  color: rgba(0,0,0,0.6);
+  opacity: 1 !important;
+}
+
+.clubEdit .card {
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.06);
+  color: #000;
+}
+
+.clubEdit .btn,
+.clubEdit .btnPrimary {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
+
+.clubEdit .btn:hover,
+.clubEdit .btnPrimary:hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.clubEdit .btn:disabled,
+.clubEdit .btnPrimary:disabled {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+}
 /* Directory (home) specific styling - lightweight, page-scoped overrides */
 .directoryHome {
   position: relative;
