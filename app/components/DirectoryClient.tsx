@@ -38,14 +38,14 @@ export default function DirectoryClient({ clubs, session }: Props) {
   return (
     <>
       <div style={{ marginTop: 6 }}>
-        <p className="directorySubtitle">Search for a club by name</p>
+        <p className="directorySubtitle" style={{ fontWeight: 700, fontSize: 16 }}>Search for a club by name</p>
         <input
           className="input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search clubs..."
           aria-label="Search clubs by name"
-          style={{ maxWidth: 520 }}
+          style={{ maxWidth: 520, background: "#ffffff", fontWeight: 700, color: "#000" }}
         />
         <hr />
       </div>
