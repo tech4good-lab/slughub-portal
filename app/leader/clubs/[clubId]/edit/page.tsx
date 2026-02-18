@@ -173,7 +173,10 @@ export default function EditClubPage() {
     setSaving(false);
 
     // Optional: redirect after a short delay
-    setTimeout(() => router.push("/leader/dashboard"), 600);
+    setTimeout(() => {
+      router.push("/leader/dashboard");
+      router.refresh();
+    }, 600);
   };
 
   if (loading) {
