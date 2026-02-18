@@ -15,7 +15,7 @@ export default async function ClubDetailPage({
 
   if (!res.ok) {
     return (
-      <main className="container">
+      <main className="container clubDetail">
         <Link className="btn" href="/directory" style={{ marginBottom: 24, display: "inline-flex" }}>
           ← Back to Directory
         </Link>
@@ -31,7 +31,7 @@ export default async function ClubDetailPage({
   const club = data.club as Club;
 
   return (
-    <main className="container">
+    <main className="container clubDetail">
       <Link className="btn" href="/directory" style={{ marginBottom: 24, display: "inline-flex" }}>
         ← Back to Directory
       </Link>
@@ -64,10 +64,10 @@ export default async function ClubDetailPage({
           style={{
             fontSize: 16,
             lineHeight: 1.7,
-            color: "rgba(255,255,255,0.85)",
+            color: "rgba(0,0,0,0.75)",
             marginBottom: 24,
             paddingBottom: 24,
-            borderBottom: "1px solid rgba(255,255,255,0.1)"
+            borderBottom: "1px solid rgba(16,24,40,0.08)"
           }}
         >
           {club.description || "No description provided."}
@@ -88,12 +88,12 @@ export default async function ClubDetailPage({
             >
               Point of Contact
             </div>
-            <div style={{ fontWeight: 600, marginBottom: 4 }}>{club.contactName || "—"}</div>
+            <div style={{ fontWeight: 600, marginBottom: 4, color: "#000" }}>{club.contactName || "—"}</div>
             <a
               href={club.contactEmail ? `mailto:${club.contactEmail}` : "#"}
               style={{
                 fontSize: 14,
-                color: "rgba(251,191,36,0.9)",
+                color: "#000",
                 textDecoration: "none"
               }}
             >
@@ -203,3 +203,4 @@ export default async function ClubDetailPage({
     </main>
   );
 }
+

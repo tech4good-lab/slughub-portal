@@ -85,8 +85,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
 
   if (loading) {
     return (
-      <div className="card" style={{ marginTop: 14 }}>
-        <p className="small">Loading pending clubs…</p>
+      <div className="card" style={{ marginTop: 14, background: "#fff", color: "#000" }}>
+        <p className="small" style={{ color: "#000" }}>Loading pending clubs…</p>
       </div>
     );
   }
@@ -159,3 +159,4 @@ export default function PendingApprovals({ email }: { email?: string }) {
     </div>
   );
 }
+
