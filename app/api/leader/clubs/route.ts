@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
@@ -115,6 +116,11 @@ export async function POST(req: Request) {
     } catch (e) {
       console.warn("Failed to invalidate leader clubs cache", e);
     }
+    try {
+      revalidatePath("/leader/dashboard");
+    } catch (e) {
+      console.warn("Failed to revalidate leader dashboard", e);
+    }
 
     // Notify fixed recipient by email (best-effort)
     try {
@@ -133,7 +139,9 @@ Review it in the admin panel.`;
     }
 
     const createdFields = created[0].fields as any;
-    return NextResponse.json({ club: { recordId: created[0].id, ...createdFields, category: createdFields.Category ?? createdFields.category } });
+    return NextResponse.json({
+      club: { recordId: created[0].id, ...createdFields, category: createdFields.Category ?? createdFields.category },
+    });
   } catch (e: any) {
     console.error(e);
     return NextResponse.json({ error: e?.message ?? "Internal error" }, { status: 500 });

@@ -6,6 +6,8 @@ import type { Club } from "@/lib/types";
 import { CLUBS_TABLE, cachedAll } from "@/lib/airtable";
 import LogoutButton from "@/app/leader/edit/logout-button";
 
+export const dynamic = "force-dynamic";
+
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
 
 function orFormulaForClubIds(clubIds: string[]) {
