@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import type { Club } from "@/lib/types";
 import { CLUBS_TABLE, EVENTS_TABLE, cachedAll } from "@/lib/airtable";
+import EventsCacheClient from "@/app/components/EventsCacheClient";
 import LogoutButton from "@/app/leader/edit/logout-button";
 
 export const dynamic = "force-dynamic";
@@ -79,7 +80,7 @@ export default async function LeaderDashboard() {
     const eventRecords = await cachedAll(
       EVENTS_TABLE,
       { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "eventDate", direction: "desc" }] },
-      300
+      3600
     );
 
     for (const r of eventRecords || []) {
@@ -93,6 +94,9 @@ export default async function LeaderDashboard() {
 
   return (
     <div className="leaderDashboard" style={{ position: 'fixed', inset: 0, background: 'rgb(237, 244, 255)', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+      <EventsCacheClient
+        events={Object.values(eventsByClub).flat() as any[]}
+      />
       {/* Decorative bubbles */}
       <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '5%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
       <div style={{ position: 'absolute', width: 30, height: 30, left: '65%', top: '3%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />

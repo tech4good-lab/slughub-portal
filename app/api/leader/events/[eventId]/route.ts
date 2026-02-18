@@ -24,6 +24,30 @@ async function isMember(userId: string, clubId: string) {
   );
 }
 
+async function getUserClubIds(userId: string) {
+  const memberRows = await cachedAll(
+    CLUB_MEMBERS_TABLE,
+    { filterByFormula: `{userId}="${userId}"` },
+    300
+  );
+  return (memberRows || [])
+    .map((r: any) => String((r.fields as any)?.clubId ?? ""))
+    .filter(Boolean);
+}
+
+async function getUserEvents(userId: string) {
+  const clubIds = await getUserClubIds(userId);
+  if (clubIds.length === 0) return [];
+  const parts = clubIds.map((id) => `{clubId}="${id}"`);
+  const filterByFormula = `OR(${parts.join(",")})`;
+  const eventRows = await cachedAll(
+    EVENTS_TABLE,
+    { filterByFormula, sort: [{ field: "eventDate", direction: "desc" }] },
+    3600
+  );
+  return eventRows || [];
+}
+
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ eventId: string }> }
@@ -38,15 +62,13 @@ export async function GET(
   }
 
   const { eventId } = await params;
-  const eventRec = await cachedFind(EVENTS_TABLE, eventId, 60);
+  const eventRows = await getUserEvents(userId);
+  const eventRec = (eventRows || []).find((r: any) => r.id === eventId);
   if (!eventRec) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const f = eventRec.fields as any;
   const clubId = String(f?.clubId ?? "");
   if (!clubId) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  const ok = await isMember(userId, clubId);
-  if (!ok) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   return NextResponse.json({ event: { recordId: eventRec.id, ...f } });
 }
@@ -66,15 +88,13 @@ export async function POST(
     }
 
     const { eventId } = await params;
-    const eventRec = await cachedFind(EVENTS_TABLE, eventId, 60);
+    const eventRows = await getUserEvents(userId);
+    const eventRec = (eventRows || []).find((r: any) => r.id === eventId);
     if (!eventRec) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     const f = eventRec.fields as any;
     const clubId = String(f?.clubId ?? "");
     if (!clubId) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-    const ok = await isMember(userId, clubId);
-    if (!ok) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const body = await req.json();
     const eventTitle = String(body.eventTitle ?? "").trim();

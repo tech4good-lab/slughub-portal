@@ -28,7 +28,7 @@ export default function NewEventPage() {
     (async () => {
       setLoading(true);
       setErr(null);
-      const res = await fetch("/api/leader/clubs", { cache: "no-store" });
+      const res = await fetch("/api/leader/clubs");
 
       if (res.status === 401) {
         router.push("/login");

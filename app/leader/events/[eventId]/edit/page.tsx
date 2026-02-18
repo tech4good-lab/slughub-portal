@@ -24,6 +24,34 @@ export default function EditEventPage() {
   useEffect(() => {
     if (!eventId) return;
     (async () => {
+      try {
+        const raw = localStorage.getItem("clubEventsCache_v1");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const cached = (parsed?.events ?? []).find(
+            (ev: any) => String(ev?.recordId ?? "") === String(eventId)
+          );
+          if (cached) {
+            setClubId(String(cached.clubId ?? ""));
+            setEventTitle(String(cached.eventTitle ?? cached.name ?? ""));
+            const rawDate = String(cached.eventDate ?? "");
+            if (rawDate.includes("T")) {
+              setEventDate(rawDate.slice(0, 10));
+              setEventTime(rawDate.slice(11, 16));
+            } else {
+              setEventDate(rawDate);
+            }
+            setEventLocation(String(cached.eventLocation ?? ""));
+            setEventDescription(String(cached.eventDescription ?? ""));
+            setIceBreakers(String(cached.iceBreakers ?? ""));
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // ignore cache errors
+      }
+
       setLoading(true);
       setErr(null);
       const res = await fetch(`/api/leader/events/${eventId}`, { cache: "no-store" });
@@ -102,6 +130,33 @@ export default function EditEventPage() {
 
     setMsg("Event updated!");
     setSaving(false);
+    try {
+      const raw = localStorage.getItem("clubEventsCache_v1");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const events = Array.isArray(parsed?.events) ? parsed.events : [];
+        const idx = events.findIndex((ev: any) => String(ev?.recordId ?? "") === String(eventId));
+        const updated = {
+          ...events[idx],
+          recordId: eventId,
+          clubId,
+          eventTitle,
+          name: eventTitle,
+          eventDate: eventDate ? `${eventDate}${eventTime ? `T${eventTime}` : ""}` : "",
+          eventLocation,
+          eventDescription,
+          iceBreakers,
+        };
+        if (idx >= 0) {
+          events[idx] = updated;
+        } else {
+          events.push(updated);
+        }
+        localStorage.setItem("clubEventsCache_v1", JSON.stringify({ ts: Date.now(), events }));
+      }
+    } catch {
+      // ignore cache errors
+    }
     setTimeout(() => {
       router.push("/leader/dashboard");
       router.refresh();
