@@ -17,11 +17,17 @@ function normalizeCategory(c: any) {
 
 export default function DirectoryClient({ clubs, session }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
+  const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
-    if (selected.length === 0) return clubs;
-    return clubs.filter((c: any) => selected.includes(normalizeCategory((c as any).category)));
-  }, [clubs, selected]);
+    const q = query.trim().toLowerCase();
+    return clubs.filter((c: any) => {
+      const catOk = selected.length === 0 || selected.includes(normalizeCategory((c as any).category));
+      if (!catOk) return false;
+      if (!q) return true;
+      return String(c.name ?? "").toLowerCase().includes(q);
+    });
+  }, [clubs, selected, query]);
 
   const toggle = (cat: string) => {
     setSelected((prev) =>
@@ -30,7 +36,21 @@ export default function DirectoryClient({ clubs, session }: Props) {
   };
 
   return (
-    <div className="directoryLayout">
+    <>
+      <div style={{ marginTop: 6 }}>
+        <p className="directorySubtitle">Search for a club by name</p>
+        <input
+          className="input"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search clubs..."
+          aria-label="Search clubs by name"
+          style={{ maxWidth: 520 }}
+        />
+        <hr />
+      </div>
+
+      <div className="directoryLayout">
       <section>
         <div className="directoryGrid">
           {filtered.map((c) => (
@@ -103,6 +123,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
           ))}
         </div>
       </aside>
-    </div>
+      </div>
+    </>
   );
 }
