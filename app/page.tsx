@@ -30,11 +30,6 @@ export default async function HomePage() {
     <main className="container directoryHome">
       <Header session={session} isAdmin={isAdmin} />
 
-      <div style={{ marginTop: 6 }}>
-        <p className="directorySubtitle">Search bar or tool so that users can directly find specific clubs</p>
-        <hr />
-      </div>
-
       <DirectoryClient clubs={clubs} session={session} />
     </main>
   );
