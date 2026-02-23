@@ -26,12 +26,16 @@ export default function DirectoryClient({ clubs, session }: Props) {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return clubs.filter((c: any) => {
+    return clubs
+    .filter((c: any) => {
       const catOk = selected.length === 0 || selected.includes(normalizeCategory((c as any).category));
       if (!catOk) return false;
       if (!q) return true;
       return String(c.name ?? "").toLowerCase().includes(q);
-    });
+    })
+    .sort((a,b) =>
+    String(a.name ?? "").localeCompare(String(b.name ?? ""))
+    );
   }, [clubs, selected, query]);
 
   const toggle = (cat: string) => {
