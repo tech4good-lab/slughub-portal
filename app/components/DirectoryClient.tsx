@@ -56,10 +56,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
           />
           <hr />
 
-        <button onClick={() => toggleFilters()}>
-          {showFilters ? 'Hide Filters' : 'Show Filters'}
-          
+        <button aria-label="hide-show" className="btn" style={{ padding: "6px 8px" }} onClick={() => toggleFilters()}> {showFilters ? 'Hide Filters' : 'Show Filters'}
         </button>
+
 
         <aside className={`filtersPanel ${showFilters ? 'active' : ''}`}>
           <div className="filtersHeader">
