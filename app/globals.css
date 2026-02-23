@@ -619,16 +619,17 @@ a:hover {
 
 .directoryLayout {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
   gap: 28px;
   align-items: start;
 }
 
 .directoryGrid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
   gap: 28px 28px;
   margin-top: 20px;
+  width:100%;
 }
 
 .directoryHome .card {
@@ -636,8 +637,6 @@ a:hover {
   border: 1px solid rgba(16,24,40,0.04); /* subtle light border, not black */
   border-radius: 26px;
   padding: 22px 26px;
-  min-width: 260px;
-  max-width: 340px;
   box-shadow: 0 10px 20px rgba(16,24,40,0.06);
   color: #111827;
 }
@@ -731,8 +730,8 @@ a:hover {
 }
 
 @media (max-width: 900px) {
-  .directoryLayout {
-    grid-template-columns: 1fr;
+  .directoryGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .filtersPanel {
@@ -750,4 +749,24 @@ a:hover {
   }
 }
 
+
+@media (max-width: 540px) {
+  .directoryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtersPanel {
+    position: relative;
+    top: 0;
+    margin-top: 12px;
+  }
+
+  .directoryHome h1 {
+    font-size: 34px;
+  }
+
+  .directoryGrid {
+    justify-content: center;
+  }
+}
 
