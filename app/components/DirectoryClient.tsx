@@ -15,9 +15,14 @@ function normalizeCategory(c: any) {
   return String(c ?? "").trim();
 }
 
+
+
 export default function DirectoryClient({ clubs, session }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
   const [query, setQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const toggleFilters = () => setShowFilters(!showFilters);   
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -37,17 +42,48 @@ export default function DirectoryClient({ clubs, session }: Props) {
 
   return (
     <>
-      <div style={{ marginTop: 6 }}>
-        <p className="directorySubtitle" style={{ fontWeight: 700, fontSize: 16 }}>Search for a club by name</p>
-        <input
-          className="input"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search clubs..."
-          aria-label="Search clubs by name"
-          style={{ maxWidth: 520, background: "#ffffff", fontWeight: 700, color: "#000" }}
-        />
-        <hr />
+      <p>  Search clubs by name </p>
+      <div style={{ marginTop: 6, display: 'flex'}}>
+      
+          <p className="directorySubtitle" style={{ fontWeight: 700, fontSize: 16 }}></p>
+          <input
+            className="input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search clubs..."
+      
+            style={{ maxWidth: 520, maxHeight:40, background: "#ffffff", fontWeight: 700, color: "#000" }}
+          />
+          <hr />
+
+        <button onClick={() => toggleFilters()}>
+          {showFilters ? 'Hide Filters' : 'Show Filters'}
+          
+        </button>
+
+        <aside className={`filtersPanel ${showFilters ? 'active' : ''}`}>
+          <div className="filtersHeader">
+            <h3>Filters</h3>
+            <button aria-label="clear filters" className="btn" style={{ padding: "6px 8px" }} onClick={() => setSelected([])}>
+              Clear
+            </button>
+          </div>
+
+          <div className="filtersList">
+            {CATEGORY_OPTIONS.map((cat) => (
+              <label key={cat} className="filterItem">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(cat)}
+                  onChange={() => toggle(cat)}
+                />
+                {cat}
+              </label>
+            ))}
+          </div>
+        </aside>
+        
+
       </div>
 
       <div className="directoryLayout">
@@ -101,28 +137,6 @@ export default function DirectoryClient({ clubs, session }: Props) {
           </p>
         </div>
       </section>
-
-      <aside className="filtersPanel">
-        <div className="filtersHeader">
-          <h3>Filters</h3>
-          <button aria-label="clear filters" className="btn" style={{ padding: "6px 8px" }} onClick={() => setSelected([])}>
-            Clear
-          </button>
-        </div>
-
-        <div className="filtersList">
-          {CATEGORY_OPTIONS.map((cat) => (
-            <label key={cat} className="filterItem">
-              <input
-                type="checkbox"
-                checked={selected.includes(cat)}
-                onChange={() => toggle(cat)}
-              />
-              {cat}
-            </label>
-          ))}
-        </div>
-      </aside>
       </div>
     </>
   );

@@ -468,6 +468,7 @@ a:hover {
   color: #000;
 }
 
+
 .clubCreate .small {
   color: rgba(0,0,0,0.6);
   opacity: 1 !important;
@@ -665,11 +666,18 @@ a:hover {
   background: #ffffff; /* white panel */
   border-radius: 18px;
   padding: 18px;
+  margin-left: 50px;
   box-shadow: none !important;
   filter: none;
   border: 1px solid rgba(16,24,40,0.04);
   position: sticky;
   top: 24px;
+  display: none;
+
+}
+
+.filtersPanel.active {
+  display: block; /* Show when active */
 }
 
 /* Ensure divider on directory uses a subtle light border (not black) */
@@ -691,6 +699,9 @@ a:hover {
 }
 
 .filtersList {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  column-gap:8px;
   margin-top: 8px;
 }
 
