@@ -42,7 +42,13 @@ export default function DirectoryClient({ clubs, session }: Props) {
 
   return (
     <>
+    <div style={{display:"flex"}}>
       <p>  Search clubs by name </p>
+      <button 
+        aria-label="hide-show" className="btn" style={{fontSize:11, marginLeft:570 }} onClick={() => toggleFilters()}> {showFilters ? 'Hide Filters' : 'Show Filters'}
+      </button>
+    </div>
+
       <div style={{ marginTop: 6, display: 'flex'}}>
       
           <p className="directorySubtitle" style={{ fontWeight: 700, fontSize: 16 }}></p>
@@ -56,14 +62,10 @@ export default function DirectoryClient({ clubs, session }: Props) {
           />
           <hr />
 
-        <button aria-label="hide-show" className="btn" style={{ padding: "6px 8px" }} onClick={() => toggleFilters()}> {showFilters ? 'Hide Filters' : 'Show Filters'}
-        </button>
-
-
         <aside className={`filtersPanel ${showFilters ? 'active' : ''}`}>
           <div className="filtersHeader">
             <h3>Filters</h3>
-            <button aria-label="clear filters" className="btn" style={{ padding: "6px 8px" }} onClick={() => setSelected([])}>
+            <button aria-label="clear filters" className="btn" style={{ fontSize:11, padding: "6px 8px" }} onClick={() => setSelected([])}>
               Clear
             </button>
           </div>
