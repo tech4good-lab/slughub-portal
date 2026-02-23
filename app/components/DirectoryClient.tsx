@@ -15,18 +15,27 @@ function normalizeCategory(c: any) {
   return String(c ?? "").trim();
 }
 
+
+
 export default function DirectoryClient({ clubs, session }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
   const [query, setQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const toggleFilters = () => setShowFilters(!showFilters);   
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return clubs.filter((c: any) => {
+    return clubs
+    .filter((c: any) => {
       const catOk = selected.length === 0 || selected.includes(normalizeCategory((c as any).category));
       if (!catOk) return false;
       if (!q) return true;
       return String(c.name ?? "").toLowerCase().includes(q);
-    });
+    })
+    .sort((a,b) =>
+    String(a.name ?? "").localeCompare(String(b.name ?? ""))
+    );
   }, [clubs, selected, query]);
 
   const toggle = (cat: string) => {
@@ -37,20 +46,52 @@ export default function DirectoryClient({ clubs, session }: Props) {
 
   return (
     <>
-      <div style={{ marginTop: 6 }}>
-        <p className="directorySubtitle" style={{ fontWeight: 700, fontSize: 16 }}>Search for a club by name</p>
-        <input
-          className="input"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search clubs..."
-          aria-label="Search clubs by name"
-          style={{ maxWidth: 520, background: "#ffffff", fontWeight: 700, color: "#000" }}
-        />
-        <hr />
+    <div style={{display:"flex"}}>
+      <p>  Search clubs by name </p>
+      <button 
+        aria-label="hide-show" className="btn" style={{fontSize:11, marginLeft:570 }} onClick={() => toggleFilters()}> {showFilters ? 'Hide Filters' : 'Show Filters'}
+      </button>
+    </div>
+
+      <div style={{ marginTop: 6, display: 'flex'}}>
+      
+          <p className="directorySubtitle" style={{ fontWeight: 700, fontSize: 16 }}></p>
+          <input
+            className="input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search clubs..."
+      
+            style={{ maxWidth: 520, maxHeight:40, background: "#ffffff", fontWeight: 700, color: "#000" }}
+          />
+          <hr />
+
+        <aside className={`filtersPanel ${showFilters ? 'active' : ''}`}>
+          <div className="filtersHeader">
+            <h3>Filters</h3>
+            <button aria-label="clear filters" className="btn" style={{ fontSize:11, padding: "6px 8px" }} onClick={() => setSelected([])}>
+              Clear
+            </button>
+          </div>
+
+          <div className="filtersList">
+            {CATEGORY_OPTIONS.map((cat) => (
+              <label key={cat} className="filterItem">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(cat)}
+                  onChange={() => toggle(cat)}
+                />
+                {cat}
+              </label>
+            ))}
+          </div>
+        </aside>
+        
+
       </div>
 
-      <div className="directoryLayout">
+      <div style={{width:"100%"}}>
       <section>
         <div className="directoryGrid">
           {filtered.map((c) => (
@@ -89,7 +130,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
         {/* Credit */}
         <div style={{ marginTop: 36, textAlign: "center" }}>
           <p style={{ fontSize: 16, fontWeight: 500, color: "rgba(0,0,0,0.6)" }}>
-            Made with â¤ï¸ from the{" "}
+            Made with love from the{" "}
             <a
               href="https://tech4good.soe.ucsc.edu/"
               target="_blank"
@@ -101,28 +142,6 @@ export default function DirectoryClient({ clubs, session }: Props) {
           </p>
         </div>
       </section>
-
-      <aside className="filtersPanel">
-        <div className="filtersHeader">
-          <h3>Filters</h3>
-          <button aria-label="clear filters" className="btn" style={{ padding: "6px 8px" }} onClick={() => setSelected([])}>
-            Clear
-          </button>
-        </div>
-
-        <div className="filtersList">
-          {CATEGORY_OPTIONS.map((cat) => (
-            <label key={cat} className="filterItem">
-              <input
-                type="checkbox"
-                checked={selected.includes(cat)}
-                onChange={() => toggle(cat)}
-              />
-              {cat}
-            </label>
-          ))}
-        </div>
-      </aside>
       </div>
     </>
   );

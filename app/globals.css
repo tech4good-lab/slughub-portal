@@ -468,6 +468,7 @@ a:hover {
   color: #000;
 }
 
+
 .clubCreate .small {
   color: rgba(0,0,0,0.6);
   opacity: 1 !important;
@@ -618,16 +619,17 @@ a:hover {
 
 .directoryLayout {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
   gap: 28px;
   align-items: start;
 }
 
 .directoryGrid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
   gap: 28px 28px;
   margin-top: 20px;
+  width:100%;
 }
 
 .directoryHome .card {
@@ -635,8 +637,6 @@ a:hover {
   border: 1px solid rgba(16,24,40,0.04); /* subtle light border, not black */
   border-radius: 26px;
   padding: 22px 26px;
-  min-width: 260px;
-  max-width: 340px;
   box-shadow: 0 10px 20px rgba(16,24,40,0.06);
   color: #111827;
 }
@@ -665,11 +665,18 @@ a:hover {
   background: #ffffff; /* white panel */
   border-radius: 18px;
   padding: 18px;
+  margin-left: 50px;
   box-shadow: none !important;
   filter: none;
   border: 1px solid rgba(16,24,40,0.04);
   position: sticky;
   top: 24px;
+  display: none;
+
+}
+
+.filtersPanel.active {
+  display: block; /* Show when active */
 }
 
 /* Ensure divider on directory uses a subtle light border (not black) */
@@ -691,6 +698,9 @@ a:hover {
 }
 
 .filtersList {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  column-gap:8px;
   margin-top: 8px;
 }
 
@@ -720,8 +730,8 @@ a:hover {
 }
 
 @media (max-width: 900px) {
-  .directoryLayout {
-    grid-template-columns: 1fr;
+  .directoryGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .filtersPanel {
@@ -739,4 +749,24 @@ a:hover {
   }
 }
 
+
+@media (max-width: 540px) {
+  .directoryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtersPanel {
+    position: relative;
+    top: 0;
+    margin-top: 12px;
+  }
+
+  .directoryHome h1 {
+    font-size: 34px;
+  }
+
+  .directoryGrid {
+    justify-content: center;
+  }
+}
 
