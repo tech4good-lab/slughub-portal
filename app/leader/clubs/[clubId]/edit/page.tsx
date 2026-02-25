@@ -172,9 +172,12 @@ export default function EditClubPage() {
     }
     setSaving(false);
 
+    const writeTs = Date.now();
+    document.cookie = `leader_recent_write_at=${writeTs}; Max-Age=180; Path=/; SameSite=Lax`;
+
     // Optional: redirect after a short delay
     setTimeout(() => {
-      router.push("/leader/dashboard");
+      router.push(`/leader/dashboard?refresh=${writeTs}`);
       router.refresh();
     }, 600);
   };
@@ -307,7 +310,7 @@ export default function EditClubPage() {
           <button className="btn btnPrimary" type="submit" disabled={saving}>
             {saving ? "Submitting..." : "Submit for Approval"}
           </button>
-          <Link className="btn" href="/leader/dashboard">
+          <Link role="button" className="btn btnPrimary" style={{ fontWeight: 'bold', padding: '10px 16px', lineHeight: '1'  }} href="/leader/dashboard">
             Cancel
           </Link>
         </div>

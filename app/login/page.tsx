@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import DecorativeBubbles from "@/app/components/DecorativeBubbles";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,7 +32,8 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="container authPage">
+    <main className="container authPage" style={{ position: "relative", zIndex: 1 }}>
+      <DecorativeBubbles />
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Club Lead Login</h1>
         <Link className="btn" href="/">← Home</Link>
@@ -50,7 +52,7 @@ export default function LoginPage() {
 
         <div className="row" style={{ marginTop: 12 }}>
           <button className="btn btnPrimary" type="submit">Login</button>
-          <Link className="btn" href="/signup">Create account</Link>
+          <Link style ={{fontWeight: 'bold', padding: '11px 16px', lineHeight: '1'  }}className="btn btnPrimary" href="/signup">Create account</Link>
         </div>
       </form>
     </main>

@@ -123,7 +123,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
         </div>
 
         {/* Divider */}
-        <div style={{ width: '100%', height: 1, background: '#E5E7EB', margin: '20px 0 30px 0' }} />
+        <div style={{ width: '100%', height: 0.5, background: '#333333', margin: '20px 0 30px 0' }} />
 
         {/* Clubs List */}
         <div>
@@ -152,7 +152,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
         </div>
 
         {/* Footer */}
-        <div style={{ marginTop: 40, paddingTop: 20, borderTop: '1px solid #E5E7EB', textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#666' }}>
+        <div style={{ marginTop: 40, paddingTop: 20, borderTop: '0.5px solid #333333', textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#666' }}>
           Made with ❤️ from the <a href="#" style={{ color: '#69A1FF', textDecoration: 'underline' }}>Community RAG Team</a>
         </div>
       </div>

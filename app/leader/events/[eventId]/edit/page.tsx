@@ -240,7 +240,7 @@ export default function EditEventPage() {
           <button className="btn btnPrimary" type="submit" disabled={saving}>
             {saving ? "Saving..." : "Save Event"}
           </button>
-          <Link className="btn" href="/leader/dashboard">Cancel</Link>
+          <Link style ={{fontSize: 14.5,fontWeight: 'bold', padding: '11px 16px', lineHeight: '1'}} className="btn btnPrimary" href="/leader/dashboard">Cancel</Link>
         </div>
       </form>
     </main>

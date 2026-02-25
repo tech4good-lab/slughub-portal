@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import type { Club } from "@/lib/types";
 import { CLUBS_TABLE, EVENTS_TABLE, cachedAll } from "@/lib/airtable";
 import EventsCacheClient from "@/app/components/EventsCacheClient";
@@ -11,6 +12,8 @@ import LogoutButton from "@/app/leader/edit/logout-button";
 export const dynamic = "force-dynamic";
 
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
+const RECENT_WRITE_COOKIE = "leader_recent_write_at";
+const RECENT_WRITE_WINDOW_MS = 3 * 60 * 1000;
 
 function orFormulaForClubIds(clubIds: string[]) {
   const parts = clubIds.map((id) => `{clubId}="${id}"`);
@@ -49,6 +52,18 @@ export default async function LeaderDashboard() {
   const session = await getServerSession(authOptions);
   const userId = (session as any)?.userId;
   const role = (session as any)?.role;
+  const cookieStore = await cookies();
+  const recentWriteAt = Number(cookieStore.get(RECENT_WRITE_COOKIE)?.value ?? 0);
+  const nowMs = Date.now();
+  const hasRecentWrite =
+    Number.isFinite(recentWriteAt) &&
+    recentWriteAt > 0 &&
+    nowMs >= recentWriteAt &&
+    nowMs - recentWriteAt <= RECENT_WRITE_WINDOW_MS;
+  const cacheKeyExtra = hasRecentWrite ? { recentWriteAt } : undefined;
+  const membersTtl = hasRecentWrite ? 0 : 300;
+  const clubsTtl = hasRecentWrite ? 0 : 600;
+  const eventsTtl = hasRecentWrite ? 0 : 3600;
 
   if (!userId) redirect("/login");
 
@@ -59,7 +74,8 @@ export default async function LeaderDashboard() {
   const memberRecords = await cachedAll(
     MEMBERS_TABLE,
     { filterByFormula: `{userId}="${userId}"` },
-    300
+    membersTtl,
+    cacheKeyExtra
   );
 
   const clubIds = (memberRecords || [])
@@ -73,7 +89,8 @@ export default async function LeaderDashboard() {
     const clubRecords = await cachedAll(
       CLUBS_TABLE,
       { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] },
-      600
+      clubsTtl,
+      cacheKeyExtra
     );
 
     clubs = (clubRecords || []).map((r: any) => ({ recordId: r.id, ...(r.fields as any) })) as any;
@@ -81,7 +98,8 @@ export default async function LeaderDashboard() {
     const eventRecords = await cachedAll(
       EVENTS_TABLE,
       { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "eventDate", direction: "desc" }] },
-      3600
+      eventsTtl,
+      cacheKeyExtra
     );
 
     for (const r of eventRecords || []) {
@@ -121,7 +139,7 @@ export default async function LeaderDashboard() {
         }}
       >
         <div>
-          <h1 style={{ margin: 0, color: "black" }}>Leader Dashboard</h1>
+          <h1 style={{ margin: 0, color: "black", fontSize: 40 }}>Leader Dashboard</h1>
         </div>
         <nav className="row">
           {isAdmin && (
@@ -148,7 +166,7 @@ export default async function LeaderDashboard() {
         <p style={{ color: 'black', fontSize: 14, fontFamily: 'Sarabun', margin: '0 0 15px 0' }}>
           Logged in as: {session?.user?.email}
         </p>
-        <div style={{ width: '100%', height: 1, background: '#333' }} />
+        <div style={{ width: '100%', height: 0.5, background: '#333333' }} />
       </div>
 
       {/* Main card container */}
@@ -315,5 +333,3 @@ export default async function LeaderDashboard() {
     </div>
   );
 }
-
-

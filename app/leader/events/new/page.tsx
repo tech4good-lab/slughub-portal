@@ -214,7 +214,7 @@ export default function NewEventPage() {
           <button className="btn btnPrimary" type="submit" disabled={saving || clubs.length === 0}>
             {saving ? "Creating..." : "Create Event"}
           </button>
-          <Link className="btn" href="/leader/dashboard">Cancel</Link>
+          <Link className="btn btnPrimary" style ={{fontSize: 14.5,fontWeight: 'bold', padding: '11px 16px', lineHeight: '1'}} href="/leader/dashboard">Cancel</Link>
         </div>
 
         <p className="small" style={{ marginTop: 10 }}>
