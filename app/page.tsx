@@ -43,6 +43,7 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
         justifyContent: "space-between",
         alignItems: "center",
         marginBottom: 32,
+        marginTop: 16,
         flexWrap: "wrap",
         gap: 16,
       }}
@@ -52,6 +53,7 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
           style={{
             margin: 0,
             color: "black",
+            fontSize: 40,
           }}
         >
           Community Directory
