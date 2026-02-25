@@ -584,19 +584,6 @@ a:hover {
   padding-top: 8px; /* small offset so header sits nicely */
 }
 
-.directoryHome::before {
-  content: '';
-  position: absolute;
-  right: -120px;
-  top: 40px;
-  width: 520px;
-  height: 520px;
-  background: radial-gradient(circle at 30% 30%, rgba(208,226,255,0.12), rgba(253,240,166,0.04) 40%, transparent 60%);
-  filter: blur(12px);
-  pointer-events: none;
-  z-index: 0;
-}
-
 .directoryHome header,
 .directoryHome .card,
 .directoryHome .grid,
