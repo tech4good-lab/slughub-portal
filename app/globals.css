@@ -277,6 +277,13 @@ a:hover {
 /* Admin access page overrides */
 .adminAccess {
   color: #000;
+  position: relative;
+  isolation: isolate;
+}
+
+.adminAccess > *:not([aria-hidden="true"]) {
+  position: relative;
+  z-index: 2;
 }
 
 .adminAccess .small {
@@ -320,6 +327,13 @@ a:hover {
   background: #FDF0A6;
   border-color: #FDF0A6;
   color: #000;
+}
+
+.adminAccess .card {
+  background: #ffffff !important;
+  opacity: 1 !important;
+  position: relative;
+  z-index: 2;
 }
 /* Leader dashboard overrides */
 .leaderDashboard {
@@ -373,6 +387,13 @@ a:hover {
 /* Auth (login/signup) overrides */
 .authPage {
   color: #000;
+  position: relative;
+  isolation: isolate;
+}
+
+.authPage > *:not([aria-hidden="true"]) {
+  position: relative;
+  z-index: 2;
 }
 
 .authPage .small {
@@ -420,9 +441,12 @@ a:hover {
 }
 
 .authPage .card {
-  background: #ffffff;
+  background: #ffffff !important;
+  opacity: 1 !important;
   border: 1px solid rgba(16,24,40,0.08);
   color: #000;
+  position: relative;
+  z-index: 2;
 }
 
 /* Club detail overrides */
@@ -757,3 +781,31 @@ a:hover {
   }
 }
 
+/* Shared nav button styling (matches Community Directory look) */
+.btn[href="/admin/review"]:not(.btnPrimary),
+.btn[href="/admin/access"]:not(.btnPrimary),
+.btn[href="/leader/dashboard"]:not(.btnPrimary),
+.btn[href="/directory"]:not(.btnPrimary),
+.btn[href="/login"]:not(.btnPrimary),
+.btn[href="/"]:not(.btnPrimary) {
+  border-radius: 20px;
+  padding: 8px 16px;
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  font-weight: 600;
+}
+
+.btn[href="/admin/review"]:not(.btnPrimary):hover,
+.btn[href="/admin/access"]:not(.btnPrimary):hover,
+.btn[href="/leader/dashboard"]:not(.btnPrimary):hover,
+.btn[href="/directory"]:not(.btnPrimary):hover,
+.btn[href="/login"]:not(.btnPrimary):hover,
+.btn[href="/"]:not(.btnPrimary):hover {
+  background: #FDF0A6;
+  border-color: #FDF0A6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  transform: translateY(-1px);
+}

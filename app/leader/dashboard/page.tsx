@@ -333,4 +333,3 @@ export default async function LeaderDashboard() {
     </div>
   );
 }
-
