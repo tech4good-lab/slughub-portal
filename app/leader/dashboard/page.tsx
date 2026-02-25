@@ -121,7 +121,7 @@ export default async function LeaderDashboard() {
         }}
       >
         <div>
-          <h1 style={{ margin: 0, color: "black" }}>Leader Dashboard</h1>
+          <h1 style={{ margin: 0, color: "black", fontSize: 40 }}>Leader Dashboard</h1>
         </div>
         <nav className="row">
           {isAdmin && (
