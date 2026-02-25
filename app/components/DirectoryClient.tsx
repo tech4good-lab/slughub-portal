@@ -130,7 +130,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
         {/* Credit */}
         <div style={{ marginTop: 36, textAlign: "center" }}>
           <p style={{ fontSize: 16, fontWeight: 500, color: "rgba(0,0,0,0.6)" }}>
-            Made with love from the{" "}
+            Made with ❤️ from the{" "}
             <a
               href="https://tech4good.soe.ucsc.edu/"
               target="_blank"

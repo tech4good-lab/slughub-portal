@@ -307,7 +307,7 @@ export default function EditClubPage() {
           <button className="btn btnPrimary" type="submit" disabled={saving}>
             {saving ? "Submitting..." : "Submit for Approval"}
           </button>
-          <Link className="btn" href="/leader/dashboard">
+          <Link role="button" className="btn btnPrimary" style={{ fontWeight: 'bold', padding: '10px 16px', lineHeight: '1'  }} href="/leader/dashboard">
             Cancel
           </Link>
         </div>
