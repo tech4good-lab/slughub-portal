@@ -172,9 +172,12 @@ export default function EditClubPage() {
     }
     setSaving(false);
 
+    const writeTs = Date.now();
+    document.cookie = `leader_recent_write_at=${writeTs}; Max-Age=180; Path=/; SameSite=Lax`;
+
     // Optional: redirect after a short delay
     setTimeout(() => {
-      router.push("/leader/dashboard");
+      router.push(`/leader/dashboard?refresh=${writeTs}`);
       router.refresh();
     }, 600);
   };
