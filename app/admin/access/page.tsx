@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import AccessRequestsList from "./requests-list";
+import DecorativeBubbles from "@/app/components/DecorativeBubbles";
 
 export default async function AdminAccessPage() {
   const session = await getServerSession(authOptions);
@@ -12,7 +13,8 @@ export default async function AdminAccessPage() {
   if (role !== "admin") redirect("/forbidden");
 
   return (
-    <main className="container adminAccess">
+    <main className="container adminAccess" style={{ position: "relative", zIndex: 1 }}>
+      <DecorativeBubbles />
       <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
         <h1>Admin: Leader Access Requests</h1>
         <div className="row">

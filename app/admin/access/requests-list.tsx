@@ -85,6 +85,7 @@ export default function AccessRequestsList() {
         </div>
       )}
 
+      
       <div className="grid" style={{ marginTop: 14 }}>
         {requests.map((r) => (
           <div key={r.recordId} className="card" style={{ background: "#fff", color: "#000" }}>

@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import type { Club } from "@/lib/types";
 import PendingBadge from "@/app/components/PendingBadge";
 import DirectoryClient from "@/app/components/DirectoryClient";
+import DecorativeBubbles from "@/app/components/DecorativeBubbles";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -13,7 +14,8 @@ export default async function HomePage() {
 
   if (!res.ok) {
     return (
-      <main className="container">
+      <main className="container" style={{ position: "relative", zIndex: 1 }}>
+        <DecorativeBubbles />
         <Header session={session} isAdmin={isAdmin} />
         <div className="card">
           <p className="small">Failed to load clubs.</p>
@@ -27,7 +29,8 @@ export default async function HomePage() {
   const clubs = raw.filter((c) => c.recordId && c.name);
 
   return (
-    <main className="container directoryHome">
+    <main className="container directoryHome" style={{ zIndex: 1 }}>
+      <DecorativeBubbles />
       <Header session={session} isAdmin={isAdmin} />
 
       <DirectoryClient clubs={clubs} session={session} />
