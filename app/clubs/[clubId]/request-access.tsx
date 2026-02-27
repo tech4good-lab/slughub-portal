@@ -87,11 +87,11 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
           Check whether you already have leader access for this club, or request it.
         </p>
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" onClick={load}>
+          <button className="btn btnPrimary" onClick={load} style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontWeight: 600, boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}>
             Check access status
           </button>
           <Link className="btn" href="/login">Log in</Link>
-          <Link className="btn" href="/signup">Sign up</Link>
+          <Link className="btn" href="/signup" style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}>Sign up</Link>
         </div>
       </div>
     );
@@ -126,7 +126,7 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
         </p>
         <div className="row" style={{ marginTop: 12 }}>
           <Link className="btn btnPrimary" href="/login">Log in</Link>
-          <Link className="btn" href="/signup">Sign up</Link>
+          <Link className="btn" href="/signup" style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}>Sign up</Link>
         </div>
       </div>
     );
@@ -201,3 +201,5 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
     </div>
   );
 }
+
+

@@ -308,10 +308,10 @@ export default function EditClubPage() {
         {msg && <p className="small" style={{ marginTop: 10 }}>{msg}</p>}
 
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" type="submit" disabled={saving}>
+          <button className="btn btnPrimary" type="submit" disabled={saving} style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}>
             {saving ? "Submitting..." : "Submit for Approval"}
           </button>
-          <Link role="button" className="btn btnPrimary" style={{ fontWeight: 'bold', padding: '10px 16px', lineHeight: '1'  }} href="/leader/dashboard">
+          <Link role="button" className="btn btnPrimary" style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }} href="/leader/dashboard">
             Cancel
           </Link>
         </div>
@@ -323,3 +323,5 @@ export default function EditClubPage() {
     </main>
   );
 }
+
+

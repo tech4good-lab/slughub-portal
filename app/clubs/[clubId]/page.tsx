@@ -148,7 +148,7 @@ export default async function ClubDetailPage({
                 href={club.discordUrl}
                 target="_blank"
                 rel="noreferrer"
-                style={{ marginTop: 8, display: "inline-flex" }}
+                style={{ marginTop: 8, display: "inline-flex", padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}
               >
                 Join Server
               </a>
@@ -203,4 +203,5 @@ export default async function ClubDetailPage({
     </main>
   );
 }
+
 

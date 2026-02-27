@@ -230,10 +230,10 @@ export default async function LeaderDashboard() {
                       {(club.description ?? "").length > 140 ? "..." : ""}
                     </p>
                   <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-                    <Link href={`/leader/clubs/${club.clubId}/edit`} style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                    <Link href={`/leader/clubs/${club.clubId}/edit`} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer', boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
                       Edit
                     </Link>
-                    <Link href={`/clubs/${club.clubId ?? club.recordId}`} style={{ padding: '8px 16px', background: '#E5E7EB', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
+                    <Link href={`/clubs/${club.clubId ?? club.recordId}`} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer', boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
                       View Public
                     </Link>
                   </div>
@@ -334,3 +334,4 @@ export default async function LeaderDashboard() {
     </div>
   );
 }
+
