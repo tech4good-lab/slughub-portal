@@ -56,7 +56,7 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
           style={{
             margin: 0,
             color: "black",
-            fontSize: 40,
+            fontSize: "clamp(28px, 5vw, 40px)",
           }}
         >
           Community Directory
