@@ -48,46 +48,51 @@ export default function DirectoryClient({ clubs, session }: Props) {
     <>
 
 
-      <div style={{ marginTop: 6, display: 'flex'}}>
-      
-          <p className="directorySubtitle" style={{ fontWeight: 700, fontSize: 16 }}></p>
+      <div className="directoryToolbar">
+        <div className="directorySearchWrap">
           <input
             className="input"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search clubs by name..."
-      
-            style={{ maxWidth: 520, maxHeight:40, background: "#ffffff", fontWeight: 700, color: "#000" }}
+            style={{ background: "#ffffff", fontWeight: 700, color: "#000" }}
           />
-          <hr />
-                <button 
-              aria-label="hide-show" className="btn" style={{fontSize:11, marginLeft:570 }} onClick={() => toggleFilters()}> {showFilters ? 'Hide Filters' : 'Show Filters'}
-            </button>
-
-        <aside className={`filtersPanel ${showFilters ? 'active' : ''}`}>
-          <div className="filtersHeader">
-            <h3>Filters</h3>
-            <button aria-label="clear filters" className="btn" style={{ fontSize:11, padding: "6px 8px" }} onClick={() => setSelected([])}>
-              Clear
-            </button>
-          </div>
-
-          <div className="filtersList">
-            {CATEGORY_OPTIONS.map((cat) => (
-              <label key={cat} className="filterItem">
-                <input
-                  type="checkbox"
-                  checked={selected.includes(cat)}
-                  onChange={() => toggle(cat)}
-                />
-                {cat}
-              </label>
-            ))}
-          </div>
-        </aside>
-        
-
+        </div>
+        <button
+          aria-label="hide-show"
+          className="btn directoryFilterToggle"
+          onClick={toggleFilters}
+        >
+          {showFilters ? "Hide Filters" : "Show Filters"}
+        </button>
       </div>
+
+      <aside className={`filtersPanel ${showFilters ? "active" : ""}`}>
+        <div className="filtersHeader">
+          <h3>Filters</h3>
+          <button
+            aria-label="clear filters"
+            className="btn"
+            style={{ fontSize: 11, padding: "6px 8px" }}
+            onClick={() => setSelected([])}
+          >
+            Clear
+          </button>
+        </div>
+
+        <div className="filtersList">
+          {CATEGORY_OPTIONS.map((cat) => (
+            <label key={cat} className="filterItem">
+              <input
+                type="checkbox"
+                checked={selected.includes(cat)}
+                onChange={() => toggle(cat)}
+              />
+              {cat}
+            </label>
+          ))}
+        </div>
+      </aside>
 
       <div style={{width:"100%"}}>
       <section>
@@ -112,7 +117,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
         </div>
 
         {filtered.length === 0 && (
-          <div className="card" style={{ textAlign: "center", padding: 60 }}>
+          <div className="card" style={{ textAlign: "center", padding: "clamp(20px, 6vw, 60px)" }}>
             <h2 style={{ marginBottom: 8 }}>No clubs yet</h2>
             <p className="small" style={{ margin: 0 }}>
               Be the first to register your club and start building community.

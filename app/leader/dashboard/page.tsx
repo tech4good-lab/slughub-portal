@@ -112,7 +112,7 @@ export default async function LeaderDashboard() {
   }
 
   return (
-    <div className="leaderDashboard" style={{ position: 'fixed', inset: 0, background: 'rgb(237, 244, 255)', overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+    <div className="leaderDashboard" style={{ minHeight: "100dvh", background: "rgb(237, 244, 255)", overflow: "auto", display: "flex", flexDirection: "column", padding: "clamp(12px, 3vw, 20px)" }}>
       <ClubsCacheClient clubs={clubs as any[]} />
       <EventsCacheClient
         events={Object.values(eventsByClub).flat() as any[]}
@@ -139,7 +139,7 @@ export default async function LeaderDashboard() {
         }}
       >
         <div>
-          <h1 style={{ margin: 0, color: "black", fontSize: 40 }}>Leader Dashboard</h1>
+          <h1 style={{ margin: 0, color: "black", fontSize: "clamp(28px, 5vw, 40px)" }}>Leader Dashboard</h1>
         </div>
         <nav className="row">
           {isAdmin && (
@@ -170,12 +170,12 @@ export default async function LeaderDashboard() {
       </div>
 
       {/* Main card container */}
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 10, minHeight: 0 }}>
-        <div style={{ width: '100%', maxWidth: 900, background: 'white', borderRadius: 25, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', padding: '40px', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: "flex", justifyContent: "center", position: "relative", zIndex: 10, minHeight: 0 }}>
+        <div style={{ width: "100%", maxWidth: 900, background: "white", borderRadius: 25, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", padding: "clamp(16px, 4vw, 40px)", display: "flex", flexDirection: "column" }}>
           {/* Section header*/}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 30 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 30, flexWrap: "wrap", gap: 12 }}>
             <h2 style={{ fontSize: 24, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>My Clubs</h2>
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <Link href="/leader/events/new" style={{ padding: '8px 20px', background: '#E5E7EB', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
                 Create Event
               </Link>
@@ -210,16 +210,17 @@ export default async function LeaderDashboard() {
               <div
                 key={club.clubId ?? club.recordId}
                 style={{
-                  padding: '16px 20px',
-                  background: '#FAFAFA',
+                  padding: "16px 20px",
+                  background: "#FAFAFA",
                   borderRadius: 12,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 20
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: 20,
+                  flexWrap: "wrap",
                 }}
               >
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ flex: "1 1 260px", minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
                       <h3 style={{ fontSize: 16, fontFamily: 'Sarabun', fontWeight: 600, margin: 0, color: 'black' }}>{club.name ?? 'Untitled Club'}</h3>
                       <StatusPill status={club.status} />
@@ -228,7 +229,7 @@ export default async function LeaderDashboard() {
                       {(club.description ?? "").slice(0, 140) || "Club description..."}
                       {(club.description ?? "").length > 140 ? "..." : ""}
                     </p>
-                  <div style={{ display: 'flex', gap: 10 }}>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                     <Link href={`/leader/clubs/${club.clubId}/edit`} style={{ padding: '8px 16px', background: '#FDF0A6', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
                       Edit
                     </Link>
@@ -238,7 +239,7 @@ export default async function LeaderDashboard() {
                   </div>
                 </div>
 
-                <details style={{ minWidth: 220 }}>
+                <details style={{ flex: "1 1 220px", minWidth: 0, width: "100%", maxWidth: 320 }}>
                   <summary
                     style={{
                       listStyle: "none",
