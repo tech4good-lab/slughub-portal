@@ -9,7 +9,7 @@ type Props = {
   session: any;
 };
 
-const CATEGORY_OPTIONS = ["Club", "Org", "Unofficial", "Athletic"] as const;
+const CATEGORY_OPTIONS = ["Club", "Org", "Unofficial", "Athletic", "Research"] as const;
 
 function normalizeCategory(c: any) {
   return String(c ?? "").trim();
@@ -46,12 +46,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
 
   return (
     <>
-    <div style={{display:"flex"}}>
-      <p>  Search clubs by name </p>
-      <button 
-        aria-label="hide-show" className="btn" style={{fontSize:11, marginLeft:570 }} onClick={() => toggleFilters()}> {showFilters ? 'Hide Filters' : 'Show Filters'}
-      </button>
-    </div>
+
 
       <div style={{ marginTop: 6, display: 'flex'}}>
       
@@ -60,11 +55,14 @@ export default function DirectoryClient({ clubs, session }: Props) {
             className="input"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search clubs..."
+            placeholder="Search clubs by name..."
       
             style={{ maxWidth: 520, maxHeight:40, background: "#ffffff", fontWeight: 700, color: "#000" }}
           />
           <hr />
+                <button 
+              aria-label="hide-show" className="btn" style={{fontSize:11, marginLeft:570 }} onClick={() => toggleFilters()}> {showFilters ? 'Hide Filters' : 'Show Filters'}
+            </button>
 
         <aside className={`filtersPanel ${showFilters ? 'active' : ''}`}>
           <div className="filtersHeader">

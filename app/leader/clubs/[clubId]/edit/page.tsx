@@ -251,6 +251,7 @@ export default function EditClubPage() {
           <option>Org</option>
           <option>Athletic</option>
           <option>Unofficial</option>
+          <option>Research</option>
         </select>
 
         <hr />

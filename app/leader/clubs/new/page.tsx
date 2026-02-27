@@ -77,6 +77,7 @@ export default function NewClubPage() {
           <option>Org</option>
           <option>Athletic</option>
           <option>Unofficial</option>
+          <option>Research</option>
         </select>
 
         <div style={{ height: 10 }} />
