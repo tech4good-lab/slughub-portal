@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import {
@@ -76,8 +76,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "clubId is required" }, { status: 400 });
   }
 
-  const nowIso = new Date().toISOString();
-
   // Upsert: if they already requested for this club, update it
   const existing = await cachedFirstPage(
     ACCESS_REQUESTS_TABLE,
@@ -93,7 +91,7 @@ export async function POST(req: Request) {
     const rec = existing[0];
     const fields: any = rec.fields;
 
-    // If approved already, just return it (don’t spam requests)
+    // If approved already, just return it (donâ€™t spam requests)
     if (fields?.status === "approved") {
       return NextResponse.json({ request: { recordId: rec.id, ...rec.fields } });
     }
@@ -110,7 +108,6 @@ export async function POST(req: Request) {
           reviewNotes: "",
           // IMPORTANT: Airtable clears fields with null (undefined is ignored)
           reviewedAt: null as any,
-          createdAt: nowIso,
         },
       },
     ]);
@@ -138,7 +135,6 @@ export async function POST(req: Request) {
         message,
         status: "pending",
         reviewNotes: "",
-        createdAt: nowIso,
         // IMPORTANT: use null to clear (or leave out), not undefined
         reviewedAt: null as any,
       },
@@ -181,3 +177,4 @@ View access requests in the admin panel.`;
     request: { recordId: created[0].id, ...created[0].fields },
   });
 }
+

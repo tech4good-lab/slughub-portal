@@ -2,6 +2,22 @@ import Link from "next/link";
 import type { Club } from "@/lib/types";
 import RequestAccess from "./request-access";
 
+const linkPillStyle = {
+  padding: "8px 16px",
+  background: "#FDF0A6",
+  border: "1px solid #FDF0A6",
+  borderRadius: 20,
+  color: "#000",
+  fontFamily: "Sarabun",
+  fontSize: 14,
+  fontWeight: 600,
+  lineHeight: "1",
+  textDecoration: "none",
+  boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+  display: "inline-flex",
+  alignSelf: "flex-start" as const,
+};
+
 export default async function ClubDetailPage({
   params
 }: {
@@ -16,8 +32,8 @@ export default async function ClubDetailPage({
   if (!res.ok) {
     return (
       <main className="container clubDetail">
-        <Link className="btn" href="/directory" style={{ marginBottom: 24, display: "inline-flex" }}>
-          ← Back to Directory
+        <Link className="btn" href="/directory" style={{ ...linkPillStyle, marginBottom: 24 }}>
+        Back to Directory
         </Link>
         <div className="card" style={{ marginTop: 20, textAlign: "center", padding: 60 }}>
           <h2 style={{ marginBottom: 8 }}>Club not found</h2>
@@ -32,8 +48,8 @@ export default async function ClubDetailPage({
 
   return (
     <main className="container clubDetail">
-      <Link className="btn" href="/directory" style={{ marginBottom: 24, display: "inline-flex" }}>
-        ← Back to Directory
+      <Link className="btn" href="/directory" style={{ ...linkPillStyle, marginBottom: 24 }}>
+      Back to Directory
       </Link>
 
       {/* Hero section - cleaner layout */}
@@ -120,7 +136,7 @@ export default async function ClubDetailPage({
                 href={club.calendarUrl}
                 target="_blank"
                 rel="noreferrer"
-                style={{ marginTop: 8, display: "inline-flex" }}
+                style={{ ...linkPillStyle, marginTop: 8 }}
               >
                 View Calendar
               </a>
@@ -148,7 +164,7 @@ export default async function ClubDetailPage({
                 href={club.discordUrl}
                 target="_blank"
                 rel="noreferrer"
-                style={{ marginTop: 8, display: "inline-flex", padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}
+                style={{ ...linkPillStyle, marginTop: 8 }}
               >
                 Join Server
               </a>
@@ -172,17 +188,17 @@ export default async function ClubDetailPage({
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
               {club.websiteUrl && (
-                <a className="btn" href={club.websiteUrl} target="_blank" rel="noreferrer">
+                <a className="btn" href={club.websiteUrl} target="_blank" rel="noreferrer" style={linkPillStyle}>
                   Website
                 </a>
               )}
               {club.instagramUrl && (
-                <a className="btn" href={club.instagramUrl} target="_blank" rel="noreferrer">
+                <a className="btn" href={club.instagramUrl} target="_blank" rel="noreferrer" style={linkPillStyle}>
                   Instagram
                 </a>
               )}
               {club.linkedinUrl && (
-                <a className="btn" href={club.linkedinUrl} target="_blank" rel="noreferrer">
+                <a className="btn" href={club.linkedinUrl} target="_blank" rel="noreferrer" style={linkPillStyle}>
                   LinkedIn
                 </a>
               )}
