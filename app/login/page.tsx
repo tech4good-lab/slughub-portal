@@ -51,10 +51,11 @@ export default function LoginPage() {
         {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
 
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" type="submit">Login</button>
-          <Link style ={{fontWeight: 'bold', padding: '11px 16px', lineHeight: '1'  }}className="btn btnPrimary" href="/signup">Create account</Link>
+          <button className="btn btnPrimary" type="submit" style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}>Login</button>
+          <Link style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }} className="btn btnPrimary" href="/signup">Create account</Link>
         </div>
       </form>
     </main>
   );
 }
+

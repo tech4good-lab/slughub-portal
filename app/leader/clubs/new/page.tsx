@@ -94,10 +94,10 @@ export default function NewClubPage() {
         {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
 
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" type="submit" disabled={saving}>
+          <button className="btn btnPrimary" type="submit" disabled={saving} style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}>
             {saving ? "Creating..." : "Create"}
           </button>
-          <Link style ={{fontSize: 14.5,fontWeight: 'bold', padding: '11px 16px', lineHeight: '1'}} className="btn btnPrimary" href="/leader/dashboard">Cancel</Link>
+          <Link style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }} className="btn btnPrimary" href="/leader/dashboard">Cancel</Link>
         </div>
       </form>
     </main>
@@ -105,3 +105,4 @@ export default function NewClubPage() {
 }
 
 // (prefill handled inside the component)
+
