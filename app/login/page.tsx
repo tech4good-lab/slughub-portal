@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -34,12 +34,17 @@ export default function LoginPage() {
   return (
     <main className="container authPage" style={{ position: "relative", zIndex: 1 }}>
       <DecorativeBubbles />
-      <div className="row" style={{ justifyContent: "space-between" }}>
-        <h1>Club Lead Login</h1>
-        <Link className="btn" href="/">← Home</Link>
-      </div>
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onLogin}>
+        <div style={{ marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50 }} />
+            <h1 style={{ margin: 0 }}>Club Lead Login</h1>
+          </div>
+          <Link className="btn" href="/">View Community Directory</Link>
+        </div>
+        <div style={{ width: "100%", height: 0.5, background: "#333333", marginBottom: 16 }} />
+
         <label className="label">Email</label>
         <input className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
 
@@ -58,4 +63,3 @@ export default function LoginPage() {
     </main>
   );
 }
-
