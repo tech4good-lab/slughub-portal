@@ -139,10 +139,10 @@ export default function PendingApprovals({ email }: { email?: string }) {
                   <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>{c.description ?? 'Club description...'}</div>
                 </div>
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'approve')} disabled={busy[c.recordId]} style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
+                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'approve')} disabled={busy[c.recordId]} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
                     {busy[c.recordId] ? 'Working...' : 'Approve'}
                   </button>
-                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'reject')} disabled={busy[c.recordId]} style={{ padding: '8px 20px', background: '#D9D9D9', border: 'none', borderRadius: 8, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)' }}>
+                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'reject')} disabled={busy[c.recordId]} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
                     {busy[c.recordId] ? 'Working...' : 'Reject'}
                   </button>
                 </div>
@@ -159,4 +159,6 @@ export default function PendingApprovals({ email }: { email?: string }) {
     </div>
   );
 }
+
+
 
