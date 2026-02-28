@@ -125,53 +125,51 @@ export default async function LeaderDashboard() {
       <div style={{ position: 'absolute', width: 35, height: 35, left: '85%', top: '75%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
       <div style={{ position: 'absolute', width: 25, height: 25, left: '15%', top: '80%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
 
-      {/* Header */}
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 32,
-          flexWrap: "wrap",
-          gap: 16,
-          position: "relative",
-          zIndex: 10,
-        }}
-      >
-        <div>
-          <h1 style={{ margin: 0, color: "black", fontSize: "clamp(28px, 5vw, 40px)" }}>Leader Dashboard</h1>
-        </div>
-        <nav className="row">
-          {isAdmin && (
-            <>
-              <Link className="btn" href="/admin/review">
-                Club Approvals
-              </Link>
-              <Link className="btn" href="/admin/access">
-                Access Requests
-              </Link>
-            </>
-          )}
-          <Link className="btn" href="/directory">
-            Directory
-          </Link>
-          <Link className="btn" href="/login">
-            Logout
-          </Link>
-        </nav>
-      </header>
-
-      {/* Logged in info and divider */}
-      <div style={{ position: 'relative', zIndex: 10, marginBottom: 20 }}>
-        <p style={{ color: 'black', fontSize: 14, fontFamily: 'Sarabun', margin: '0 0 15px 0' }}>
-          Logged in as: {session?.user?.email}
-        </p>
-        <div style={{ width: '100%', height: 0.5, background: '#333333' }} />
-      </div>
-
       {/* Main card container */}
       <div style={{ flex: 1, display: "flex", justifyContent: "center", position: "relative", zIndex: 10, minHeight: 0 }}>
         <div style={{ width: "100%", maxWidth: 900, background: "white", borderRadius: 25, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", padding: "clamp(16px, 4vw, 40px)", display: "flex", flexDirection: "column" }}>
+          {/* Header */}
+          <header
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 10,
+              flexWrap: "wrap",
+              gap: 16,
+            }}
+          >
+            <div>
+              <h1 style={{ margin: 0, color: "black" }}>Leader Dashboard</h1>
+            </div>
+            <nav className="row">
+              {isAdmin && (
+                <>
+                  <Link className="btn" href="/admin/review">
+                    Club Approvals
+                  </Link>
+                  <Link className="btn" href="/admin/access">
+                    Access Requests
+                  </Link>
+                </>
+              )}
+              <Link className="btn" href="/directory">
+                Directory
+              </Link>
+              <Link className="btn" href="/login">
+                Logout
+              </Link>
+            </nav>
+          </header>
+
+          {/* Logged in info and divider */}
+          <div style={{ marginBottom: 24 }}>
+            <p style={{ color: "black", fontSize: 14, fontFamily: "Sarabun", margin: "0 0 12px 0" }}>
+              Logged in as: {session?.user?.email}
+            </p>
+            <div style={{ width: "100%", height: 0.5, background: "#333333" }} />
+          </div>
+
           {/* Section header*/}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 30, flexWrap: "wrap", gap: 12 }}>
             <h2 style={{ fontSize: 24, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>My Clubs</h2>
