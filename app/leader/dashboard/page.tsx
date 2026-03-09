@@ -8,6 +8,7 @@ import { CLUBS_TABLE, EVENTS_TABLE, cachedAll } from "@/lib/airtable";
 import EventsCacheClient from "@/app/components/EventsCacheClient";
 import ClubsCacheClient from "@/app/components/ClubsCacheClient";
 import LogoutButton from "@/app/leader/edit/logout-button";
+import DeleteClubButton from "./delete-club-button";
 
 export const dynamic = "force-dynamic";
 
@@ -234,6 +235,7 @@ export default async function LeaderDashboard() {
                     <Link href={`/clubs/${club.clubId ?? club.recordId}`} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer', boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
                       View Public
                     </Link>
+                    <DeleteClubButton clubId={cid} clubName={club.name} />
                   </div>
                 </div>
 
