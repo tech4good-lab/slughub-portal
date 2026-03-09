@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { base, invalidateTable, noteCall, cachedFind, cachedFirstPage } from "@/lib/airtable";
+import { markClubVerified } from "@/lib/club-verification";
 
 const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
@@ -41,6 +42,7 @@ export async function POST(
       { fields: { clubId, userId, memberRole: "leader", createdAt: nowIso } },
     ]);
   }
+  await markClubVerified(clubId);
 
   noteCall(REQUESTS_TABLE);
   const updated = await base(REQUESTS_TABLE).update([

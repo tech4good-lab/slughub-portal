@@ -13,6 +13,7 @@ export type Club = {
   instagramUrl?: string;
   linkedinUrl?: string;
   clubIcebreakers?: string;
+  verified?: string;
   updatedAt?: string;
 };
 
