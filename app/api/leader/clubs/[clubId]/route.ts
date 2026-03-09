@@ -2,16 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import {
-  ACCESS_REQUESTS_TABLE,
-  base,
-  CLUBS_TABLE,
-  CLUB_MEMBERS_TABLE,
-  EVENTS_TABLE,
-  cachedAll,
-  invalidateTable,
-  noteCall,
-} from "@/lib/airtable";
+import { base, CLUBS_TABLE, CLUB_MEMBERS_TABLE, cachedAll, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 async function isLeaderForClub(userId: string, clubId: string) {
   const memberRows = await cachedAll(
@@ -38,21 +29,6 @@ async function getClubRecordByClubId(clubId: string) {
 
   const match = (clubs || []).find((r: any) => String((r.fields as any)?.clubId ?? "") === clubId);
   return match ?? null;
-}
-
-async function deleteRecordsByClubId(table: string, clubId: string) {
-  const rows = await cachedAll(table, { filterByFormula: `{clubId} = "${clubId}"` }, 0);
-  const ids = (rows || []).map((r: any) => String(r.id ?? "")).filter(Boolean);
-  if (ids.length === 0) return 0;
-
-  let deleted = 0;
-  for (let i = 0; i < ids.length; i += 10) {
-    const batch = ids.slice(i, i + 10);
-    noteCall(table);
-    await base(table).destroy(batch);
-    deleted += batch.length;
-  }
-  return deleted;
 }
 
 export async function GET(
@@ -164,60 +140,5 @@ export async function POST(
   const updatedFields = updated[0].fields as any;
   return NextResponse.json({
     club: { recordId: updated[0].id, ...updatedFields, category: updatedFields.Category ?? updatedFields.category },
-  });
-}
-
-export async function DELETE(
-  _req: Request,
-  { params }: { params: Promise<{ clubId: string }> }
-) {
-  const session = await getServerSession(authOptions);
-  const userId = (session as any)?.userId;
-  const role = (session as any)?.role;
-
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (role !== "leader" && role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  const { clubId } = await params;
-
-  const ok = await isLeaderForClub(userId, clubId);
-  if (!ok) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-
-  const clubRec = await getClubRecordByClubId(clubId);
-  if (!clubRec) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  const deletedEvents = await deleteRecordsByClubId(EVENTS_TABLE, clubId);
-  const deletedMembers = await deleteRecordsByClubId(CLUB_MEMBERS_TABLE, clubId);
-  const deletedAccessRequests = await deleteRecordsByClubId(ACCESS_REQUESTS_TABLE, clubId);
-
-  noteCall(CLUBS_TABLE);
-  await base(CLUBS_TABLE).destroy([clubRec.id]);
-
-  try {
-    invalidateTable(CLUBS_TABLE);
-    invalidateTable(CLUB_MEMBERS_TABLE);
-    invalidateTable(EVENTS_TABLE);
-    invalidateTable(ACCESS_REQUESTS_TABLE);
-  } catch (e) {
-    console.warn("Failed to invalidate cache after club deletion", e);
-  }
-  try {
-    revalidatePath("/leader/dashboard");
-    revalidatePath("/directory");
-    revalidatePath(`/clubs/${clubId}`);
-  } catch (e) {
-    console.warn("Failed to revalidate paths after club deletion", e);
-  }
-
-  return NextResponse.json({
-    ok: true,
-    deleted: {
-      club: 1,
-      events: deletedEvents,
-      members: deletedMembers,
-      accessRequests: deletedAccessRequests,
-    },
   });
 }

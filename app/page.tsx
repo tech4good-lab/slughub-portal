@@ -10,7 +10,7 @@ export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const isAdmin = (session as any)?.role === "admin";
 
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs`, { cache: "no-store" });
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs`);
 
   if (!res.ok) {
     return (

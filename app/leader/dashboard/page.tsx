@@ -8,46 +8,6 @@ import { CLUBS_TABLE, EVENTS_TABLE, cachedAll } from "@/lib/airtable";
 import EventsCacheClient from "@/app/components/EventsCacheClient";
 import ClubsCacheClient from "@/app/components/ClubsCacheClient";
 import LogoutButton from "@/app/leader/edit/logout-button";
-import DeleteClubButton from "./delete-club-button";
-
-export const dynamic = "force-dynamic";
-
-const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
-const RECENT_WRITE_COOKIE = "leader_recent_write_at";
-const RECENT_WRITE_WINDOW_MS = 3 * 60 * 1000;
-
-function orFormulaForClubIds(clubIds: string[]) {
-  const parts = clubIds.map((id) => `{clubId}="${id}"`);
-  return `OR(${parts.join(",")})`;
-}
-
-function StatusPill({ status }: { status?: any }) {
-  const s = String(status ?? "").toLowerCase();
-  const label = s || "unknown";
-
-  const style: React.CSSProperties =
-    s === "approved"
-      ? { border: "1px solid rgba(34,197,94,0.35)", color: "rgba(34,197,94,0.95)" }
-      : s === "pending"
-      ? { border: "1px solid rgba(251,191,36,0.35)", color: "rgba(251,191,36,0.95)" }
-      : s === "rejected"
-      ? { border: "1px solid rgba(239,68,68,0.35)", color: "rgba(239,68,68,0.95)" }
-      : { border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.75)" };
-
-  return (
-    <span
-      className="small"
-      style={{
-        padding: "4px 10px",
-        borderRadius: 999,
-        textTransform: "capitalize",
-        ...style,
-      }}
-    >
-      {label}
-    </span>
-  );
-}
 
 export default async function LeaderDashboard() {
   const session = await getServerSession(authOptions);
@@ -182,154 +142,15 @@ export default async function LeaderDashboard() {
                 Create New Club
               </Link>
             </div>
-          </div>
-
-          {/* Clubs list */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, overflow: 'auto' }}>
-            {clubs.length === 0 ? (
-              <p style={{ color: '#666', fontSize: 14, fontFamily: 'Sarabun', textAlign: 'center', padding: '40px 20px' }}>
-                You don't have any club access yet.
-              </p>
-            ) : (
-              clubs.map((club: any) => {
-                const cid = String(club.clubId ?? club.recordId ?? "");
-                const events = eventsByClub[cid] ?? [];
-                const now = new Date();
-                const upcoming = events.filter((e: any) => {
-                  const d = new Date(e.eventDate ?? "");
-                  if (Number.isNaN(d.getTime())) return true;
-                  return d >= now;
-                });
-                const past = events.filter((e: any) => {
-                  const d = new Date(e.eventDate ?? "");
-                  if (Number.isNaN(d.getTime())) return false;
-                  return d < now;
-                });
-                return (
-              <div
-                key={club.clubId ?? club.recordId}
-                style={{
-                  padding: "16px 20px",
-                  background: "#FAFAFA",
-                  borderRadius: 12,
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "space-between",
-                  gap: 20,
-                  flexWrap: "wrap",
-                }}
-              >
-                <div style={{ flex: "1 1 260px", minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-                      <h3 style={{ fontSize: 16, fontFamily: 'Sarabun', fontWeight: 600, margin: 0, color: 'black' }}>{club.name ?? 'Untitled Club'}</h3>
-                      <StatusPill status={club.status} />
-                    </div>
-                    <p style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', margin: 0 }}>
-                      {(club.description ?? "").slice(0, 140) || "Club description..."}
-                      {(club.description ?? "").length > 140 ? "..." : ""}
-                    </p>
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-                    <Link href={`/leader/clubs/${club.clubId}/edit`} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer', boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
-                      Edit
-                    </Link>
-                    <Link href={`/clubs/${club.clubId ?? club.recordId}`} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer', boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
-                      View Public
-                    </Link>
-                    <DeleteClubButton clubId={cid} clubName={club.name} />
-                  </div>
-                </div>
-
-                <details style={{ flex: "1 1 220px", minWidth: 0, width: "100%", maxWidth: 320 }}>
-                  <summary
-                    style={{
-                      listStyle: "none",
-                      cursor: "pointer",
-                      padding: "6px 14px",
-                      borderRadius: 999,
-                      background: "#FDF0A6",
-                      color: "#000",
-                      fontSize: 13,
-                      fontFamily: "Sarabun",
-                      fontWeight: 600,
-                      textAlign: "center",
-                    }}
-                  >
-                    Events
-                  </summary>
-                  <div style={{ marginTop: 10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>Upcoming</div>
-                    {upcoming.length === 0 ? (
-                      <div style={{ fontSize: 12, color: "#666" }}>No upcoming events</div>
-                    ) : (
-                      upcoming.slice(0, 4).map((e: any) => (
-                        <div key={e.recordId} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                            <div style={{ fontWeight: 600 }}>{e.eventTitle ?? e.name ?? "Untitled Event"}</div>
-                            <Link
-                              href={`/leader/events/${e.recordId}/edit`}
-                              style={{
-                                fontSize: 11,
-                                padding: "4px 8px",
-                                borderRadius: 999,
-                                background: "#E5E7EB",
-                                color: "#000",
-                                textDecoration: "none",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              Edit
-                            </Link>
-                          </div>
-                          <div style={{ color: "#666" }}>
-                            {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                  <div style={{ marginTop: 10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>Past</div>
-                    {past.length === 0 ? (
-                      <div style={{ fontSize: 12, color: "#666" }}>No past events</div>
-                    ) : (
-                      past.slice(0, 4).map((e: any) => (
-                        <div key={e.recordId} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                            <div style={{ fontWeight: 600 }}>{e.eventTitle ?? e.name ?? "Untitled Event"}</div>
-                            <Link
-                              href={`/leader/events/${e.recordId}/edit`}
-                              style={{
-                                fontSize: 11,
-                                padding: "4px 8px",
-                                borderRadius: 999,
-                                background: "#E5E7EB",
-                                color: "#000",
-                                textDecoration: "none",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              Edit
-                            </Link>
-                          </div>
-                          <div style={{ color: "#666" }}>
-                            {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </details>
-              </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div style={{ textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#333', marginTop: 20, position: 'relative', zIndex: 10 }}>
-        Made with ❤️ from the <a href="#" style={{ color: '#69A1FF', textDecoration: 'underline' }}>Community RAG Team</a>
+          </>
+        ) : (
+          <>
+            <p className="small">You don’t have a club profile yet.</p>
+            <div className="row" style={{ marginTop: 12 }}>
+              <Link className="btn btnPrimary" href="/leader/edit">Create Club Profile</Link>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

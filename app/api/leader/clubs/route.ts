@@ -6,7 +6,6 @@ import { authOptions } from "@/lib/auth";
 import { base, CLUBS_TABLE, cachedAll, invalidateTable, noteCall } from "@/lib/airtable";
 import { sendMail } from "@/lib/mail";
 import { getUserClubIds } from "@/lib/permissions";
-import { markClubVerified } from "@/lib/club-verification";
 
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
 
@@ -110,7 +109,6 @@ export async function POST(req: Request) {
         },
       },
     ]);
-    await markClubVerified(clubId);
 
     try {
       invalidateTable(CLUBS_TABLE);
