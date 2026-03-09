@@ -21,6 +21,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [verificationFilter, setVerificationFilter] = useState<"verified" | "unverified">("verified");
 
   const toggleFilters = () => setShowFilters(!showFilters);   
 
@@ -28,6 +29,17 @@ export default function DirectoryClient({ clubs, session }: Props) {
     const q = query.trim().toLowerCase();
     return clubs
     .filter((c: any) => {
+      const fields = (c ?? {}) as Record<string, unknown>;
+      const verificationEntry = Object.entries(fields).find(([key]) => {
+        const k = key.trim().toLowerCase();
+        return k === "verification" || k === "verified";
+      });
+      const verificationValue = String(verificationEntry?.[1] ?? "").trim().toLowerCase();
+      const clubIdValue = String(fields.clubId ?? fields.ClubId ?? "").trim();
+      const isVerified = verificationValue === "verified" || clubIdValue.length > 0;
+      const verifiedOk = verificationFilter === "verified" ? isVerified : !isVerified;
+      if (!verifiedOk) return false;
+
       const catOk = selected.length === 0 || selected.includes(normalizeCategory((c as any).category));
       if (!catOk) return false;
       if (!q) return true;
@@ -36,7 +48,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
     .sort((a,b) =>
     String(a.name ?? "").localeCompare(String(b.name ?? ""))
     );
-  }, [clubs, selected, query]);
+  }, [clubs, selected, query, verificationFilter]);
 
   const toggle = (cat: string) => {
     setSelected((prev) =>
@@ -58,6 +70,17 @@ export default function DirectoryClient({ clubs, session }: Props) {
             style={{ background: "#ffffff", fontWeight: 700, color: "#000" }}
           />
         </div>
+        <button
+          aria-label="toggle verified clubs"
+          className="btn"
+          onClick={() =>
+            setVerificationFilter((prev) =>
+              prev === "verified" ? "unverified" : "verified"
+            )
+          }
+        >
+          {verificationFilter === "verified" ? "Show Unverified Clubs" : "Show Verified Clubs"}
+        </button>
         <button
           aria-label="hide-show"
           className="btn directoryFilterToggle"
