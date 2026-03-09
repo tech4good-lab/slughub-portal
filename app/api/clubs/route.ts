@@ -12,7 +12,13 @@ export async function GET() {
     .filter((r: any) => String((r.fields as any)?.status ?? "").toLowerCase() === "approved")
     .map((r: any) => {
     const f = r.fields as any;
-    return { recordId: r.id, ...f, category: f.Category ?? f.category };
+    return {
+      recordId: r.id,
+      ...f,
+      category: f.Category ?? f.category,
+      verification: f.Verification ?? f.verification,
+      verified: f.Verified ?? f.verified,
+    };
   });
 
   return NextResponse.json({ clubs });
