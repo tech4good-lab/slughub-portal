@@ -660,6 +660,78 @@ a:hover {
   font-size: 11px;
 }
 
+.directoryDropdown {
+  position: relative;
+}
+
+.directoryDropdownSummary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 220px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.08);
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.directoryDropdownSummary::-webkit-details-marker {
+  display: none;
+}
+
+.directoryDropdown[open] .directoryDropdownSummary {
+  border-color: rgba(16,24,40,0.18);
+  box-shadow: 0 10px 20px rgba(16,24,40,0.08);
+}
+
+.directoryDropdownCount {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(17,24,39,0.7);
+}
+
+.directoryDropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.08);
+  border-radius: 16px;
+  box-shadow: 0 18px 30px rgba(16,24,40,0.08);
+  padding: 12px 12px 8px;
+  min-width: 260px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.directoryDropdownClear {
+  background: rgba(16,24,40,0.06);
+  border: 1px solid rgba(16,24,40,0.08);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.directoryDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  font-size: 13px;
+  color: #111827;
+}
+
 .directoryHome .card {
   background: #ffffff; /* white panels */
   border: 1px solid rgba(16,24,40,0.04); /* subtle light border, not black */
@@ -803,6 +875,14 @@ a:hover {
   .directorySearchWrap,
   .filtersPanel {
     max-width: 100%;
+  }
+
+  .directoryDropdownSummary {
+    width: 100%;
+  }
+
+  .directoryDropdownMenu {
+    min-width: 100%;
   }
 }
 

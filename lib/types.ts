@@ -15,6 +15,8 @@ export type Club = {
   clubIcebreakers?: string;
   verification?: string;
   verified?: string;
+  communityStatus?: string | string[];
+  communityType?: string | string[];
   updatedAt?: string;
 };
 

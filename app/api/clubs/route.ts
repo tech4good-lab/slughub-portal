@@ -12,12 +12,23 @@ export async function GET() {
     .filter((r: any) => String((r.fields as any)?.status ?? "").toLowerCase() === "approved")
     .map((r: any) => {
     const f = r.fields as any;
+    const communityType =
+      f.communityType ??
+      f["community Type"] ??
+      f["community type"] ??
+      f["Community Type"];
+    const communityStatus =
+      f.communityStatus ??
+      f["community status"] ??
+      f["Community Status"];
     return {
       recordId: r.id,
       ...f,
       category: f.Category ?? f.category,
       verification: f.Verification ?? f.verification,
       verified: f.Verified ?? f.verified,
+      communityType,
+      communityStatus,
     };
   });
 
