@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Club } from "@/lib/types";
 
@@ -42,6 +42,25 @@ export default function DirectoryClient({ clubs, session }: Props) {
   const [typeSelected, setTypeSelected] = useState<string[]>([]);
   const [statusSelected, setStatusSelected] = useState<string[]>(["verified"]);
   const [query, setQuery] = useState("");
+  const typeDropdownRef = useRef<HTMLDetailsElement | null>(null);
+  const statusDropdownRef = useRef<HTMLDetailsElement | null>(null);
+
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      const target = e.target as Node;
+      const typeEl = typeDropdownRef.current;
+      const statusEl = statusDropdownRef.current;
+      if (typeEl && typeEl.open && !typeEl.contains(target)) {
+        typeEl.open = false;
+      }
+      if (statusEl && statusEl.open && !statusEl.contains(target)) {
+        statusEl.open = false;
+      }
+    }
+
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -115,12 +134,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
             style={{ background: "#ffffff", fontWeight: 700, color: "#000" }}
           />
         </div>
-        <details className="directoryDropdown">
+        <details className="directoryDropdown" ref={typeDropdownRef}>
           <summary className="directoryDropdownSummary">
             <span>Community type</span>
-            <span className="directoryDropdownCount">
-              {typeSelected.length === 0 ? "All" : `${typeSelected.length} selected`}
-            </span>
           </summary>
           <div className="directoryDropdownMenu">
             <button
@@ -145,12 +161,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
             ))}
           </div>
         </details>
-        <details className="directoryDropdown">
+        <details className="directoryDropdown" ref={statusDropdownRef}>
           <summary className="directoryDropdownSummary">
             <span>Status</span>
-            <span className="directoryDropdownCount">
-              {statusSelected.length === 0 ? "All" : `${statusSelected.length} selected`}
-            </span>
           </summary>
           <div className="directoryDropdownMenu">
             <button

@@ -668,17 +668,19 @@ a:hover {
   list-style: none;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
-  min-width: 220px;
-  padding: 10px 14px;
-  border-radius: 14px;
-  background: #ffffff;
-  border: 1px solid rgba(16,24,40,0.08);
-  color: #111827;
+  min-width: 0;
+  width: auto;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #FDF0A6;
+  border: 1px solid #FDF0A6;
+  color: #000;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
 }
 
 .directoryDropdownSummary::-webkit-details-marker {
@@ -686,15 +688,10 @@ a:hover {
 }
 
 .directoryDropdown[open] .directoryDropdownSummary {
-  border-color: rgba(16,24,40,0.18);
-  box-shadow: 0 10px 20px rgba(16,24,40,0.08);
+  border-color: #FDF0A6;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
 }
 
-.directoryDropdownCount {
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(17,24,39,0.7);
-}
 
 .directoryDropdownMenu {
   position: absolute;
