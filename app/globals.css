@@ -5,15 +5,14 @@
 }
 
 :root {
-  /* Tech4Good inspired palette - warm, accessible, purposeful */
   --color-bg: #EDF4FF;
   --color-surface: #1a1a1a;
   --color-border: #EDF4FF;
   --color-text: rgba(0, 0, 0, 0.95);
   --color-text-muted: rgba(255, 255, 255, 0.65);
-  --color-primary: #fbbf24; /* Warm yellow - optimistic, approachable */
+  --color-primary: #fbbf24; 
   --color-primary-hover: #f59e0b;
-  --color-accent: #3b82f6; /* Blue - trustworthy */
+  --color-accent: #3b82f6; 
   --color-success: #22c55e;
   --color-warning: #eab308;
   --color-danger: #ef4444;
@@ -660,6 +659,75 @@ a:hover {
   font-size: 11px;
 }
 
+.directoryDropdown {
+  position: relative;
+}
+
+.directoryDropdownSummary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  width: auto;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #FDF0A6;
+  border: 1px solid #FDF0A6;
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+.directoryDropdownSummary::-webkit-details-marker {
+  display: none;
+}
+
+.directoryDropdown[open] .directoryDropdownSummary {
+  border-color: #FDF0A6;
+  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+}
+
+
+.directoryDropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+  background: #ffffff;
+  border: 1px solid rgba(16,24,40,0.08);
+  border-radius: 16px;
+  box-shadow: 0 18px 30px rgba(16,24,40,0.08);
+  padding: 12px 12px 8px;
+  min-width: 260px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.directoryDropdownClear {
+  background: rgba(16,24,40,0.06);
+  border: 1px solid rgba(16,24,40,0.08);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.directoryDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  font-size: 13px;
+  color: #111827;
+}
+
 .directoryHome .card {
   background: #ffffff; /* white panels */
   border: 1px solid rgba(16,24,40,0.04); /* subtle light border, not black */
@@ -756,6 +824,16 @@ a:hover {
   border: 1px solid rgba(16,24,40,0.06);
 }
 
+.directoryHome .input {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-color: rgba(16,24,40,0.06);
+  opacity: 1;
+  mix-blend-mode: normal;
+  backdrop-filter: none;
+  filter: none;
+}
+
 @media (max-width: 900px) {
   .directoryGrid {
     grid-template-columns: repeat(2, 1fr);
@@ -803,6 +881,14 @@ a:hover {
   .directorySearchWrap,
   .filtersPanel {
     max-width: 100%;
+  }
+
+  .directoryDropdownSummary {
+    width: 100%;
+  }
+
+  .directoryDropdownMenu {
+    min-width: 100%;
   }
 }
 

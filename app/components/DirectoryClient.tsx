@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Club } from "@/lib/types";
 
@@ -9,50 +9,114 @@ type Props = {
   session: any;
 };
 
-const CATEGORY_OPTIONS = ["Club", "Org", "Unofficial", "Athletic", "Research"] as const;
+const COMMUNITY_TYPE_OPTIONS = [
+  "Campus Department/Program",
+  "Professional and Career",
+  "Performing and Visual Arts",
+  "Cultural and Identity",
+  "Greek-letter",
+  "Academic",
+  "Sports and Recreation",
+  "Media and broadcasting",
+  "Politics and Advocacy",
+  "Research",
+] as const;
 
-function normalizeCategory(c: any) {
-  return String(c ?? "").trim();
+const STATUS_OPTIONS = ["Verified", "Unofficial"] as const;
+
+function normalizeValue(v: any) {
+  return String(v ?? "").trim();
+}
+
+function normalizeList(input: any): string[] {
+  if (Array.isArray(input)) {
+    return input.map((v) => normalizeValue(v)).filter(Boolean);
+  }
+  const single = normalizeValue(input);
+  return single ? [single] : [];
 }
 
 
 
 export default function DirectoryClient({ clubs, session }: Props) {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [typeSelected, setTypeSelected] = useState<string[]>([]);
+  const [statusSelected, setStatusSelected] = useState<string[]>(["verified"]);
   const [query, setQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
-  const [verificationFilter, setVerificationFilter] = useState<"verified" | "unverified">("verified");
+  const typeDropdownRef = useRef<HTMLDetailsElement | null>(null);
+  const statusDropdownRef = useRef<HTMLDetailsElement | null>(null);
 
-  const toggleFilters = () => setShowFilters(!showFilters);   
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      const target = e.target as Node;
+      const typeEl = typeDropdownRef.current;
+      const statusEl = statusDropdownRef.current;
+      if (typeEl && typeEl.open && !typeEl.contains(target)) {
+        typeEl.open = false;
+      }
+      if (statusEl && statusEl.open && !statusEl.contains(target)) {
+        statusEl.open = false;
+      }
+    }
+
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return clubs
     .filter((c: any) => {
       const fields = (c ?? {}) as Record<string, unknown>;
-      const verificationEntry = Object.entries(fields).find(([key]) => {
-        const k = key.trim().toLowerCase();
-        return k === "verification" || k === "verified";
+      const statusEntry = Object.entries(fields).find(([key]) => {
+        const k = key.trim().toLowerCase().replace(/\s+/g, "");
+        return k === "communitystatus";
       });
-      const verificationValue = String(verificationEntry?.[1] ?? "").trim().toLowerCase();
-      const clubIdValue = String(fields.clubId ?? fields.ClubId ?? "").trim();
-      const isVerified = verificationValue === "verified" || clubIdValue.length > 0;
-      const verifiedOk = verificationFilter === "verified" ? isVerified : !isVerified;
-      if (!verifiedOk) return false;
+      const typeEntry = Object.entries(fields).find(([key]) => {
+        const k = key.trim().toLowerCase().replace(/\s+/g, "");
+        return k === "communitytype";
+      });
+      let statusValues = normalizeList(statusEntry?.[1]).map((v) => v.toLowerCase());
+      const typeValues = normalizeList(typeEntry?.[1]).map((v) => v.toLowerCase());
+      const typeSelectedNormalized = typeSelected.map((v) => v.toLowerCase());
 
-      const catOk = selected.length === 0 || selected.includes(normalizeCategory((c as any).category));
-      if (!catOk) return false;
+      if (statusValues.length === 0) {
+        const verificationEntry = Object.entries(fields).find(([key]) => {
+          const k = key.trim().toLowerCase();
+          return k === "verification" || k === "verified";
+        });
+        const verificationValue = String(verificationEntry?.[1] ?? "").trim().toLowerCase();
+        const clubIdValue = String(fields.clubId ?? fields.ClubId ?? "").trim();
+        const isVerified = verificationValue === "verified" || clubIdValue.length > 0;
+        statusValues = [isVerified ? "Verified" : "Unofficial"];
+      }
+
+      const statusOk =
+        statusSelected.length === 0 ||
+        statusValues.some((v) => statusSelected.includes(v));
+      if (!statusOk) return false;
+
+      const typeOk =
+        typeSelected.length === 0 ||
+        typeValues.some((v) => typeSelectedNormalized.includes(v));
+      if (!typeOk) return false;
+
       if (!q) return true;
       return String(c.name ?? "").toLowerCase().includes(q);
     })
     .sort((a,b) =>
     String(a.name ?? "").localeCompare(String(b.name ?? ""))
     );
-  }, [clubs, selected, query, verificationFilter]);
+  }, [clubs, typeSelected, statusSelected, query]);
 
-  const toggle = (cat: string) => {
-    setSelected((prev) =>
-      prev.includes(cat) ? prev.filter((v) => v !== cat) : [...prev, cat]
+  const toggleType = (value: string) => {
+    setTypeSelected((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+  };
+
+  const toggleStatus = (value: string) => {
+    setStatusSelected((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
     );
   };
 
@@ -70,52 +134,61 @@ export default function DirectoryClient({ clubs, session }: Props) {
             style={{ background: "#ffffff", fontWeight: 700, color: "#000" }}
           />
         </div>
-        <button
-          aria-label="toggle verified clubs"
-          className="btn"
-          onClick={() =>
-            setVerificationFilter((prev) =>
-              prev === "verified" ? "unverified" : "verified"
-            )
-          }
-        >
-          {verificationFilter === "verified" ? "Show Unverified Clubs" : "Show Verified Clubs"}
-        </button>
-        <button
-          aria-label="hide-show"
-          className="btn directoryFilterToggle"
-          onClick={toggleFilters}
-        >
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </button>
+        <details className="directoryDropdown" ref={typeDropdownRef}>
+          <summary className="directoryDropdownSummary">
+            <span>Community type</span>
+          </summary>
+          <div className="directoryDropdownMenu">
+            <button
+              className="directoryDropdownClear"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setTypeSelected([]);
+              }}
+            >
+              Clear
+            </button>
+            {COMMUNITY_TYPE_OPTIONS.map((cat) => (
+              <label key={cat} className="directoryDropdownItem">
+                <input
+                  type="checkbox"
+                  checked={typeSelected.includes(cat)}
+                  onChange={() => toggleType(cat)}
+                />
+                {cat}
+              </label>
+            ))}
+          </div>
+        </details>
+        <details className="directoryDropdown" ref={statusDropdownRef}>
+          <summary className="directoryDropdownSummary">
+            <span>Status</span>
+          </summary>
+          <div className="directoryDropdownMenu">
+            <button
+              className="directoryDropdownClear"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setStatusSelected([]);
+              }}
+            >
+              Clear
+            </button>
+            {STATUS_OPTIONS.map((status) => (
+              <label key={status} className="directoryDropdownItem">
+                <input
+                  type="checkbox"
+                  checked={statusSelected.includes(status)}
+                  onChange={() => toggleStatus(status)}
+                />
+                {status}
+              </label>
+            ))}
+          </div>
+        </details>
       </div>
-
-      <aside className={`filtersPanel ${showFilters ? "active" : ""}`}>
-        <div className="filtersHeader">
-          <h3>Filters</h3>
-          <button
-            aria-label="clear filters"
-            className="btn"
-            style={{ fontSize: 11, padding: "6px 8px" }}
-            onClick={() => setSelected([])}
-          >
-            Clear
-          </button>
-        </div>
-
-        <div className="filtersList">
-          {CATEGORY_OPTIONS.map((cat) => (
-            <label key={cat} className="filterItem">
-              <input
-                type="checkbox"
-                checked={selected.includes(cat)}
-                onChange={() => toggle(cat)}
-              />
-              {cat}
-            </label>
-          ))}
-        </div>
-      </aside>
 
       <div style={{width:"100%"}}>
       <section>
