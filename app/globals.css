@@ -5,15 +5,14 @@
 }
 
 :root {
-  /* Tech4Good inspired palette - warm, accessible, purposeful */
   --color-bg: #EDF4FF;
   --color-surface: #1a1a1a;
   --color-border: #EDF4FF;
   --color-text: rgba(0, 0, 0, 0.95);
   --color-text-muted: rgba(255, 255, 255, 0.65);
-  --color-primary: #fbbf24; /* Warm yellow - optimistic, approachable */
+  --color-primary: #fbbf24; 
   --color-primary-hover: #f59e0b;
-  --color-accent: #3b82f6; /* Blue - trustworthy */
+  --color-accent: #3b82f6; 
   --color-success: #22c55e;
   --color-warning: #eab308;
   --color-danger: #ef4444;
@@ -823,6 +822,16 @@ a:hover {
   background: rgba(255,255,255,0.9);
   color: #111827;
   border: 1px solid rgba(16,24,40,0.06);
+}
+
+.directoryHome .input {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-color: rgba(16,24,40,0.06);
+  opacity: 1;
+  mix-blend-mode: normal;
+  backdrop-filter: none;
+  filter: none;
 }
 
 @media (max-width: 900px) {
