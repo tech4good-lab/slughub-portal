@@ -22,7 +22,7 @@ const COMMUNITY_TYPE_OPTIONS = [
   "Research",
 ] as const;
 
-const STATUS_OPTIONS = ["verified", "unofficial"] as const;
+const STATUS_OPTIONS = ["Verified", "Unofficial"] as const;
 
 function normalizeValue(v: any) {
   return String(v ?? "").trim();
@@ -87,7 +87,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
         const verificationValue = String(verificationEntry?.[1] ?? "").trim().toLowerCase();
         const clubIdValue = String(fields.clubId ?? fields.ClubId ?? "").trim();
         const isVerified = verificationValue === "verified" || clubIdValue.length > 0;
-        statusValues = [isVerified ? "verified" : "unofficial"];
+        statusValues = [isVerified ? "Verified" : "Unofficial"];
       }
 
       const statusOk =
