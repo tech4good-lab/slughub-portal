@@ -1,46 +1,68 @@
 import type { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
-import { USERS_TABLE, cachedFirstPage } from "@/lib/airtable";
+import GoogleProvider from "next-auth/providers/google";
+import crypto from "crypto";
+import { USERS_TABLE, base, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   providers: [
-    CredentialsProvider({
-      name: "Email & Password",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        const email = String(credentials?.email ?? "").toLowerCase().trim();
-        const password = String(credentials?.password ?? "");
-        if (!email || !password) return null;
-
-        const records = await cachedFirstPage(USERS_TABLE, { maxRecords: 1, filterByFormula: `{email} = "${email}"` }, 5);
-
-        if (!records || records.length === 0) return null;
-
-        const fields = records[0].fields as any;
-        const ok = await bcrypt.compare(password, fields.passwordHash);
-        if (!ok) return null;
-
-        return { id: fields.userId, email: fields.email, role: fields.role ?? "leader" };
-      },
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.userId = (user as any).id;
-        token.role = (user as any).role ?? "leader";
+    async signIn({ user }) {
+      const email = String(user?.email ?? "").toLowerCase().trim();
+      if (!email) return false;
+
+      const existing = await cachedFirstPage(
+        USERS_TABLE,
+        { maxRecords: 1, filterByFormula: `{email} = "${email}"` },
+        60
+      );
+
+      if (!existing || existing.length === 0) {
+        const userId = crypto.randomUUID();
+        noteCall(USERS_TABLE);
+        await base(USERS_TABLE).create([
+          { fields: { userId, email, role: "leader" } },
+        ]);
+
+        try {
+          invalidateTable(USERS_TABLE);
+        } catch (e) {
+          console.warn("Failed to invalidate users cache", e);
+        }
       }
+
+      return true;
+    },
+    async jwt({ token, user }) {
+      const email = String(token.email ?? user?.email ?? "").toLowerCase().trim();
+      if (!email) return token;
+
+      const existing = await cachedFirstPage(
+        USERS_TABLE,
+        { maxRecords: 1, filterByFormula: `{email} = "${email}"` },
+        60
+      );
+
+      const record = existing?.[0];
+      const fields = (record?.fields ?? {}) as Record<string, unknown>;
+      const userId =
+        String(fields.userId ?? fields.userID ?? fields.userid ?? "").trim() ||
+        undefined;
+      const role = String(fields.role ?? "").trim() || "leader";
+
+      (token as any).userId = userId;
+      (token as any).role = role;
       return token;
     },
     async session({ session, token }) {
-      (session as any).userId = token.userId;
-      (session as any).role = token.role;
+      (session as any).userId = (token as any).userId;
+      (session as any).role = (token as any).role ?? "leader";
       return session;
     },
   },
-}
+};
