@@ -34,7 +34,6 @@ export default function LoginPage() {
           >
             Continue with Google
           </button>
-          <Link style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }} className="btn btnPrimary" href="/signup">Create account</Link>
         </div>
       </div>
     </main>

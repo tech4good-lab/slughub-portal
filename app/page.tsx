@@ -83,7 +83,6 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
         ) : (
           <>
             <Link className="btn" href="/login">Club Lead Login</Link>
-            <Link className="btn" href="/signup">Club Lead Sign Up</Link>
           </>
         )}
       </nav>

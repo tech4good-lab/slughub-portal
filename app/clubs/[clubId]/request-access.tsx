@@ -136,7 +136,6 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
             Check access status
           </button>
           <Link className="btn btnPrimary" href="/login" style={accessBtnStyle}>Log in</Link>
-          <Link className="btn btnPrimary" href="/signup" style={accessBtnStyle}>Sign up</Link>
         </div>
       </div>
     );

@@ -168,16 +168,24 @@ export default function DirectoryClient({ clubs, session }: Props) {
             >
               Clear
             </button>
-            {STATUS_OPTIONS.map((status) => (
-              <label key={status.value} className="directoryDropdownItem">
-                <input
-                  type="checkbox"
-                  checked={statusSelected.includes(status.value)}
-                  onChange={() => toggleStatus(status.value)}
-                />
-                {status.label}
-              </label>
-            ))}
+            {STATUS_OPTIONS.map((status) => {
+              const hint =
+                status.value === "verified"
+                  ? "A lead has taken ownership of this community and has curated the community's content"
+                  : "This community is not registered with SOMeCA";
+              return (
+                <label key={status.value} className="directoryDropdownItem">
+                  <input
+                    type="checkbox"
+                    checked={statusSelected.includes(status.value)}
+                    onChange={() => toggleStatus(status.value)}
+                    aria-label={`${status.label}. ${hint}`}
+                  />
+                  <span>{status.label}</span>
+                  <span className="directoryDropdownHint">{hint}</span>
+                </label>
+              );
+            })}
           </div>
         </details>
       </div>
@@ -211,8 +219,8 @@ export default function DirectoryClient({ clubs, session }: Props) {
               Be the first to register your club and start building community.
             </p>
             {!session && (
-              <Link href="/signup" className="btn btnPrimary" style={{ marginTop: 20, display: "inline-flex" }}>
-                Register Your Club
+              <Link href="/login" className="btn btnPrimary" style={{ marginTop: 20, display: "inline-flex" }}>
+                Club Lead Login
               </Link>
             )}
           </div>
