@@ -244,7 +244,7 @@ export default function EditClubPage() {
       )}
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onSave}>
-        <label className="label">Club Name *</label>
+        <label className="label">Community Name *</label>
         <input className="input" value={draft.name} onChange={(e) => set("name", e.target.value)} />
 
         <div style={{ height: 10 }} />

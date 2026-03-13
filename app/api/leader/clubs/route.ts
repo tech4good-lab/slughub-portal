@@ -85,7 +85,7 @@ export async function POST(req: Request) {
     };
 
     if (!payload.name) {
-      return NextResponse.json({ error: "Club name is required." }, { status: 400 });
+      return NextResponse.json({ error: "Community name is required." }, { status: 400 });
     }
 
     noteCall(CLUBS_TABLE);

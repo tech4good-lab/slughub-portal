@@ -114,7 +114,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
         <div style={{ display: "flex", alignItems: "center", marginBottom: 10, position: "relative", gap: 12, flexWrap: "wrap" }}>
           <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50, marginRight: 15 }} />
           <div>
-            <div style={{ color: 'black', fontSize: 28, fontFamily: 'Sarabun', fontWeight: '700', margin: 0 }}>Admin: Pending Club Approvals</div>
+            <div style={{ color: 'black', fontSize: 28, fontFamily: 'Sarabun', fontWeight: '700', margin: 0 }}>Admin: Pending Community Approvals</div>
             <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>Logged in as: {email ?? '<email>'}</div>
           </div>
           <div style={{ marginLeft: "auto", minWidth: 80, height: 32, background: "#FDF0A6", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
@@ -129,14 +129,14 @@ export default function PendingApprovals({ email }: { email?: string }) {
         <div>
           {clubs.length === 0 ? (
             <div style={{ padding: '40px 20px', textAlign: 'center', color: '#999', fontSize: 16, fontFamily: 'Sarabun' }}>
-              No pending clubs!
+              No pending communities!
             </div>
           ) : (
             clubs.map((c, i) => (
               <div key={c.recordId} style={{ marginBottom: 12, padding: "16px 20px", background: i % 2 === 0 ? "#FAFAFA" : "#F3F4F6", borderRadius: 12, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                 <div style={{ flex: "1 1 260px", minWidth: 0 }}>
-                  <div style={{ color: 'black', fontSize: 16, fontFamily: 'Sarabun', fontWeight: '600', margin: 0 }}>{c.name ?? 'Untitled club'}</div>
-                  <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>{c.description ?? 'Club description...'}</div>
+                  <div style={{ color: 'black', fontSize: 16, fontFamily: 'Sarabun', fontWeight: '600', margin: 0 }}>{c.name ?? 'Untitled community'}</div>
+                  <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>{c.description ?? 'Community description...'}</div>
                 </div>
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                   <button onClick={() => !busy[c.recordId] && act(c.recordId, 'approve')} disabled={busy[c.recordId]} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>

@@ -69,7 +69,7 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
             {isAdmin && (
               <>
                 <Link className="btn" href="/admin/review" style={{ position: "relative" }}>
-                  Club Approvals
+                  Community Approvals
                   <PendingBadge />
                 </Link>
                 <Link className="btn" href="/admin/access">

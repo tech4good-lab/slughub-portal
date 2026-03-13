@@ -99,7 +99,7 @@ export default function AccessRequestsList() {
           <div key={r.recordId} className="card" style={{ background: "#fff", color: "#000" }}>
             <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
               <h2 style={{ margin: 0 }}>
-                Club: {r.clubName ? r.clubName : r.clubId}
+                Community: {r.clubName ? r.clubName : r.clubId}
               </h2>
               <span className="small" style={{ opacity: 0.75 }}>
                 {r.createdAt ? new Date(r.createdAt).toLocaleString() : ""}
@@ -107,7 +107,7 @@ export default function AccessRequestsList() {
             </div>
             {r.clubName && r.clubId && (
               <p className="small" style={{ marginTop: 6, opacity: 0.7 }}>
-                <strong>ClubId:</strong> {r.clubId}
+                <strong>Community Id:</strong> {r.clubId}
               </p>
             )}
 
