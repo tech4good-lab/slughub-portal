@@ -222,7 +222,7 @@ export default function EditClubPage() {
       </div>
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onSave}>
-        <label className="label">Club Name *</label>
+        <label className="label">Community Name *</label>
         <input className="input" value={draft.name} onChange={(e) => set("name", e.target.value)} />
 
         <div style={{ height: 10 }} />
@@ -237,7 +237,7 @@ export default function EditClubPage() {
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Club Icebreakers</label>
+        <label className="label">Community Icebreakers</label>
         <textarea
           className="input"
           value={draft.clubIcebreakers}

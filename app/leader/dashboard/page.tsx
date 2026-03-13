@@ -147,7 +147,7 @@ export default async function LeaderDashboard() {
               {isAdmin && (
                 <>
                   <Link className="btn" href="/admin/review">
-                    Club Approvals
+                    Community Approvals
                   </Link>
                   <Link className="btn" href="/admin/access">
                     Access Requests
@@ -173,13 +173,13 @@ export default async function LeaderDashboard() {
 
           {/* Section header*/}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 30, flexWrap: "wrap", gap: 12 }}>
-            <h2 style={{ fontSize: 24, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>My Clubs</h2>
+            <h2 style={{ fontSize: 24, fontFamily: 'Sarabun', fontWeight: 700, margin: 0, color: 'black' }}>My Communities</h2>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <Link href="/leader/events/new" style={{ padding: '8px 20px', background: '#E5E7EB', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
                 Create Event
               </Link>
               <Link href="/leader/clubs/new" style={{ padding: '8px 20px', background: '#FDF0A6', border: 'none', borderRadius: 20, color: 'black', fontSize: 14, fontFamily: 'Sarabun', fontWeight: 600, textDecoration: 'none', cursor: 'pointer' }}>
-                Create New Club
+                Create New Community
               </Link>
             </div>
           </div>
@@ -188,7 +188,7 @@ export default async function LeaderDashboard() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, overflow: 'auto' }}>
             {clubs.length === 0 ? (
               <p style={{ color: '#666', fontSize: 14, fontFamily: 'Sarabun', textAlign: 'center', padding: '40px 20px' }}>
-                You don't have any club access yet.
+                You don't have any community access yet.
               </p>
             ) : (
               clubs.map((club: any) => {

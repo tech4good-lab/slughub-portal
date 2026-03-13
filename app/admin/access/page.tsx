@@ -29,7 +29,7 @@ export default async function AdminAccessPage() {
         <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
           <h1>Admin: Leader Access Requests</h1>
           <div className="row">
-            <Link style={{ color: "black" }} className="btn" href="/admin/review">Club Approvals</Link>
+            <Link style={{ color: "black" }} className="btn" href="/admin/review">Community Approvals</Link>
             <Link style={{ color: "black" }} className="btn" href="/directory">Directory</Link>
             <Link style={{ color: "black" }} className="btn" href="/">Home</Link>
           </div>

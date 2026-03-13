@@ -122,7 +122,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
             className="input"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search clubs by name..."
+            placeholder="Search communities by name..."
             style={{ background: "#ffffff", fontWeight: 700, color: "#000" }}
           />
         </div>

@@ -7,6 +7,7 @@ type Req = {
   clubId?: string;
   requesterUserId?: string;
   requesterEmail?: string;
+  clubName?: string;
   message?: string;
   createdAt?: string;
 };
@@ -44,10 +45,17 @@ export default function AccessRequestsList() {
     setBusy((b) => ({ ...b, [id]: true }));
     setErr(null);
 
+    const req = requests.find((r) => r.recordId === id);
     const res = await fetch(`/api/admin/access-requests/${id}/${action}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reviewNotes: notes[id] ?? "" }),
+      body: JSON.stringify({
+        reviewNotes: notes[id] ?? "",
+        clubId: req?.clubId ?? "",
+        requesterUserId: req?.requesterUserId ?? "",
+        requesterEmail: req?.requesterEmail ?? "",
+        clubName: req?.clubName ?? "",
+      }),
     });
 
     const data = await safeJson(res);
@@ -90,11 +98,18 @@ export default function AccessRequestsList() {
         {requests.map((r) => (
           <div key={r.recordId} className="card" style={{ background: "#fff", color: "#000" }}>
             <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-              <h2 style={{ margin: 0 }}>Club: {r.clubId}</h2>
+              <h2 style={{ margin: 0 }}>
+                Community: {r.clubName ? r.clubName : r.clubId}
+              </h2>
               <span className="small" style={{ opacity: 0.75 }}>
                 {r.createdAt ? new Date(r.createdAt).toLocaleString() : ""}
               </span>
             </div>
+            {r.clubName && r.clubId && (
+              <p className="small" style={{ marginTop: 6, opacity: 0.7 }}>
+                <strong>Community Id:</strong> {r.clubId}
+              </p>
+            )}
 
             <p className="small" style={{ marginTop: 10 }}>
               <strong>User:</strong> {r.requesterEmail ?? "—"} ({r.requesterUserId ?? "—"})

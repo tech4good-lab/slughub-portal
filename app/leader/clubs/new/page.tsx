@@ -48,7 +48,7 @@ export default function NewClubPage() {
   return (
     <main className="container clubCreate">
       <div className="row" style={{ justifyContent: "space-between" }}>
-        <h1>Create New Club</h1>
+        <h1>Create New Community</h1>
         <div className="row">
           <Link className="btn" href="/leader/dashboard">Dashboard</Link>
           <Link className="btn" href="/directory">Directory</Link>
@@ -56,7 +56,7 @@ export default function NewClubPage() {
       </div>
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={create}>
-        <label className="label">Club Name *</label>
+        <label className="label">Community Name *</label>
         <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
 
         <div style={{ height: 10 }} />
@@ -87,7 +87,7 @@ export default function NewClubPage() {
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Club Icebreakers</label>
+        <label className="label">Community Icebreakers</label>
         <textarea
           className="input"
           value={clubIcebreakers}

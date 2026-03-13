@@ -85,13 +85,16 @@ export async function POST(
 
   const body = await req.json();
 
+  const communityTypeRaw = String(body.communityType ?? "").trim();
+  const communityType = communityTypeRaw ? [communityTypeRaw] : [];
+
   const payload: any = {
     name: String(body.name ?? "").trim(),
     description: String(body.description ?? "").trim(),
     clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
     contactName: String(body.contactName ?? "").trim(),
     contactEmail: String(body.contactEmail ?? "").trim(),
-    communityType: String(body.communityType ?? "").trim(),
+    communityType,
     calendarUrl: String(body.calendarUrl ?? "").trim(),
     discordUrl: String(body.discordUrl ?? "").trim(),
     websiteUrl: String(body.websiteUrl ?? "").trim(),
