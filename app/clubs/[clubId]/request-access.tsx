@@ -39,32 +39,47 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
   const load = async () => {
     setLoading(true);
     setErr(null);
+    try {
+      const cached = sessionStorage.getItem("accessRequestsMine");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        setInfo(parsed);
+        setLoading(false);
+        setLoaded(true);
+        return;
+      }
+    } catch {
+      // ignore cache errors
+    }
 
-    const res = await fetch(`/api/access-requests?clubId=${encodeURIComponent(clubId)}`, {
-      cache: "no-store",
-    });
+    const res = await fetch("/api/access-requests/mine", { cache: "no-store" });
     const data = await safeJson(res);
-
     if (res.status === 401) {
       setInfo({ unauth: true });
       setLoading(false);
       setLoaded(true);
       return;
     }
-
     if (!res.ok) {
-      setErr(data?.error ?? "Failed to load request status.");
+      setErr(data?.error ?? "Failed to load access status.");
       setLoading(false);
       setLoaded(true);
       return;
     }
 
     setInfo(data);
+    try {
+      sessionStorage.setItem("accessRequestsMine", JSON.stringify(data));
+    } catch {
+      // ignore storage errors
+    }
     setLoading(false);
     setLoaded(true);
   };
 
   useEffect(() => {
+    setLoaded(false);
+    setInfo(null);
     load();
   }, [clubId]);
 
@@ -95,10 +110,26 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
 
     setMsg("Request submitted! An admin will review it.");
     setBusy(false);
-    await load();
+    if (data?.request?.clubId) {
+      const next = {
+        ...(info ?? {}),
+        byClubId: {
+          ...((info ?? {}) as any).byClubId,
+          [data.request.clubId]: data.request,
+        },
+      };
+      setInfo(next);
+      try {
+        sessionStorage.setItem("accessRequestsMine", JSON.stringify(next));
+      } catch {
+        // ignore cache errors
+      }
+    } else {
+      await load();
+    }
   };
 
-  if (loading || !loaded) {
+  if (loading) {
     return (
       <div className="card" style={{ marginTop: 14 }}>
         <p className="small">Loading access status...</p>
@@ -106,11 +137,18 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
     );
   }
 
-  const alreadyMember = !!info?.alreadyMember;
-  const request = info?.request;
+  if (!loaded) {
+    return (
+      <div className="card" style={{ marginTop: 14 }}>
+        <p className="small">Loading access status...</p>
+      </div>
+    );
+  }
+
+  const request = info?.byClubId?.[clubId];
   const status = String(request?.status ?? "").toLowerCase();
 
-  if (alreadyMember) {
+  if (status === "approved") {
     return (
       <div className="card" style={{ marginTop: 14, border: "1px solid rgba(34,197,94,0.25)" }}>
         <h3 style={{ marginTop: 0 }}>You have leader access</h3>
@@ -119,23 +157,6 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
         </p>
         <div className="row" style={{ marginTop: 12 }}>
           <Link className="btn btnPrimary" href="/leader/dashboard" style={accessBtnStyle}>Go to Dashboard</Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (info?.unauth) {
-    return (
-      <div className="card" style={{ marginTop: 14 }}>
-        <h3 style={{ marginTop: 0 }}>Leader access</h3>
-        <p className="small" style={{ marginTop: 8 }}>
-          Check whether you already have leader access for this club, or request it.
-        </p>
-        <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" onClick={load} style={accessBtnStyle}>
-            Check access status
-          </button>
-          <Link className="btn btnPrimary" href="/login" style={accessBtnStyle}>Log in</Link>
         </div>
       </div>
     );
@@ -181,12 +202,19 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
     );
   }
 
+  const unauth = !!info?.unauth;
+
   return (
     <div className="card" style={{ marginTop: 14 }}>
       <h3 style={{ marginTop: 0 }}>Request leader access</h3>
       <p className="small" style={{ marginTop: 8 }}>
         If you are a club leader, request editing access to this club profile.
       </p>
+      {unauth && (
+        <p className="small" style={{ marginTop: 8 }}>
+          Sign in to request leader access.
+        </p>
+      )}
 
       <label className="label">Message (optional)</label>
       <textarea
@@ -201,7 +229,7 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
       {msg && <p className="small" style={{ marginTop: 10 }}>{msg}</p>}
 
       <div className="row" style={{ marginTop: 12 }}>
-        <button className="btn btnPrimary" onClick={submit} disabled={busy} style={accessBtnStyle}>
+        <button className="btn btnPrimary" onClick={submit} disabled={busy || unauth} style={accessBtnStyle}>
           {busy ? "Submitting..." : "Request access"}
         </button>
       </div>

@@ -7,6 +7,7 @@ type Req = {
   clubId?: string;
   requesterUserId?: string;
   requesterEmail?: string;
+  clubName?: string;
   message?: string;
   createdAt?: string;
 };
@@ -44,10 +45,17 @@ export default function AccessRequestsList() {
     setBusy((b) => ({ ...b, [id]: true }));
     setErr(null);
 
+    const req = requests.find((r) => r.recordId === id);
     const res = await fetch(`/api/admin/access-requests/${id}/${action}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reviewNotes: notes[id] ?? "" }),
+      body: JSON.stringify({
+        reviewNotes: notes[id] ?? "",
+        clubId: req?.clubId ?? "",
+        requesterUserId: req?.requesterUserId ?? "",
+        requesterEmail: req?.requesterEmail ?? "",
+        clubName: req?.clubName ?? "",
+      }),
     });
 
     const data = await safeJson(res);

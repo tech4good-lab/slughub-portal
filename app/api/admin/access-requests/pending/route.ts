@@ -16,6 +16,10 @@ export async function GET() {
     600
   );
 
-  const requests = records.map((r: any) => ({ recordId: r.id, ...r.fields }));
+  const requests = records.map((r: any) => ({
+    recordId: r.id,
+    ...r.fields,
+    clubName: (r.fields as any)?.clubName ?? (r.fields as any)?.name,
+  }));
   return NextResponse.json({ requests });
 }

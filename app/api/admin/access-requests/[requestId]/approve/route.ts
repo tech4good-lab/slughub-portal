@@ -20,27 +20,34 @@ export async function POST(
   const reviewNotes = String(body.reviewNotes ?? "");
   const nowIso = new Date().toISOString();
 
-  const record = await cachedFind(REQUESTS_TABLE, requestId, 5);
-  const f = record.fields as any;
+  let clubId = String(body.clubId ?? "");
+  let userId = String(body.requesterUserId ?? "");
+  let requesterEmail = String(body.requesterEmail ?? "");
 
-  const clubId = String(f.clubId ?? "");
-  const userId = String(f.requesterUserId ?? "");
+  if (!clubId || !userId) {
+    const record = await cachedFind(REQUESTS_TABLE, requestId, 5);
+    const f = record.fields as any;
+    clubId = String(f.clubId ?? "");
+    userId = String(f.requesterUserId ?? "");
+    requesterEmail = String(f.requesterEmail ?? "");
+  }
   if (!clubId || !userId) {
     return NextResponse.json({ error: "Malformed request record." }, { status: 400 });
   }
 
   // Ensure the club is marked verified when a leader is approved.
   let resolvedClubId: string | null = null;
-  let clubName: string | null = null;
+  let clubName: string | null = String(body.clubName ?? "").trim() || null;
   try {
     let clubRecordId: string | null = null;
+    let clubFields: Record<string, unknown> = {};
 
     if (clubId.startsWith("rec")) {
       const clubRec = await cachedFind(CLUBS_TABLE, clubId, 5);
       clubRecordId = clubRec?.id ?? null;
-      const clubFields = (clubRec?.fields as any) ?? {};
-      resolvedClubId = String(clubFields?.clubId ?? "").trim() || null;
-      clubName = String(clubFields?.name ?? "").trim() || null;
+      clubFields = (clubRec?.fields as any) ?? {};
+      resolvedClubId = String(clubFields.clubId ?? "").trim() || null;
+      clubName = clubName || String(clubFields.name ?? "").trim() || null;
     } else {
       const clubRec = await cachedFirstPage(
         CLUBS_TABLE,
@@ -48,17 +55,11 @@ export async function POST(
         5
       );
       clubRecordId = clubRec.length > 0 ? clubRec[0].id : null;
-      resolvedClubId =
-        clubRec.length > 0 ? String((clubRec[0].fields as any)?.clubId ?? "").trim() || null : null;
+      clubFields = clubRec.length > 0 ? ((clubRec[0].fields as any) ?? {}) : {};
+      resolvedClubId = clubRec.length > 0 ? String((clubFields as any)?.clubId ?? "").trim() || null : null;
       clubName =
-        clubRec.length > 0 ? String((clubRec[0].fields as any)?.name ?? "").trim() || null : null;
-      if (!clubRecordId) {
-        const fallbackById = await cachedFind(CLUBS_TABLE, clubId, 5).catch(() => null);
-        clubRecordId = (fallbackById as any)?.id ?? null;
-        const fbFields = (fallbackById as any)?.fields ?? {};
-        resolvedClubId = String(fbFields?.clubId ?? "").trim() || null;
-        clubName = String(fbFields?.name ?? "").trim() || null;
-      }
+        clubName ||
+        (clubRec.length > 0 ? String((clubFields as any)?.name ?? "").trim() || null : null);
     }
 
     if (!clubRecordId) {
@@ -72,7 +73,7 @@ export async function POST(
       );
       const memberName = String((memberRec[0]?.fields as any)?.name ?? "").trim();
       if (memberName) {
-        clubName = memberName;
+        clubName = clubName || memberName;
         const nameEscaped = memberName.replace(/"/g, '\\"');
         const clubByName = await cachedFirstPage(
           CLUBS_TABLE,
@@ -90,10 +91,15 @@ export async function POST(
     if (clubRecordId) {
       const finalClubId = resolvedClubId || crypto.randomUUID();
       resolvedClubId = finalClubId;
-      noteCall(CLUBS_TABLE);
-      await base(CLUBS_TABLE).update([
-        { id: clubRecordId, fields: { communityStatus: ["Verified"], clubId: finalClubId } },
-      ]);
+      const currentStatus = String((clubFields as any)?.communityStatus ?? "").toLowerCase();
+      const needsStatus = currentStatus !== "verified";
+      const needsClubId = !String((clubFields as any)?.clubId ?? "").trim();
+      if (needsStatus || needsClubId) {
+        noteCall(CLUBS_TABLE);
+        await base(CLUBS_TABLE).update([
+          { id: clubRecordId, fields: { communityStatus: ["Verified"], clubId: finalClubId } },
+        ]);
+      }
     }
   } catch (e) {
     console.warn("Failed to set communityStatus=Verified after access approval", e);
