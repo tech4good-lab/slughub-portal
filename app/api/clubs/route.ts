@@ -24,7 +24,6 @@ export async function GET() {
     return {
       recordId: r.id,
       ...f,
-      category: f.Category ?? f.category,
       verification: f.Verification ?? f.verification,
       verified: f.Verified ?? f.verified,
       communityType,

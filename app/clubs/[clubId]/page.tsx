@@ -45,6 +45,12 @@ export default async function ClubDetailPage({
 
   const data = await res.json();
   const club = data.club as Club;
+  const communityTypeRaw =
+    (club as any).communityType ??
+    (club as any)["community Type"] ??
+    (club as any)["community type"] ??
+    (club as any)["Community Type"];
+  const communityType = Array.isArray(communityTypeRaw) ? communityTypeRaw[0] : communityTypeRaw;
 
   return (
     <main className="container clubDetail">
@@ -54,7 +60,7 @@ export default async function ClubDetailPage({
 
       {/* Hero section - cleaner layout */}
       <div className="card" style={{ marginTop: 20 }}>
-        {club.category && (
+        {communityType && (
           <div style={{ marginBottom: 12 }}>
             <span
               style={{
@@ -65,12 +71,12 @@ export default async function ClubDetailPage({
                 fontSize: 12,
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
-                background: club.category === "Athletic Team" ? "rgba(59,130,246,0.12)" : club.category === "Social Community" ? "rgba(168,85,247,0.08)" : "rgba(249,115,22,0.08)",
-                color: club.category === "Athletic Team" ? "rgba(59,130,246,0.95)" : club.category === "Social Community" ? "rgba(168,85,247,0.95)" : "rgba(249,115,22,0.95)",
+                background: "rgba(251,191,36,0.15)",
+                color: "rgba(180,83,9,0.95)",
                 border: "1px solid rgba(255,255,255,0.04)"
               }}
             >
-              {club.category}
+              {communityType}
             </span>
           </div>
         )}

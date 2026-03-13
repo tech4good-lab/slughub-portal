@@ -34,5 +34,12 @@ export async function POST(
   }
 
   const f = updated[0].fields as any;
-  return NextResponse.json({ club: { recordId: updated[0].id, ...f, category: f.Category ?? f.category } });
+  return NextResponse.json({
+    club: {
+      recordId: updated[0].id,
+      ...f,
+      communityType:
+        f.communityType ?? f["community Type"] ?? f["community type"] ?? f["Community Type"],
+    },
+  });
 }
