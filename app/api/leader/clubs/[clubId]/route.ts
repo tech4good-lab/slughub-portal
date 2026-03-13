@@ -53,7 +53,13 @@ export async function GET(
   if (!clubRec) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const f = clubRec.fields as any;
-  return NextResponse.json({ club: { recordId: clubRec.id, ...f, category: f.Category ?? f.category } });
+  return NextResponse.json({
+    club: {
+      recordId: clubRec.id,
+      ...f,
+      communityType: f.communityType ?? f["community Type"] ?? f["community type"] ?? f["Community Type"],
+    },
+  });
 }
 
 export async function POST(
@@ -85,7 +91,7 @@ export async function POST(
     clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
     contactName: String(body.contactName ?? "").trim(),
     contactEmail: String(body.contactEmail ?? "").trim(),
-    category: String(body.category ?? "").trim(),
+    communityType: String(body.communityType ?? "").trim(),
     calendarUrl: String(body.calendarUrl ?? "").trim(),
     discordUrl: String(body.discordUrl ?? "").trim(),
     websiteUrl: String(body.websiteUrl ?? "").trim(),
@@ -118,7 +124,7 @@ export async function POST(
     const msg = String(err?.message ?? "");
     if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
       const fallback = { ...payload };
-      delete (fallback as any).category;
+      delete (fallback as any).communityType;
       delete (fallback as any).clubIcebreakers;
       updated = await base(CLUBS_TABLE).update([{ id: clubRec.id, fields: fallback }]);
     } else {
@@ -139,6 +145,14 @@ export async function POST(
 
   const updatedFields = updated[0].fields as any;
   return NextResponse.json({
-    club: { recordId: updated[0].id, ...updatedFields, category: updatedFields.Category ?? updatedFields.category },
+    club: {
+      recordId: updated[0].id,
+      ...updatedFields,
+      communityType:
+        updatedFields.communityType ??
+        updatedFields["community Type"] ??
+        updatedFields["community type"] ??
+        updatedFields["Community Type"],
+    },
   });
 }

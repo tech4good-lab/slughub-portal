@@ -78,20 +78,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
         const k = key.trim().toLowerCase().replace(/\s+/g, "");
         return k === "communitytype";
       });
-      let statusValues = normalizeList(statusEntry?.[1]).map((v) => v.toLowerCase());
+      const statusValues = normalizeList(statusEntry?.[1]).map((v) => v.toLowerCase());
       const typeValues = normalizeList(typeEntry?.[1]).map((v) => v.toLowerCase());
       const typeSelectedNormalized = typeSelected.map((v) => v.toLowerCase());
-
-      if (statusValues.length === 0) {
-        const verificationEntry = Object.entries(fields).find(([key]) => {
-          const k = key.trim().toLowerCase();
-          return k === "verification" || k === "verified";
-        });
-        const verificationValue = String(verificationEntry?.[1] ?? "").trim().toLowerCase();
-        const clubIdValue = String(fields.clubId ?? fields.ClubId ?? "").trim();
-        const isVerified = verificationValue === "verified" || clubIdValue.length > 0;
-        statusValues = [isVerified ? "verified" : "unofficial"];
-      }
 
       const statusOk =
         statusSelected.length === 0 ||

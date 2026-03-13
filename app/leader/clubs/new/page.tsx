@@ -8,7 +8,7 @@ export default function NewClubPage() {
   const [name, setName] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
-  const [category, setCategory] = useState("Club");
+  const [communityType, setCommunityType] = useState("Campus Department/Program");
   const [clubIcebreakers, setClubIcebreakers] = useState("");
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -35,7 +35,7 @@ export default function NewClubPage() {
     setSaving(true);
 
     try {
-      const draft = { name, contactName, contactEmail, category, clubIcebreakers };
+      const draft = { name, contactName, contactEmail, communityType, clubIcebreakers };
       localStorage.setItem("clubDraft", JSON.stringify(draft));
       window.location.href = "/leader/clubs/draft/edit";
     } catch {
@@ -71,12 +71,17 @@ export default function NewClubPage() {
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Category</label>
-        <select className="input" value={category} onChange={(e) => setCategory(e.target.value)} required>
-          <option>Club</option>
-          <option>Org</option>
-          <option>Athletic</option>
-          <option>Unofficial</option>
+        <label className="label">Community type</label>
+        <select className="input" value={communityType} onChange={(e) => setCommunityType(e.target.value)} required>
+          <option>Campus Department/Program</option>
+          <option>Professional and Career</option>
+          <option>Performing and Visual Arts</option>
+          <option>Cultural and Identity</option>
+          <option>Greek-letter</option>
+          <option>Academic</option>
+          <option>Sports and Recreation</option>
+          <option>Media and broadcasting</option>
+          <option>Politics and Advocacy</option>
           <option>Research</option>
         </select>
 

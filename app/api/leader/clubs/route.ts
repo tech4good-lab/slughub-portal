@@ -35,7 +35,11 @@ export async function GET() {
 
   const clubs = (records || []).map((r: any) => {
     const f = r.fields as any;
-    return { recordId: r.id, ...f, category: f.Category ?? f.category };
+    return {
+      recordId: r.id,
+      ...f,
+      communityType: f.communityType ?? f["community Type"] ?? f["community type"] ?? f["Community Type"],
+    };
   });
   return NextResponse.json({ clubs });
 }
@@ -60,8 +64,7 @@ export async function POST(req: Request) {
       name: String(body.name ?? "").trim(),
       description: String(body.description ?? "").trim(),
     clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
-      // Use Airtable field name 'category' (lowercase) as created in your table.
-      category: String(body.category ?? "").trim(),
+      communityType: String(body.communityType ?? "").trim(),
       contactName: String(body.contactName ?? "").trim(),
       contactEmail: String(body.contactEmail ?? "").trim(),
       calendarUrl: String(body.calendarUrl ?? "").trim(),
@@ -87,9 +90,9 @@ export async function POST(req: Request) {
     } catch (err: any) {
       const msg = String(err?.message ?? "");
       if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
-        // Retry without the category field in case the Airtable table doesn't have that column yet.
+        // Retry without the communityType field in case the Airtable table doesn't have that column yet.
         const fallback = { ...payload };
-        delete (fallback as any).category;
+        delete (fallback as any).communityType;
         delete (fallback as any).clubIcebreakers;
         created = await base(CLUBS_TABLE).create([{ fields: fallback }]);
       } else {
@@ -140,7 +143,15 @@ Review it in the admin panel.`;
 
     const createdFields = created[0].fields as any;
     return NextResponse.json({
-      club: { recordId: created[0].id, ...createdFields, category: createdFields.Category ?? createdFields.category },
+      club: {
+        recordId: created[0].id,
+        ...createdFields,
+        communityType:
+          createdFields.communityType ??
+          createdFields["community Type"] ??
+          createdFields["community type"] ??
+          createdFields["Community Type"],
+      },
     });
   } catch (e: any) {
     console.error(e);
