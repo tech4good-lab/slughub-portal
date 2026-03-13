@@ -22,7 +22,10 @@ const COMMUNITY_TYPE_OPTIONS = [
   "Research",
 ] as const;
 
-const STATUS_OPTIONS = ["Verified", "Unofficial"] as const;
+const STATUS_OPTIONS = [
+  { label: "Verified", value: "verified" },
+  { label: "Unofficial", value: "unofficial" },
+] as const;
 
 function normalizeValue(v: any) {
   return String(v ?? "").trim();
@@ -75,20 +78,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
         const k = key.trim().toLowerCase().replace(/\s+/g, "");
         return k === "communitytype";
       });
-      let statusValues = normalizeList(statusEntry?.[1]).map((v) => v.toLowerCase());
+      const statusValues = normalizeList(statusEntry?.[1]).map((v) => v.toLowerCase());
       const typeValues = normalizeList(typeEntry?.[1]).map((v) => v.toLowerCase());
       const typeSelectedNormalized = typeSelected.map((v) => v.toLowerCase());
-
-      if (statusValues.length === 0) {
-        const verificationEntry = Object.entries(fields).find(([key]) => {
-          const k = key.trim().toLowerCase();
-          return k === "verification" || k === "verified";
-        });
-        const verificationValue = String(verificationEntry?.[1] ?? "").trim().toLowerCase();
-        const clubIdValue = String(fields.clubId ?? fields.ClubId ?? "").trim();
-        const isVerified = verificationValue === "verified" || clubIdValue.length > 0;
-        statusValues = [isVerified ? "Verified" : "Unofficial"];
-      }
 
       const statusOk =
         statusSelected.length === 0 ||
@@ -176,16 +168,24 @@ export default function DirectoryClient({ clubs, session }: Props) {
             >
               Clear
             </button>
-            {STATUS_OPTIONS.map((status) => (
-              <label key={status} className="directoryDropdownItem">
-                <input
-                  type="checkbox"
-                  checked={statusSelected.includes(status)}
-                  onChange={() => toggleStatus(status)}
-                />
-                {status}
-              </label>
-            ))}
+            {STATUS_OPTIONS.map((status) => {
+              const hint =
+                status.value === "verified"
+                  ? "A lead has taken ownership of this community and has curated the community's content"
+                  : "This community is not registered with SOMeCA";
+              return (
+                <label key={status.value} className="directoryDropdownItem">
+                  <input
+                    type="checkbox"
+                    checked={statusSelected.includes(status.value)}
+                    onChange={() => toggleStatus(status.value)}
+                    aria-label={`${status.label}. ${hint}`}
+                  />
+                  <span>{status.label}</span>
+                  <span className="directoryDropdownHint">{hint}</span>
+                </label>
+              );
+            })}
           </div>
         </details>
       </div>
@@ -219,8 +219,8 @@ export default function DirectoryClient({ clubs, session }: Props) {
               Be the first to register your club and start building community.
             </p>
             {!session && (
-              <Link href="/signup" className="btn btnPrimary" style={{ marginTop: 20, display: "inline-flex" }}>
-                Register Your Club
+              <Link href="/login" className="btn btnPrimary" style={{ marginTop: 20, display: "inline-flex" }}>
+                Club Lead Login
               </Link>
             )}
           </div>

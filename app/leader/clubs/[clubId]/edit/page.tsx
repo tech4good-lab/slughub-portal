@@ -11,7 +11,7 @@ type ClubDraft = {
   clubIcebreakers: string;
   contactName: string;
   contactEmail: string;
-  category: string;
+  communityType: string;
   calendarUrl: string;
   discordUrl: string;
   websiteUrl: string;
@@ -19,13 +19,26 @@ type ClubDraft = {
   linkedinUrl: string;
 };
 
+const COMMUNITY_TYPE_OPTIONS = [
+  "Campus Department/Program",
+  "Professional and Career",
+  "Performing and Visual Arts",
+  "Cultural and Identity",
+  "Greek-letter",
+  "Academic",
+  "Sports and Recreation",
+  "Media and broadcasting",
+  "Politics and Advocacy",
+  "Research",
+] as const;
+
 const emptyDraft: ClubDraft = {
   name: "",
   description: "",
   clubIcebreakers: "",
   contactName: "",
   contactEmail: "",
-  category: "Club",
+  communityType: "Campus Department/Program",
   calendarUrl: "",
   discordUrl: "",
   websiteUrl: "",
@@ -62,7 +75,7 @@ export default function EditClubPage() {
             clubIcebreakers: saved.clubIcebreakers ?? "",
             contactName: saved.contactName ?? "",
             contactEmail: saved.contactEmail ?? "",
-            category: saved.category ?? "Club",
+            communityType: saved.communityType ?? "Campus Department/Program",
             calendarUrl: saved.calendarUrl ?? "",
             discordUrl: saved.discordUrl ?? "",
             websiteUrl: saved.websiteUrl ?? "",
@@ -109,13 +122,15 @@ export default function EditClubPage() {
       const club = data.club as Club | null;
 
       if (club) {
+        const ctRaw = (club as any).communityType ?? (club as any)["community Type"];
+        const ctValue = Array.isArray(ctRaw) ? ctRaw[0] : ctRaw;
         setDraft({
           name: (club.name ?? "") as string,
           description: (club.description ?? "") as string,
           clubIcebreakers: (club.clubIcebreakers ?? "") as string,
           contactName: (club.contactName ?? "") as string,
           contactEmail: (club.contactEmail ?? "") as string,
-          category: (club.category ?? "Club") as string,
+          communityType: (ctValue ?? "Campus Department/Program") as string,
           calendarUrl: (club.calendarUrl ?? "") as string,
           discordUrl: (club.discordUrl ?? "") as string,
           websiteUrl: (club.websiteUrl ?? "") as string,
@@ -245,13 +260,11 @@ export default function EditClubPage() {
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Category</label>
-        <select className="input" value={draft.category} onChange={(e) => set("category", e.target.value)} required>
-          <option>Club</option>
-          <option>Org</option>
-          <option>Athletic</option>
-          <option>Unofficial</option>
-          <option>Research</option>
+        <label className="label">Community type</label>
+        <select className="input" value={draft.communityType} onChange={(e) => set("communityType", e.target.value)} required>
+          {COMMUNITY_TYPE_OPTIONS.map((opt) => (
+            <option key={opt}>{opt}</option>
+          ))}
         </select>
 
         <hr />

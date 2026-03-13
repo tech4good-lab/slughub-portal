@@ -28,7 +28,14 @@ export async function GET(
     if (String(f?.status ?? "").toLowerCase() !== "approved") {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
-    return NextResponse.json({ club: { recordId: match.id, ...f, category: f.Category ?? f.category } });
+    return NextResponse.json({
+      club: {
+        recordId: match.id,
+        ...f,
+        communityType:
+          f.communityType ?? f["community Type"] ?? f["community type"] ?? f["Community Type"],
+      },
+    });
   } catch {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
