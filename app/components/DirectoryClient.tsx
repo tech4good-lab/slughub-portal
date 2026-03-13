@@ -22,7 +22,10 @@ const COMMUNITY_TYPE_OPTIONS = [
   "Research",
 ] as const;
 
-const STATUS_OPTIONS = ["Verified", "Unofficial"] as const;
+const STATUS_OPTIONS = [
+  { label: "Verified", value: "verified" },
+  { label: "Unofficial", value: "unofficial" },
+] as const;
 
 function normalizeValue(v: any) {
   return String(v ?? "").trim();
@@ -87,7 +90,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
         const verificationValue = String(verificationEntry?.[1] ?? "").trim().toLowerCase();
         const clubIdValue = String(fields.clubId ?? fields.ClubId ?? "").trim();
         const isVerified = verificationValue === "verified" || clubIdValue.length > 0;
-        statusValues = [isVerified ? "Verified" : "Unofficial"];
+        statusValues = [isVerified ? "verified" : "unofficial"];
       }
 
       const statusOk =
@@ -177,13 +180,13 @@ export default function DirectoryClient({ clubs, session }: Props) {
               Clear
             </button>
             {STATUS_OPTIONS.map((status) => (
-              <label key={status} className="directoryDropdownItem">
+              <label key={status.value} className="directoryDropdownItem">
                 <input
                   type="checkbox"
-                  checked={statusSelected.includes(status)}
-                  onChange={() => toggleStatus(status)}
+                  checked={statusSelected.includes(status.value)}
+                  onChange={() => toggleStatus(status.value)}
                 />
-                {status}
+                {status.label}
               </label>
             ))}
           </div>
