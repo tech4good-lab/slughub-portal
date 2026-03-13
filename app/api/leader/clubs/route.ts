@@ -59,12 +59,17 @@ export async function POST(req: Request) {
 
     const clubId = crypto.randomUUID();
 
+    const communityTypeRaw = String(body.communityType ?? "").trim();
+    const communityType = communityTypeRaw ? [communityTypeRaw] : [];
+    const communityStatus = ["Verified"];
+
     const payload = {
       clubId,
       name: String(body.name ?? "").trim(),
       description: String(body.description ?? "").trim(),
     clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
-      communityType: String(body.communityType ?? "").trim(),
+      communityType,
+      communityStatus,
       contactName: String(body.contactName ?? "").trim(),
       contactEmail: String(body.contactEmail ?? "").trim(),
       calendarUrl: String(body.calendarUrl ?? "").trim(),

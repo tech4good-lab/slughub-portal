@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, invalidateTable, noteCall, cachedFind, cachedFirstPage } from "@/lib/airtable";
+import { base, invalidateTable, noteCall, cachedFind, cachedFirstPage, CLUBS_TABLE } from "@/lib/airtable";
 
 const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
 const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
@@ -42,6 +42,23 @@ export async function POST(
     ]);
   }
 
+  // Ensure the club is marked verified when a leader is approved.
+  try {
+    const clubRec = await cachedFirstPage(
+      CLUBS_TABLE,
+      { maxRecords: 1, filterByFormula: `{clubId}="${clubId}"` },
+      5
+    );
+    if (clubRec.length > 0) {
+      noteCall(CLUBS_TABLE);
+      await base(CLUBS_TABLE).update([
+        { id: clubRec[0].id, fields: { communityStatus: ["Verified"] } },
+      ]);
+    }
+  } catch (e) {
+    console.warn("Failed to set communityStatus=Verified after access approval", e);
+  }
+
   noteCall(REQUESTS_TABLE);
   const updated = await base(REQUESTS_TABLE).update([
     {
@@ -58,6 +75,7 @@ export async function POST(
   try {
     invalidateTable(REQUESTS_TABLE);
     invalidateTable(MEMBERS_TABLE);
+    invalidateTable(CLUBS_TABLE);
   } catch (e) {
     console.warn("Failed to invalidate cache after approve", e);
   }
