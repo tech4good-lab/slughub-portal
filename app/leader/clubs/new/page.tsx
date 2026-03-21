@@ -73,16 +73,17 @@ export default function NewClubPage() {
 
         <label className="label">Community type</label>
         <select className="input" value={communityType} onChange={(e) => setCommunityType(e.target.value)} required>
+          <option>Academic</option>
           <option>Campus Department/Program</option>
-          <option>Professional and Career</option>
-          <option>Performing and Visual Arts</option>
           <option>Cultural and Identity</option>
           <option>Greek-letter</option>
-          <option>Academic</option>
-          <option>Sports and Recreation</option>
           <option>Media and broadcasting</option>
+          <option>Other</option>
+          <option>Performing and Visual Arts</option>
           <option>Politics and Advocacy</option>
+          <option>Professional and Career</option>
           <option>Research</option>
+          <option>Sports and Recreation</option>
         </select>
 
         <div style={{ height: 10 }} />

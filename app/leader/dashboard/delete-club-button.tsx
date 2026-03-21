@@ -28,7 +28,7 @@ export default function DeleteClubButton({
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        const msg = String(data?.error ?? "Failed to delete club.");
+        const msg = String(data?.error ?? "Failed to delete community.");
         window.alert(msg);
         return;
       }
@@ -66,7 +66,7 @@ export default function DeleteClubButton({
         opacity: isDeleting ? 0.65 : 1,
       }}
     >
-      {isDeleting ? "Deleting..." : "Delete Club"}
+      {isDeleting ? "Deleting..." : "Delete Community"}
     </button>
   );
 }

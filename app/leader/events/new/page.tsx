@@ -18,7 +18,6 @@ export default function NewEventPage() {
   const [eventTime, setEventTime] = useState("");
   const [eventLocation, setEventLocation] = useState("");
   const [eventDescription, setEventDescription] = useState("");
-  const [iceBreakers, setIceBreakers] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -64,7 +63,7 @@ export default function NewEventPage() {
       }
 
       if (!res.ok) {
-        setErr(data?.error ?? "Failed to load clubs.");
+        setErr(data?.error ?? "Failed to load communities.");
         setLoading(false);
         return;
       }
@@ -100,7 +99,6 @@ export default function NewEventPage() {
         eventTime,
         eventLocation,
         eventDescription,
-        IceBreakers: iceBreakers,
       }),
     });
 
@@ -143,7 +141,7 @@ export default function NewEventPage() {
       </div>
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onCreate}>
-        <label className="label">Club *</label>
+        <label className="label">Community *</label>
         <select
           className="input"
           value={clubId}
@@ -151,7 +149,7 @@ export default function NewEventPage() {
           required
         >
           {clubs.length === 0 ? (
-            <option value="">No club access</option>
+            <option value="">No community access</option>
           ) : (
             clubs.map((club) => (
               <option key={club.clubId} value={club.clubId}>
@@ -194,17 +192,6 @@ export default function NewEventPage() {
           rows={4}
           value={eventDescription}
           onChange={(e) => setEventDescription(e.target.value)}
-        />
-
-        <div style={{ height: 10 }} />
-
-        <label className="label">Icebreaker Seeds</label>
-        <textarea
-          className="input"
-          value={iceBreakers}
-          onChange={(e) => setIceBreakers(e.target.value)}
-          placeholder="What should attendees share or discuss?"
-          style={{ minHeight: 120 }}
         />
 
         {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
