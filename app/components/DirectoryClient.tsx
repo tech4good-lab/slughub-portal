@@ -94,7 +94,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
       if (!typeOk) return false;
 
       if (!q) return true;
-      return String(c.name ?? "").toLowerCase().includes(q);
+      const name = String(c.name ?? "").toLowerCase();
+      const description = String(c.description ?? "").toLowerCase();
+      return name.includes(q) || description.includes(q);
     })
     .sort((a,b) =>
     String(a.name ?? "").localeCompare(String(b.name ?? ""))
