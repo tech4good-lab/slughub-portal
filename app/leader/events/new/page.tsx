@@ -64,7 +64,7 @@ export default function NewEventPage() {
       }
 
       if (!res.ok) {
-        setErr(data?.error ?? "Failed to load clubs.");
+        setErr(data?.error ?? "Failed to load communities.");
         setLoading(false);
         return;
       }
@@ -143,7 +143,7 @@ export default function NewEventPage() {
       </div>
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onCreate}>
-        <label className="label">Club *</label>
+        <label className="label">Community *</label>
         <select
           className="input"
           value={clubId}
@@ -151,7 +151,7 @@ export default function NewEventPage() {
           required
         >
           {clubs.length === 0 ? (
-            <option value="">No club access</option>
+            <option value="">No community access</option>
           ) : (
             clubs.map((club) => (
               <option key={club.clubId} value={club.clubId}>
