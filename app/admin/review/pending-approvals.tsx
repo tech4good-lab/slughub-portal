@@ -118,7 +118,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
             <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>Logged in as: {email ?? '<email>'}</div>
           </div>
           <div style={{ marginLeft: "auto", minWidth: 80, height: 32, background: "#FDF0A6", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <Link href='/' style={{ color: 'black', fontFamily: 'Sarabun', fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>↤ Home</Link>
+            <Link href='/' style={{ color: 'black', fontFamily: 'Sarabun', fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>↤ Home</Link>
           </div>
         </div>
 
@@ -159,6 +159,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
     </div>
   );
 }
+
 
 
 

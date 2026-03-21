@@ -30,8 +30,7 @@ export default async function AdminAccessPage() {
           <h1>Admin: Leader Access Requests</h1>
           <div className="row">
             <Link style={{ color: "black" }} className="btn" href="/admin/review">Community Approvals</Link>
-            <Link style={{ color: "black" }} className="btn" href="/directory">Directory</Link>
-            <Link style={{ color: "black" }} className="btn" href="/">Home</Link>
+            <Link style={{ color: "black" }} className="btn" href="/">↤ Home</Link>
           </div>
         </div>
         <div style={{ width: "100%", height: 0.5, background: "#333333", marginBottom: 6 }} />
@@ -41,4 +40,3 @@ export default async function AdminAccessPage() {
     </main>
   );
 }
-

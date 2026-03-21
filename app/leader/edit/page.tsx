@@ -213,7 +213,7 @@ export default function EditClubPage() {
             Dashboard
           </Link>
           <Link className="btn" href="/">
-            Home
+            ↤ Home
           </Link>
         </div>
       </div>
