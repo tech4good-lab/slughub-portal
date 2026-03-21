@@ -10,21 +10,22 @@ type Props = {
 };
 
 const COMMUNITY_TYPE_OPTIONS = [
+  "Academic",
   "Campus Department/Program",
-  "Professional and Career",
-  "Performing and Visual Arts",
   "Cultural and Identity",
   "Greek-letter",
-  "Academic",
-  "Sports and Recreation",
   "Media and broadcasting",
+  "Other",
+  "Performing and Visual Arts",
   "Politics and Advocacy",
+  "Professional and Career",
   "Research",
+  "Sports and Recreation",
 ] as const;
 
 const STATUS_OPTIONS = [
-  { label: "Verified", value: "verified" },
   { label: "Unofficial", value: "unofficial" },
+  { label: "Verified", value: "verified" },
 ] as const;
 
 function normalizeValue(v: any) {
@@ -234,7 +235,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
               href="https://tech4good.soe.ucsc.edu/"
               target="_blank"
               rel="noreferrer"
-              style={{ color: "rgba(251,191,36,0.9)", textDecoration: "none", fontWeight: 600 }}
+              style={{ color: "#FDF0A6", textDecoration: "none", fontWeight: 600 }}
             >
               CommunityRAG Team
             </a>
@@ -245,3 +246,4 @@ export default function DirectoryClient({ clubs, session }: Props) {
     </>
   );
 }
+

@@ -329,8 +329,9 @@ export default async function LeaderDashboard() {
 
       {/* Footer */}
       <div style={{ textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#333', marginTop: 20, position: 'relative', zIndex: 10 }}>
-        Made with ❤️ from the <a href="#" style={{ color: '#69A1FF', textDecoration: 'underline' }}>Community RAG Team</a>
+        Made with ❤️ from the <a href="#" style={{ color: '#FDF0A6', textDecoration: 'underline' }}>Community RAG Team</a>
       </div>
     </div>
   );
 }
+

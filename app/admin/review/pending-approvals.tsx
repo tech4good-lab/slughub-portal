@@ -153,12 +153,13 @@ export default function PendingApprovals({ email }: { email?: string }) {
 
         {/* Footer */}
         <div style={{ marginTop: 40, paddingTop: 20, borderTop: '0.5px solid #333333', textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#666' }}>
-          Made with ❤️ from the <a href="#" style={{ color: '#69A1FF', textDecoration: 'underline' }}>Community RAG Team</a>
+          Made with ❤️ from the <a href="#" style={{ color: '#FDF0A6', textDecoration: 'underline' }}>Community RAG Team</a>
         </div>
       </div>
     </div>
   );
 }
+
 
 
 

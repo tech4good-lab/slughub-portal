@@ -20,16 +20,17 @@ type ClubDraft = {
 };
 
 const COMMUNITY_TYPE_OPTIONS = [
+  "Academic",
   "Campus Department/Program",
-  "Professional and Career",
-  "Performing and Visual Arts",
   "Cultural and Identity",
   "Greek-letter",
-  "Academic",
-  "Sports and Recreation",
   "Media and broadcasting",
+  "Other",
+  "Performing and Visual Arts",
   "Politics and Advocacy",
+  "Professional and Career",
   "Research",
+  "Sports and Recreation",
 ] as const;
 
 const emptyDraft: ClubDraft = {
