@@ -62,8 +62,10 @@ export async function GET(req: Request) {
 
 
 export async function POST(req: Request) {
+  console.log("access-requests: POST hit");
   const session = await getServerSession(authOptions);
   const auth = requireAuth(session as any);
+  console.log("access-requests: auth", { ok: auth.ok, role: (session as any)?.role, hasUserId: !!(session as any)?.userId });
   if (!auth.ok) return auth.res;
 
   const body = await req.json();

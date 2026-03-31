@@ -46,9 +46,11 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    console.log("leader/clubs: POST hit");
     const session = await getServerSession(authOptions);
     const userId = (session as any)?.userId;
     const role = (session as any)?.role;
+    console.log("leader/clubs: auth", { hasUserId: !!userId, role });
 
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     if (role !== "leader" && role !== "admin")
