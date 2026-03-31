@@ -107,7 +107,7 @@ export async function POST(
     return NextResponse.json({ error: "Club name is required." }, { status: 400 });
   }
 
-  // Any edit should go back to pending for approval.
+  // Any edit should go back to pending for approval
   const nextStatus = "pending";
 
   const nowIso = new Date().toISOString();
@@ -116,7 +116,7 @@ export async function POST(
   if (nextStatus === "pending") {
     payload.submittedAt = nowIso;
     payload.reviewedAt = null;     // IMPORTANT: null not ""
-    payload.reviewNotes = "";      // reset notes on resubmission
+    payload.reviewNotes = "";      
   }
 
   noteCall(CLUBS_TABLE);

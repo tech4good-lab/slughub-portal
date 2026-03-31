@@ -58,7 +58,6 @@ export default async function ClubDetailPage({
       Back to Directory
       </Link>
 
-      {/* Hero section - cleaner layout */}
       <div className="card" style={{ marginTop: 20 }}>
         {communityType && (
           <div style={{ marginBottom: 12 }}>
@@ -95,7 +94,6 @@ export default async function ClubDetailPage({
           {club.description || "No description provided."}
         </p>
 
-        {/* Contact & Links - all in one card */}
         <div className="grid" style={{ marginTop: 0 }}>
           <div>
             <div
@@ -220,7 +218,6 @@ export default async function ClubDetailPage({
         </p>
       </div>
 
-      {/* ✅ Request leader access (new) */}
       <RequestAccess clubId={clubId} />
     </main>
   );

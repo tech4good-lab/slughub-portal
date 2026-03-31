@@ -21,7 +21,6 @@ function makeKey(table: string, params: any) {
 	return `${table}:${JSON.stringify(params ?? {})}`;
 }
 
-// Simple in-memory stats for instrumentation
 export const airtableStats: { calls: number; perTable: Record<string, number> } = {
 	calls: 0,
 	perTable: {},

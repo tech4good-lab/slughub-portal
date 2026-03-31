@@ -1,6 +1,6 @@
 export type Club = {
-  recordId?: string; // ✅ Airtable record id (recXXXX)
-  clubId?: string;   // your UUID field
+  recordId?: string;
+  clubId?: string;   
   ownerUserId?: string;
   name?: string;
   description?: string;

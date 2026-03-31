@@ -30,8 +30,7 @@ function requireAuth(session: any) {
   return { ok: true, userId, role };
 }
 
-// GET /api/access-requests?clubId=...
-// Returns *your* access request status for this club (if logged in)
+
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
   const auth = requireAuth(session as any);
@@ -61,8 +60,7 @@ export async function GET(req: Request) {
   });
 }
 
-// POST /api/access-requests
-// Body: { clubId: string, message?: string }
+
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   const auth = requireAuth(session as any);
@@ -76,7 +74,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "clubId is required" }, { status: 400 });
   }
 
-  // Upsert: if they already requested for this club, update it
   const existing = await cachedFirstPage(
     ACCESS_REQUESTS_TABLE,
     {
@@ -91,12 +88,10 @@ export async function POST(req: Request) {
     const rec = existing[0];
     const fields: any = rec.fields;
 
-    // If approved already, just return it (donâ€™t spam requests)
     if (fields?.status === "approved") {
       return NextResponse.json({ request: { recordId: rec.id, ...rec.fields } });
     }
 
-    // If rejected/pending, resubmit as pending (clear reviewed fields safely)
     noteCall(ACCESS_REQUESTS_TABLE);
 
     const updated = await base(ACCESS_REQUESTS_TABLE).update([
@@ -106,7 +101,6 @@ export async function POST(req: Request) {
           status: "pending",
           message,
           reviewNotes: "",
-          // IMPORTANT: Airtable clears fields with null (undefined is ignored)
           reviewedAt: null as any,
         },
       },
@@ -135,7 +129,6 @@ export async function POST(req: Request) {
         message,
         status: "pending",
         reviewNotes: "",
-        // IMPORTANT: use null to clear (or leave out), not undefined
         reviewedAt: null as any,
       },
     },

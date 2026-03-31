@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SlugHub Portal
 
-## Getting Started
+SlugHub Portal is a Next.js app for UCSC community leaders to manage and publish their organization’s profile, events, and contact info in the SlugHub directory.
 
-First, run the development server:
+## Quick Start
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. For local dev, create or update `.env.local` (see Environment Variables below).
+
+3. Run the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Prerequisites
 
-## Learn More
+- Node.js (LTS recommended)
+- npm (bundled with Node.js)
+- An Airtable base with the required tables and fields (see `docs/airtable-config.md`)
+- A Google OAuth client for NextAuth (see Auth Setup)
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `npm run dev` Start the dev server
+- `npm run build` Build for production
+- `npm run start` Start the production server
+- `npm run lint` Run ESLint
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+Create or update `.env.local` with the following. The app will not work without Airtable and google auth set up.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Required env:
+- `AIRTABLE_API_KEY` Airtable API key
+- `AIRTABLE_BASE_ID` Airtable base ID
+- `GOOGLE_CLIENT_ID` Google OAuth client id
+- `GOOGLE_CLIENT_SECRET` Google OAuth client secret
+- `NEXTAUTH_URL` Base URL for NextAuth (ex: `http://localhost:3000`)
+- `NEXTAUTH_SECRET` Secret for NextAuth (required in production, recommended in dev)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Email notification env (optional):
+- `RESEND_API_KEY` Use Resend API
+- `EMAIL_FROM` From address for emails
+
+## Project Structure
+
+- `app/` Next.js App Router pages and API routes
+- `lib/` shared utilities (Airtable, auth, permissions, mail)
+- `public/` static assets
+- `scripts/` helper scripts for debugging
+
+
+## Airtable Data Access
+
+Airtable helpers are in `lib/airtable.ts` with basic caching. API routes found under `app/api/`.
+
+## Auth Setup and Roles
+
+Auth is handled by NextAuth with Google OAuth. Users are stored in Airtable and assigned a role (`leader` by default, `admin` for admin features). Roles are checked in admin routes and pages.
+
+1. Create a Google OAuth app in Google Cloud Console.
+2. Add authorized redirect URIs: `http://localhost:3000/api/auth/callback/google`, `https://portal.slughub.cc/api/auth/callback/google`.
+3. Copy the client ID and client secret into `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+4. If your OAuth app is in Testing, add your user emails as test users.
+
+## Common Pages
+
+- `app/page.tsx` Home / landing
+- `app/directory` Community directory
+- `app/leader/dashboard` Leader dashboard
+- `app/admin/review` Community approvals
+- `app/admin/access` Access requests
+
+## Notes
+
+- This repo uses Next.js App Router.
+- If you change Airtable field names, check related API routes in `app/api/`.
+
