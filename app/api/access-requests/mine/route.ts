@@ -23,8 +23,7 @@ function requireAuth(session: any) {
   return { ok: true, userId, role };
 }
 
-// GET /api/access-requests/mine
-// Returns your latest access request per club (one call for all clubs)
+
 export async function GET(_req: Request) {
   const session = await getServerSession(authOptions);
   const auth = requireAuth(session as any);

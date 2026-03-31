@@ -4,12 +4,12 @@ export async function sendMail(opts: { to: string[]; subject: string; text?: str
   const resendKey = process.env.RESEND_API_KEY;
   const sendgridKey = process.env.SENDGRID_API_KEY;
   let from = process.env.EMAIL_FROM || `no-reply@${process.env.NEXT_PUBLIC_HOSTNAME ?? "example.com"}`;
-  // When using Resend and no EMAIL_FROM is provided, use the onboarding resend address.
+  // When using Resend and no EMAIL_FROM is provided, use the onboarding resend address
   if (resendKey && !process.env.EMAIL_FROM) {
     from = "onboarding@resend.dev";
   }
 
-  // Prefer Resend API if configured
+  // use Resend API if set up
   if (resendKey) {
     try {
       console.log("sendMail: using Resend API");
@@ -68,9 +68,7 @@ export async function sendMail(opts: { to: string[]; subject: string; text?: str
     }
   }
 
-  // Fallback: try nodemailer if installed/configured (optional)
-  // Only attempt SMTP fallback if SMTP_HOST is configured — avoid requiring
-  // nodemailer when it's not used (prevents build-time module resolution errors).
+  
   const host = process.env.SMTP_HOST;
   if (!host) {
     console.warn("sendMail: no SENDGRID_API_KEY or SMTP_HOST configured; skipping send");
@@ -78,7 +76,6 @@ export async function sendMail(opts: { to: string[]; subject: string; text?: str
   }
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const nodemailer = require("nodemailer");
     const port = Number(process.env.SMTP_PORT ?? 587);
     const secure = (String(process.env.SMTP_SECURE || "").toLowerCase() === "true") || String(process.env.SMTP_SECURE) === "1";

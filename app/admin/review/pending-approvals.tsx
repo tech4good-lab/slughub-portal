@@ -36,7 +36,6 @@ export default function PendingApprovals({ email }: { email?: string }) {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
-  // per-record notes + busy state
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<Record<string, boolean>>({});
 
@@ -93,7 +92,6 @@ export default function PendingApprovals({ email }: { email?: string }) {
 
   return (
     <div style={{ minHeight: "100dvh", background: "#EDF4FF", overflow: "auto", display: "flex", alignItems: "center", justifyContent: "center", padding: "clamp(12px, 3vw, 20px)" }}>
-      {/* Decorative bubbles */}
       <div style={{ position: 'absolute', width: 41, height: 41, left: '5%', top: '15%', opacity: 0.5, background: '#D0E2FF', borderRadius: '50%' }} />
       <div style={{ position: 'absolute', width: 100, height: 100, left: '75%', top: '10%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
       <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '70%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
@@ -110,7 +108,6 @@ export default function PendingApprovals({ email }: { email?: string }) {
           </div>
         )}
 
-        {/* Header */}
         <div style={{ display: "flex", alignItems: "center", marginBottom: 10, position: "relative", gap: 12, flexWrap: "wrap" }}>
           <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50, marginRight: 15 }} />
           <div>
@@ -122,10 +119,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
           </div>
         </div>
 
-        {/* Divider */}
         <div style={{ width: '100%', height: 0.5, background: '#333333', margin: '20px 0 30px 0' }} />
 
-        {/* Clubs List */}
         <div>
           {clubs.length === 0 ? (
             <div style={{ padding: '40px 20px', textAlign: 'center', color: '#999', fontSize: 16, fontFamily: 'Sarabun' }}>
@@ -151,7 +146,6 @@ export default function PendingApprovals({ email }: { email?: string }) {
           )}
         </div>
 
-        {/* Footer */}
         <div style={{ marginTop: 40, paddingTop: 20, borderTop: '0.5px solid #333333', textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#666' }}>
           Made with ❤️ from the <a href="#" style={{ color: '#FDF0A6', textDecoration: 'underline' }}>Community RAG Team</a>
         </div>
