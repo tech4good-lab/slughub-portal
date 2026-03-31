@@ -141,7 +141,11 @@ ClubId: ${clubId}
 Contact: ${payload.contactName} <${payload.contactEmail}>
 
 Review it in the admin panel.`;
-      sendMail({ to: recipients, subject: subj, text: body }).catch((e) => console.warn("sendMail failed", e));
+      const sent = await sendMail({ to: recipients, subject: subj, text: body }).catch((e) => {
+        console.warn("sendMail failed", e);
+        return false;
+      });
+      console.log("leader/clubs: sendMail result=", sent);
     } catch (e) {
       console.warn("Failed to notify recipients of new club", e);
     }
