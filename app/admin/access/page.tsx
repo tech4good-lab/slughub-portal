@@ -13,29 +13,73 @@ export default async function AdminAccessPage() {
   if (role !== "admin") redirect("/forbidden");
 
   return (
-    <main className="container adminAccess" style={{ position: "relative", zIndex: 1 }}>
+    <main
+      className="container adminAccess"
+      style={{
+        position: "relative",
+        zIndex: 1,
+        minHeight: "100dvh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <DecorativeBubbles />
       <div
         style={{
-          width: "100%",
-          background: "white",
-          borderRadius: 25,
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-          padding: "clamp(16px, 4vw, 32px)",
-          position: "relative",
-          zIndex: 2,
+          flexGrow: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#EDF4FF",
+          padding: "20px",
+          boxSizing: "border-box",
         }}
       >
-        <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <h1>Admin: Leader Access Requests</h1>
-          <div className="row">
-            <Link style={{ color: "black" }} className="btn" href="/admin/review">Community Approvals</Link>
-            <Link style={{ color: "black" }} className="btn" href="/">↤ Home</Link>
+        <div
+          style={{
+            maxWidth: 900,
+            margin: "0 auto",
+            background: "white",
+            borderRadius: 25,
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            padding: "clamp(16px, 4vw, 32px)",
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          <div
+            className="row"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 12,
+            }}
+          >
+            <h1>Admin: Leader Access Requests</h1>
+            <div className="row">
+              <Link
+                style={{ color: "black" }}
+                className="btn"
+                href="/admin/review"
+              >
+                Community Approvals
+              </Link>
+              <Link style={{ color: "black" }} className="btn" href="/">
+                Back To Directory
+              </Link>
+            </div>
           </div>
+          <div
+            style={{
+              width: "100%",
+              height: 0.5,
+              marginBottom: 6,
+              borderBottom: "1px solid rgba(16,24,40,0.08)",
+            }}
+          />
+          <AccessRequestsList />
         </div>
-        <div style={{ width: "100%", height: 0.5, background: "#333333", marginBottom: 6 }} />
-
-        <AccessRequestsList />
       </div>
     </main>
   );

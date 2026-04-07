@@ -20,7 +20,6 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-
 ## Prerequisites
 
 - Node.js (LTS recommended)
@@ -40,6 +39,7 @@ Open `http://localhost:3000`.
 Create or update `.env.local` with the following. The app will not work without Airtable and google auth set up.
 
 Required env:
+
 - `AIRTABLE_API_KEY` Airtable API key
 - `AIRTABLE_BASE_ID` Airtable base ID
 - `GOOGLE_CLIENT_ID` Google OAuth client id
@@ -48,6 +48,7 @@ Required env:
 - `NEXTAUTH_SECRET` Secret for NextAuth (required in production, recommended in dev)
 
 Email notification env (optional):
+
 - `RESEND_API_KEY` Use Resend API
 - `EMAIL_FROM` From address for emails
 
@@ -57,7 +58,6 @@ Email notification env (optional):
 - `lib/` shared utilities (Airtable, auth, permissions, mail)
 - `public/` static assets
 - `scripts/` helper scripts for debugging
-
 
 ## Airtable Data Access
 
@@ -84,4 +84,3 @@ Auth is handled by NextAuth with Google OAuth. Users are stored in Airtable and 
 
 - This repo uses Next.js App Router.
 - If you change Airtable field names, check related API routes in `app/api/`.
-

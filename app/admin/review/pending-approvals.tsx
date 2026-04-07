@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { linkPillStyle } from "../../clubs/[clubId]/page";
 import Link from "next/link";
 
 type PendingClub = {
@@ -84,77 +85,330 @@ export default function PendingApprovals({ email }: { email?: string }) {
 
   if (loading) {
     return (
-      <div className="card" style={{ marginTop: 14, background: "#fff", color: "#000" }}>
-        <p className="small" style={{ color: "#000" }}>Loading pending clubs…</p>
+      <div
+        className="card"
+        style={{ marginTop: 14, background: "#fff", color: "#000" }}
+      >
+        <p className="small" style={{ color: "#000" }}>
+          Loading pending clubs…
+        </p>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100dvh", background: "#EDF4FF", overflow: "auto", display: "flex", alignItems: "center", justifyContent: "center", padding: "clamp(12px, 3vw, 20px)" }}>
-      <div style={{ position: 'absolute', width: 41, height: 41, left: '5%', top: '15%', opacity: 0.5, background: '#D0E2FF', borderRadius: '50%' }} />
-      <div style={{ position: 'absolute', width: 100, height: 100, left: '75%', top: '10%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
-      <div style={{ position: 'absolute', width: 60, height: 60, left: '10%', top: '70%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
-      <div style={{ position: 'absolute', width: 39, height: 39, left: '80%', top: '75%', opacity: 0.5, background: '#FDF0A6', borderRadius: '50%' }} />
-      <div style={{ position: 'absolute', width: 22, height: 22, left: '12%', top: '50%', opacity: 0.4, background: '#D0E2FF', borderRadius: '50%' }} />
-      <div style={{ position: 'absolute', width: 75, height: 75, left: '85%', top: '45%', opacity: 0.3, background: '#D0E2FF', borderRadius: '50%' }} />
-      <div style={{ position: 'absolute', width: 17, height: 17, left: '15%', top: '85%', opacity: 0.5, background: '#D0E2FF', borderRadius: '50%' }} />
-      <div style={{ position: 'absolute', width: 26, height: 26, left: '82%', top: '65%', opacity: 0.4, background: '#FDF0A6', borderRadius: '50%' }} />
-      
-      <div style={{ width: "100%", maxWidth: 900, background: "white", borderRadius: 25, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", padding: "clamp(16px, 4vw, 40px)", position: "relative", zIndex: 10 }}>
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: "#EDF4FF",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "clamp(12px, 3vw, 20px)",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          overflow: "hidden",
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            width: 41,
+            height: 41,
+            left: "5%",
+            top: "15%",
+            opacity: 0.5,
+            background: "#D0E2FF",
+            borderRadius: "50%",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 100,
+            height: 100,
+            left: "75%",
+            top: "10%",
+            opacity: 0.4,
+            background: "#D0E2FF",
+            borderRadius: "50%",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 60,
+            height: 60,
+            left: "10%",
+            top: "70%",
+            opacity: 0.4,
+            background: "#D0E2FF",
+            borderRadius: "50%",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 39,
+            height: 39,
+            left: "80%",
+            top: "75%",
+            opacity: 0.5,
+            background: "#FDF0A6",
+            borderRadius: "50%",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 22,
+            height: 22,
+            left: "12%",
+            top: "50%",
+            opacity: 0.4,
+            background: "#D0E2FF",
+            borderRadius: "50%",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 75,
+            height: 75,
+            left: "85%",
+            top: "45%",
+            opacity: 0.3,
+            background: "#D0E2FF",
+            borderRadius: "50%",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 17,
+            height: 17,
+            left: "15%",
+            top: "85%",
+            opacity: 0.5,
+            background: "#D0E2FF",
+            borderRadius: "50%",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 26,
+            height: 26,
+            left: "82%",
+            top: "65%",
+            opacity: 0.4,
+            background: "#FDF0A6",
+            borderRadius: "50%",
+          }}
+        />
+      </div>
+
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 900,
+          background: "white",
+          borderRadius: 25,
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          padding: "clamp(16px, 4vw, 40px)",
+          position: "relative",
+          zIndex: 10,
+        }}
+      >
         {err && (
-          <div style={{ marginBottom: 20, padding: 15, background: '#FEE2E2', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, color: '#DC2626', fontSize: 14, fontFamily: 'Sarabun' }}>
+          <div
+            style={{
+              marginBottom: 20,
+              padding: 15,
+              background: "#FEE2E2",
+              border: "1px solid rgba(239,68,68,0.25)",
+              borderRadius: 10,
+              color: "#DC2626",
+              fontSize: 14,
+              fontFamily: "Sarabun",
+            }}
+          >
             {err}
           </div>
         )}
 
-        <div style={{ display: "flex", alignItems: "center", marginBottom: 10, position: "relative", gap: 12, flexWrap: "wrap" }}>
-          <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50, marginRight: 15 }} />
-          <div>
-            <div style={{ color: 'black', fontSize: 28, fontFamily: 'Sarabun', fontWeight: '700', margin: 0 }}>Admin: Pending Community Approvals</div>
-            <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>Logged in as: {email ?? '<email>'}</div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            position: "relative",
+            gap: 12,
+            flexWrap: "wrap",
+            marginBottom: 10,
+            paddingBottom: 24,
+            borderBottom: "1px solid rgba(16,24,40,0.08)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+            <img
+              src="/dashboard-icon.png"
+              alt="Slug Path Icon"
+              style={{ width: 50, height: 50, marginRight: 15 }}
+            />
+            <div>
+              <div
+                className="admin-text"
+                style={{
+                  color: "black",
+                  fontSize: "25px",
+                  fontFamily: "Sarabun",
+                  fontWeight: "700",
+                  margin: 0,
+                }}
+              >
+                Admin: Pending Community Approvals
+              </div>
+              <div
+                style={{
+                  color: "#666",
+                  fontSize: 13,
+                  fontFamily: "Sarabun",
+                  fontWeight: "400",
+                  margin: "4px 0 0 0",
+                }}
+              >
+                Logged in as: {email ?? "<email>"}
+              </div>
+            </div>
           </div>
-          <div style={{ marginLeft: "auto", minWidth: 80, height: 32, background: "#FDF0A6", boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-            <Link href='/' style={{ color: 'black', fontFamily: 'Sarabun', fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>↤ Home</Link>
-          </div>
+          <Link
+            className="btn auth-header-link"
+            href="/directory"
+            style={{
+              ...linkPillStyle,
+              display: "flex",
+              minWidth: 80,
+              height: 32,
+              background: "#FDF0A6",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              borderRadius: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            Back to Directory
+          </Link>
         </div>
-
-        <div style={{ width: '100%', height: 0.5, background: '#333333', margin: '20px 0 30px 0' }} />
 
         <div>
           {clubs.length === 0 ? (
-            <div style={{ padding: '40px 20px', textAlign: 'center', color: '#999', fontSize: 16, fontFamily: 'Sarabun' }}>
+            <div
+              style={{
+                padding: "40px 20px",
+                textAlign: "center",
+                color: "#999",
+                fontSize: 16,
+                fontFamily: "Sarabun",
+              }}
+            >
               No pending communities!
             </div>
           ) : (
             clubs.map((c, i) => (
-              <div key={c.recordId} style={{ marginBottom: 12, padding: "16px 20px", background: i % 2 === 0 ? "#FAFAFA" : "#F3F4F6", borderRadius: 12, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+              <div
+                key={c.recordId}
+                style={{
+                  marginBottom: 12,
+                  padding: "16px 20px",
+                  background: i % 2 === 0 ? "#FAFAFA" : "#F3F4F6",
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: 12,
+                }}
+              >
                 <div style={{ flex: "1 1 260px", minWidth: 0 }}>
-                  <div style={{ color: 'black', fontSize: 16, fontFamily: 'Sarabun', fontWeight: '600', margin: 0 }}>{c.name ?? 'Untitled community'}</div>
-                  <div style={{ color: '#666', fontSize: 13, fontFamily: 'Sarabun', fontWeight: '400', margin: '4px 0 0 0' }}>{c.description ?? 'Community description...'}</div>
+                  <div
+                    style={{
+                      color: "black",
+                      fontSize: 16,
+                      fontFamily: "Sarabun",
+                      fontWeight: "600",
+                      margin: 0,
+                    }}
+                  >
+                    {c.name ?? "Untitled community"}
+                  </div>
+                  <div
+                    style={{
+                      color: "#666",
+                      fontSize: 13,
+                      fontFamily: "Sarabun",
+                      fontWeight: "400",
+                      margin: "4px 0 0 0",
+                    }}
+                  >
+                    {c.description ?? "Community description..."}
+                  </div>
                 </div>
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'approve')} disabled={busy[c.recordId]} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
-                    {busy[c.recordId] ? 'Working...' : 'Approve'}
+                  <button
+                    onClick={() =>
+                      !busy[c.recordId] && act(c.recordId, "approve")
+                    }
+                    disabled={busy[c.recordId]}
+                    style={{
+                      padding: "8px 16px",
+                      background: "#FDF0A6",
+                      border: "1px solid #FDF0A6",
+                      borderRadius: 20,
+                      color: "#000",
+                      fontSize: 14,
+                      fontFamily: "Sarabun",
+                      fontWeight: "600",
+                      cursor: busy[c.recordId] ? "not-allowed" : "pointer",
+                      opacity: busy[c.recordId] ? 0.6 : 1,
+                      boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+                    }}
+                  >
+                    {busy[c.recordId] ? "Working..." : "Approve"}
                   </button>
-                  <button onClick={() => !busy[c.recordId] && act(c.recordId, 'reject')} disabled={busy[c.recordId]} style={{ padding: '8px 16px', background: '#FDF0A6', border: '1px solid #FDF0A6', borderRadius: 20, color: '#000', fontSize: 14, fontFamily: 'Sarabun', fontWeight: '600', cursor: busy[c.recordId] ? 'not-allowed' : 'pointer', opacity: busy[c.recordId] ? 0.6 : 1, boxShadow: '0 6px 14px rgba(251,191,36,0.14)' }}>
-                    {busy[c.recordId] ? 'Working...' : 'Reject'}
+                  <button
+                    onClick={() =>
+                      !busy[c.recordId] && act(c.recordId, "reject")
+                    }
+                    disabled={busy[c.recordId]}
+                    style={{
+                      padding: "8px 16px",
+                      background: "#FDF0A6",
+                      border: "1px solid #FDF0A6",
+                      borderRadius: 20,
+                      color: "#000",
+                      fontSize: 14,
+                      fontFamily: "Sarabun",
+                      fontWeight: "600",
+                      cursor: busy[c.recordId] ? "not-allowed" : "pointer",
+                      opacity: busy[c.recordId] ? 0.6 : 1,
+                      boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+                    }}
+                  >
+                    {busy[c.recordId] ? "Working..." : "Reject"}
                   </button>
                 </div>
               </div>
             ))
           )}
         </div>
-
-        <div style={{ marginTop: 40, paddingTop: 20, borderTop: '0.5px solid #333333', textAlign: 'center', fontSize: 14, fontFamily: 'Sarabun', color: '#666' }}>
-          Made with ❤️ from the <a href="#" style={{ color: '#FDF0A6', textDecoration: 'underline' }}>Community RAG Team</a>
-        </div>
       </div>
     </div>
   );
 }
-
-
-
-
-

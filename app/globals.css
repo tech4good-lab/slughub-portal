@@ -5,28 +5,36 @@
 }
 
 :root {
-  --color-bg: #EDF4FF;
+  --color-bg: #edf4ff;
   --color-surface: #1a1a1a;
-  --color-border: #EDF4FF;
+  --color-border: #edf4ff;
   --color-text: rgba(0, 0, 0, 0.95);
   --color-text-muted: rgba(255, 255, 255, 0.65);
-  --color-primary: #fbbf24; 
+  --color-primary: #fbbf24;
   --color-primary-hover: #f59e0b;
-  --color-accent: #3b82f6; 
+  --color-accent: #3b82f6;
   --color-success: #22c55e;
   --color-warning: #eab308;
   --color-danger: #ef4444;
-  
+
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
-  
+
   --radius: 8px;
   --transition: 150ms ease;
 }
 
 body {
-  font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    "Sarabun",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
   background: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
@@ -87,7 +95,7 @@ a.card {
 }
 
 a.card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), transparent);
@@ -219,31 +227,43 @@ a:hover {
 }
 
 /* Utility spacing */
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
-.mt-3 { margin-top: 24px; }
-.mb-1 { margin-bottom: 8px; }
-.mb-2 { margin-bottom: 16px; }
-.mb-3 { margin-bottom: 24px; }
+.mt-1 {
+  margin-top: 8px;
+}
+.mt-2 {
+  margin-top: 16px;
+}
+.mt-3 {
+  margin-top: 24px;
+}
+.mb-1 {
+  margin-bottom: 8px;
+}
+.mb-2 {
+  margin-bottom: 16px;
+}
+.mb-3 {
+  margin-bottom: 24px;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
   .container {
     padding: 20px 16px;
   }
-  
+
   h1 {
     font-size: 28px;
   }
-  
+
   .grid {
     grid-template-columns: 1fr;
   }
-  
+
   .row {
     width: 100%;
   }
-  
+
   .btn {
     flex: 1;
     justify-content: center;
@@ -308,23 +328,23 @@ a:hover {
 
 .adminAccess .btn,
 .adminAccess .btnPrimary {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
 .adminAccess .btn:hover,
 .adminAccess .btnPrimary:hover {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
 
 .adminAccess .btn:disabled,
 .adminAccess .btnPrimary:disabled {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
@@ -364,23 +384,23 @@ a:hover {
 
 .leaderDashboard .btn,
 .leaderDashboard .btnPrimary {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
 .leaderDashboard .btn:hover,
 .leaderDashboard .btnPrimary:hover {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
 
 .leaderDashboard .btn:disabled,
 .leaderDashboard .btnPrimary:disabled {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 /* Auth (login/signup) overrides */
@@ -419,30 +439,30 @@ a:hover {
 
 .authPage .btn,
 .authPage .btnPrimary {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
 .authPage .btn:hover,
 .authPage .btnPrimary:hover {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
 
 .authPage .btn:disabled,
 .authPage .btnPrimary:disabled {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
 .authPage .card {
   background: #ffffff !important;
   opacity: 1 !important;
-  border: 1px solid rgba(16,24,40,0.08);
+  border: 1px solid rgba(16, 24, 40, 0.08);
   color: #000;
   position: relative;
   z-index: 2;
@@ -454,35 +474,35 @@ a:hover {
 }
 
 .clubDetail .small {
-  color: rgba(0,0,0,0.6);
+  color: rgba(0, 0, 0, 0.6);
   opacity: 1 !important;
 }
 
 .clubDetail .card {
   background: #ffffff;
-  border: 1px solid rgba(16,24,40,0.06);
+  border: 1px solid rgba(16, 24, 40, 0.06);
   color: #000;
 }
 
 .clubDetail .btn,
 .clubDetail .btnPrimary {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
 .clubDetail .btn:hover,
 .clubDetail .btnPrimary:hover {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
 
 .clubDetail .btn:disabled,
 .clubDetail .btnPrimary:disabled {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
@@ -491,37 +511,36 @@ a:hover {
   color: #000;
 }
 
-
 .clubCreate .small {
-  color: rgba(0,0,0,0.6);
+  color: rgba(0, 0, 0, 0.6);
   opacity: 1 !important;
 }
 
 .clubCreate .card {
   background: #ffffff;
-  border: 1px solid rgba(16,24,40,0.06);
+  border: 1px solid rgba(16, 24, 40, 0.06);
   color: #000;
 }
 
 .clubCreate .btn,
 .clubCreate .btnPrimary {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
 .clubCreate .btn:hover,
 .clubCreate .btnPrimary:hover {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
 
 .clubCreate .btn:disabled,
 .clubCreate .btnPrimary:disabled {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
@@ -531,35 +550,35 @@ a:hover {
 }
 
 .clubCreateEvent .small {
-  color: rgba(0,0,0,0.6);
+  color: rgba(0, 0, 0, 0.6);
   opacity: 1 !important;
 }
 
 .clubCreateEvent .card {
   background: #ffffff;
-  border: 1px solid rgba(16,24,40,0.06);
+  border: 1px solid rgba(16, 24, 40, 0.06);
   color: #000;
 }
 
 .clubCreateEvent .btn,
 .clubCreateEvent .btnPrimary {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
 .clubCreateEvent .btn:hover,
 .clubCreateEvent .btnPrimary:hover {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
 
 .clubCreateEvent .btn:disabled,
 .clubCreateEvent .btnPrimary:disabled {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
@@ -569,41 +588,41 @@ a:hover {
 }
 
 .clubEdit .small {
-  color: rgba(0,0,0,0.6);
+  color: rgba(0, 0, 0, 0.6);
   opacity: 1 !important;
 }
 
 .clubEdit .card {
   background: #ffffff;
-  border: 1px solid rgba(16,24,40,0.06);
+  border: 1px solid rgba(16, 24, 40, 0.06);
   color: #000;
 }
 
 .clubEdit .btn,
 .clubEdit .btnPrimary {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 
 .clubEdit .btn:hover,
 .clubEdit .btnPrimary:hover {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
 
 .clubEdit .btn:disabled,
 .clubEdit .btnPrimary:disabled {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
 }
 /* Directory (home) specific styling - lightweight, page-scoped overrides */
 .directoryHome {
   position: relative;
-  background: #EDF4FF; /* match leader dashboard light blue */
+  background: #edf4ff; /* match leader dashboard light blue */
   padding-top: 8px; /* small offset so header sits nicely */
 }
 
@@ -622,7 +641,7 @@ a:hover {
 }
 
 .directorySubtitle {
-  color: rgba(0,0,0,0.65);
+  color: rgba(0, 0, 0, 0.65);
   margin-bottom: 18px;
   font-size: 15px;
 }
@@ -636,10 +655,10 @@ a:hover {
 
 .directoryGrid {
   display: grid;
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 28px 28px;
   margin-top: 20px;
-  width:100%;
+  width: 100%;
 }
 
 .directoryToolbar {
@@ -673,13 +692,13 @@ a:hover {
   width: auto;
   padding: 8px 16px;
   border-radius: 20px;
-  background: #FDF0A6;
-  border: 1px solid #FDF0A6;
+  background: #fdf0a6;
+  border: 1px solid #fdf0a6;
   color: #000;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
 
 .directoryDropdownSummary::-webkit-details-marker {
@@ -687,10 +706,9 @@ a:hover {
 }
 
 .directoryDropdown[open] .directoryDropdownSummary {
-  border-color: #FDF0A6;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  border-color: #fdf0a6;
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
 }
-
 
 .directoryDropdownMenu {
   position: absolute;
@@ -698,9 +716,9 @@ a:hover {
   left: 0;
   z-index: 10;
   background: #ffffff;
-  border: 1px solid rgba(16,24,40,0.08);
+  border: 1px solid rgba(16, 24, 40, 0.08);
   border-radius: 16px;
-  box-shadow: 0 18px 30px rgba(16,24,40,0.08);
+  box-shadow: 0 18px 30px rgba(16, 24, 40, 0.08);
   padding: 12px 12px 8px;
   min-width: 260px;
   max-height: 320px;
@@ -708,8 +726,8 @@ a:hover {
 }
 
 .directoryDropdownClear {
-  background: rgba(16,24,40,0.06);
-  border: 1px solid rgba(16,24,40,0.08);
+  background: rgba(16, 24, 40, 0.06);
+  border: 1px solid rgba(16, 24, 40, 0.08);
   border-radius: 999px;
   padding: 6px 10px;
   font-size: 11px;
@@ -734,7 +752,7 @@ a:hover {
   width: 100%;
   margin-left: 24px;
   font-size: 12px;
-  color: rgba(17,24,39,0.7);
+  color: rgba(17, 24, 39, 0.7);
   line-height: 1.4;
 }
 
@@ -744,16 +762,16 @@ a:hover {
 
 .directoryHome .card {
   background: #ffffff; /* white panels */
-  border: 1px solid rgba(16,24,40,0.04); /* subtle light border, not black */
+  border: 1px solid rgba(16, 24, 40, 0.04); /* subtle light border, not black */
   border-radius: 26px;
   padding: 22px 26px;
-  box-shadow: 0 10px 20px rgba(16,24,40,0.06);
+  box-shadow: 0 10px 20px rgba(16, 24, 40, 0.06);
   color: #111827;
 }
 
 .directoryHome a.card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 18px 30px rgba(16,24,40,0.08);
+  box-shadow: 0 18px 30px rgba(16, 24, 40, 0.08);
 }
 
 .directoryCardTitle {
@@ -765,7 +783,7 @@ a:hover {
 .directoryCardLearn {
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid rgba(16,24,40,0.03);
+  border-top: 1px solid rgba(16, 24, 40, 0.03);
   color: #2563eb;
   font-weight: 600;
   font-size: 13px;
@@ -778,7 +796,7 @@ a:hover {
   margin-top: 12px;
   box-shadow: none !important;
   filter: none;
-  border: 1px solid rgba(16,24,40,0.04);
+  border: 1px solid rgba(16, 24, 40, 0.04);
   display: none;
   width: 100%;
   max-width: 200px;
@@ -790,7 +808,7 @@ a:hover {
 
 /* Ensure divider on directory uses a subtle light border (not black) */
 .directoryHome hr {
-  border-top: 1px solid rgba(16,24,40,0.06);
+  border-top: 1px solid rgba(16, 24, 40, 0.06);
 }
 
 .filtersHeader {
@@ -809,7 +827,7 @@ a:hover {
 .filtersList {
   display: grid;
   grid-template-columns: 1fr;
-  column-gap:8px;
+  column-gap: 8px;
   margin-top: 8px;
 }
 
@@ -824,24 +842,24 @@ a:hover {
 .directoryHome .btn {
   border-radius: 20px;
   padding: 8px 16px;
-  background: #FDF0A6; /* leader dashboard yellow */
-  border-color: #FDF0A6;
+  background: #fdf0a6; /* leader dashboard yellow */
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
   font-weight: 600;
 }
 
 .directoryHome .btn + .btn {
   margin-left: 8px;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   color: #111827;
-  border: 1px solid rgba(16,24,40,0.06);
+  border: 1px solid rgba(16, 24, 40, 0.06);
 }
 
 .directoryHome .input {
   background-color: #ffffff !important;
   background-image: none !important;
-  border-color: rgba(16,24,40,0.06);
+  border-color: rgba(16, 24, 40, 0.06);
   opacity: 1;
   mix-blend-mode: normal;
   backdrop-filter: none;
@@ -871,7 +889,6 @@ a:hover {
     grid-template-columns: 1fr;
   }
 }
-
 
 @media (max-width: 540px) {
   .directoryGrid {
@@ -915,10 +932,10 @@ a:hover {
 .btn[href="/"]:not(.btnPrimary) {
   border-radius: 20px;
   padding: 8px 16px;
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
   font-weight: 600;
 }
 
@@ -928,9 +945,9 @@ a:hover {
 .btn[href="/directory"]:not(.btnPrimary):hover,
 .btn[href="/login"]:not(.btnPrimary):hover,
 .btn[href="/"]:not(.btnPrimary):hover {
-  background: #FDF0A6;
-  border-color: #FDF0A6;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 14px rgba(251,191,36,0.14);
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
   transform: translateY(-1px);
 }
