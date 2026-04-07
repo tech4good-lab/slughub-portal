@@ -1,7 +1,13 @@
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import crypto from "crypto";
-import { USERS_TABLE, base, cachedFirstPage, invalidateTable, noteCall } from "@/lib/airtable";
+import {
+  USERS_TABLE,
+  base,
+  cachedFirstPage,
+  invalidateTable,
+  noteCall,
+} from "@/lib/airtable";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -11,15 +17,18 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
   ],
+  debug: true,
   callbacks: {
     async signIn({ user }) {
-      const email = String(user?.email ?? "").toLowerCase().trim();
+      const email = String(user?.email ?? "")
+        .toLowerCase()
+        .trim();
       if (!email) return false;
 
       const existing = await cachedFirstPage(
         USERS_TABLE,
         { maxRecords: 1, filterByFormula: `{email} = "${email}"` },
-        60
+        60,
       );
 
       if (!existing || existing.length === 0) {
@@ -39,13 +48,15 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user }) {
-      const email = String(token.email ?? user?.email ?? "").toLowerCase().trim();
+      const email = String(token.email ?? user?.email ?? "")
+        .toLowerCase()
+        .trim();
       if (!email) return token;
 
       const existing = await cachedFirstPage(
         USERS_TABLE,
         { maxRecords: 1, filterByFormula: `{email} = "${email}"` },
-        60
+        60,
       );
 
       const record = existing?.[0];

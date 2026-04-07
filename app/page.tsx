@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import type { Club } from "@/lib/types";
@@ -10,7 +11,9 @@ export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const isAdmin = (session as any)?.role === "admin";
 
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs`, { cache: "no-store" });
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     return (
@@ -51,7 +54,42 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
         gap: 16,
       }}
     >
-      <div>
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <Link
+          className="btn"
+          href="https://chat.slughub.cc/"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Navigate to SlugHub."
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "2px",
+            backgroundColor: "#b0dbf6",
+            height: "45px",
+            padding: "8px",
+            borderRadius: "16px",
+            overflow: "hidden",
+          }}
+        >
+          <Image
+            src="/dashboard-icon.png"
+            alt="SlugPath Logo"
+            width={38}
+            height={38}
+            style={{ objectFit: "contain" }}
+          />
+          <span
+            style={{
+              marginLeft: "4px",
+              fontSize: "1.1rem",
+              fontWeight: "600",
+            }}
+          >
+            SlugHub
+          </span>
+        </Link>
+
         <h1
           style={{
             margin: 0,
@@ -67,22 +105,33 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
         {session ? (
           <>
             {isAdmin && (
-              <>
-                <Link className="btn" href="/admin/review" style={{ position: "relative" }}>
+              <div
+                className="tooltip-container"
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Link
+                  className="btn"
+                  href="/admin/review"
+                  style={{ position: "relative" }}
+                >
                   Community Approvals
                   <PendingBadge />
                 </Link>
                 <Link className="btn" href="/admin/access">
                   Access Requests
                 </Link>
-              </>
+              </div>
             )}
-
-            <Link className="btn" href="/leader/dashboard">Dashboard</Link>
           </>
         ) : (
           <>
-            <Link className="btn" href="/login">Club Lead Login</Link>
+            <Link className="btn" href="/login">
+              Club Lead Login
+            </Link>
           </>
         )}
       </nav>

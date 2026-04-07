@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Club } from "@/lib/types";
 import RequestAccess from "./request-access";
 
-const linkPillStyle = {
+export const linkPillStyle = {
   padding: "8px 16px",
   background: "#FDF0A6",
   border: "1px solid #FDF0A6",
@@ -19,25 +19,34 @@ const linkPillStyle = {
 };
 
 export default async function ClubDetailPage({
-  params
+  params,
 }: {
-  params: Promise<{ clubId: string }>
+  params: Promise<{ clubId: string }>;
 }) {
   const { clubId } = await params;
 
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs/${clubId}`, {
-    cache: "no-store"
+    cache: "no-store",
   });
 
   if (!res.ok) {
     return (
       <main className="container clubDetail">
-        <Link className="btn" href="/directory" style={{ ...linkPillStyle, marginBottom: 24 }}>
-        Back to Directory
+        <Link
+          className="btn"
+          href="/directory"
+          style={{ ...linkPillStyle, marginBottom: 24 }}
+        >
+          Back to Directory
         </Link>
-        <div className="card" style={{ marginTop: 20, textAlign: "center", padding: 60 }}>
+        <div
+          className="card"
+          style={{ marginTop: 20, textAlign: "center", padding: 60 }}
+        >
           <h2 style={{ marginBottom: 8 }}>Club not found</h2>
-          <p className="small">This club may have been removed or doesn't exist.</p>
+          <p className="small">
+            This club may have been removed or doesn't exist.
+          </p>
         </div>
       </main>
     );
@@ -50,12 +59,18 @@ export default async function ClubDetailPage({
     (club as any)["community Type"] ??
     (club as any)["community type"] ??
     (club as any)["Community Type"];
-  const communityType = Array.isArray(communityTypeRaw) ? communityTypeRaw[0] : communityTypeRaw;
+  const communityType = Array.isArray(communityTypeRaw)
+    ? communityTypeRaw[0]
+    : communityTypeRaw;
 
   return (
     <main className="container clubDetail">
-      <Link className="btn" href="/directory" style={{ ...linkPillStyle, marginBottom: 24 }}>
-      Back to Directory
+      <Link
+        className="btn"
+        href="/directory"
+        style={{ ...linkPillStyle, marginBottom: 24 }}
+      >
+        Back to Directory
       </Link>
 
       <div className="card" style={{ marginTop: 20 }}>
@@ -72,7 +87,7 @@ export default async function ClubDetailPage({
                 letterSpacing: "0.05em",
                 background: "rgba(251,191,36,0.15)",
                 color: "rgba(180,83,9,0.95)",
-                border: "1px solid rgba(255,255,255,0.04)"
+                border: "1px solid rgba(255,255,255,0.04)",
               }}
             >
               {communityType}
@@ -88,7 +103,7 @@ export default async function ClubDetailPage({
             color: "rgba(0,0,0,0.75)",
             marginBottom: 24,
             paddingBottom: 24,
-            borderBottom: "1px solid rgba(16,24,40,0.08)"
+            borderBottom: "1px solid rgba(16,24,40,0.08)",
           }}
         >
           {club.description || "No description provided."}
@@ -103,18 +118,20 @@ export default async function ClubDetailPage({
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 marginBottom: 8,
-                color: "rgba(251,191,36,0.8)"
+                color: "rgba(251,191,36,0.8)",
               }}
             >
               Point of Contact
             </div>
-            <div style={{ fontWeight: 600, marginBottom: 4, color: "#000" }}>{club.contactName || "—"}</div>
+            <div style={{ fontWeight: 600, marginBottom: 4, color: "#000" }}>
+              {club.contactName || "—"}
+            </div>
             <a
               href={club.contactEmail ? `mailto:${club.contactEmail}` : "#"}
               style={{
                 fontSize: 14,
                 color: "#000",
-                textDecoration: "none"
+                textDecoration: "none",
               }}
             >
               {club.contactEmail || "—"}
@@ -129,7 +146,7 @@ export default async function ClubDetailPage({
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 marginBottom: 8,
-                color: "rgba(251,191,36,0.8)"
+                color: "rgba(251,191,36,0.8)",
               }}
             >
               Calendar
@@ -157,7 +174,7 @@ export default async function ClubDetailPage({
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 marginBottom: 8,
-                color: "rgba(251,191,36,0.8)"
+                color: "rgba(251,191,36,0.8)",
               }}
             >
               Discord
@@ -185,24 +202,49 @@ export default async function ClubDetailPage({
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 marginBottom: 8,
-                color: "rgba(251,191,36,0.8)"
+                color: "rgba(251,191,36,0.8)",
               }}
             >
               Links
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                marginTop: 8,
+              }}
+            >
               {club.websiteUrl && (
-                <a className="btn" href={club.websiteUrl} target="_blank" rel="noreferrer" style={linkPillStyle}>
+                <a
+                  className="btn"
+                  href={club.websiteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={linkPillStyle}
+                >
                   Website
                 </a>
               )}
               {club.instagramUrl && (
-                <a className="btn" href={club.instagramUrl} target="_blank" rel="noreferrer" style={linkPillStyle}>
+                <a
+                  className="btn"
+                  href={club.instagramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={linkPillStyle}
+                >
                   Instagram
                 </a>
               )}
               {club.linkedinUrl && (
-                <a className="btn" href={club.linkedinUrl} target="_blank" rel="noreferrer" style={linkPillStyle}>
+                <a
+                  className="btn"
+                  href={club.linkedinUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={linkPillStyle}
+                >
                   LinkedIn
                 </a>
               )}
@@ -213,8 +255,12 @@ export default async function ClubDetailPage({
           </div>
         </div>
 
-        <p className="small" style={{ marginTop: 24, textAlign: "center", opacity: 0.5 }}>
-          Last updated: {club.updatedAt ? new Date(club.updatedAt).toLocaleDateString() : "—"}
+        <p
+          className="small"
+          style={{ marginTop: 24, textAlign: "center", opacity: 0.5 }}
+        >
+          Last updated:{" "}
+          {club.updatedAt ? new Date(club.updatedAt).toLocaleDateString() : "—"}
         </p>
       </div>
 
@@ -222,5 +268,3 @@ export default async function ClubDetailPage({
     </main>
   );
 }
-
-
