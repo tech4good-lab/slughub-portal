@@ -126,6 +126,9 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
                 </Link>
               </div>
             )}
+            <Link className="btn" href="/leader/dashboard">
+              Dashboard
+            </Link>
           </>
         ) : (
           <>
