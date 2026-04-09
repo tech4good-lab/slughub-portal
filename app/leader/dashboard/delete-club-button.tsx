@@ -14,35 +14,32 @@ export default function DeleteClubButton({
   const [isDeleting, setIsDeleting] = useState(false);
 
   async function onDelete() {
-    const label = clubName ? `"${clubName}"` : "this club";
     const confirmed = window.confirm(
-      `Delete ${label} and all associated data? This cannot be undone.`
+      `Are you sure you want to delete ${clubName || "this club"}? This will permanently remove all members and events.`,
     );
     if (!confirmed) return;
 
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/leader/clubs/${encodeURIComponent(clubId)}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `/api/leader/clubs/${encodeURIComponent(clubId)}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        const msg = String(data?.error ?? "Failed to delete community.");
-        window.alert(msg);
+        window.alert(data?.error ?? "Failed to delete community.");
         return;
       }
 
-      try {
-        localStorage.removeItem("leaderClubsCache_v1");
-        localStorage.removeItem("clubEventsCache_v1");
-      } catch {
-        // ignore storage errors
-      }
+      localStorage.removeItem("leaderClubsCache_v1");
 
-      const writeTs = Date.now();
-      document.cookie = `leader_recent_write_at=${writeTs}; Max-Age=180; Path=/; SameSite=Lax`;
-      router.push(`/leader/dashboard?refresh=${writeTs}`);
+      router.push("/leader/dashboard");
+      router.refresh();
+    } catch (err) {
+      window.alert("A network error occurred.");
     } finally {
       setIsDeleting(false);
     }

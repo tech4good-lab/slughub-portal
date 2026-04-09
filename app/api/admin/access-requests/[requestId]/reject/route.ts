@@ -1,40 +1,45 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, invalidateTable, noteCall } from "@/lib/airtable";
-
-const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ requestId: string }> }
+  { params }: { params: Promise<{ requestId: string }> },
 ) {
   const session = await getServerSession(authOptions);
   const role = (session as any)?.role;
-  if (role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  if (role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const { requestId } = await params;
   const body = await req.json().catch(() => ({}));
   const reviewNotes = String(body.reviewNotes ?? "");
-  const nowIso = new Date().toISOString();
 
-  noteCall(REQUESTS_TABLE);
-  const updated = await base(REQUESTS_TABLE).update([
-    {
-      id: requestId,
-      fields: {
-        status: "rejected",
-        reviewedAt: nowIso,
-        reviewNotes,
-      },
-    },
-  ]);
-  // Invalidate cache for access requests so lists/counts refresh
   try {
-    invalidateTable(REQUESTS_TABLE);
-  } catch (e) {
-    console.warn("Failed to invalidate cache after reject", e);
-  }
+    const updatedRequest = await prisma.accessRequest.update({
+      where: { id: requestId },
+      data: {
+        status: "rejected",
+        reviewedAt: new Date(),
+        reviewNotes: reviewNotes,
+      },
+    });
 
-  return NextResponse.json({ request: { recordId: updated[0].id, ...updated[0].fields } });
+    return NextResponse.json({
+      request: { recordId: updatedRequest.id, ...updatedRequest },
+    });
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return NextResponse.json({ error: "Request not found" }, { status: 404 });
+    }
+
+    console.error("Prisma Error rejecting access request:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }

@@ -1,47 +1,51 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
-import crypto from "crypto";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, cachedAll, invalidateTable, noteCall } from "@/lib/airtable";
+import { prisma } from "@/lib/prisma";
 import { sendMail } from "@/lib/mail";
-import { getUserClubIds } from "@/lib/permissions";
-
-const MEMBERS_TABLE = process.env.AIRTABLE_MEMBERS_TABLE || "ClubMembers";
-
-function orFormulaForClubIds(clubIds: string[]) {
-  // OR({clubId}="a",{clubId}="b",...)
-  const parts = clubIds.map((id) => `{clubId}="${id}"`);
-  return `OR(${parts.join(",")})`;
-}
 
 export async function GET() {
   const session = await getServerSession(authOptions);
+
   const userId = (session as any)?.userId;
   const role = (session as any)?.role;
 
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (role !== "leader" && role !== "admin")
+  console.log("X-RAY: Parsed User ID ->", userId);
+  console.log("X-RAY: Parsed Role    ->", role);
+
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (role !== "leader" && role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
-  const clubIds = await getUserClubIds(userId);
-  if (clubIds.length === 0) return NextResponse.json({ clubs: [] });
+  try {
+    const userClubs = await prisma.club.findMany({
+      where: {
+        members: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
 
-  const records = await cachedAll(
-    CLUBS_TABLE,
-    { filterByFormula: orFormulaForClubIds(clubIds), sort: [{ field: "updatedAt", direction: "desc" }] },
-    600
-  );
+    const clubs = userClubs.map((club) => ({
+      ...club,
+    }));
 
-  const clubs = (records || []).map((r: any) => {
-    const f = r.fields as any;
-    return {
-      recordId: r.id,
-      ...f,
-      communityType: f.communityType ?? f["community Type"] ?? f["community type"] ?? f["Community Type"],
-    };
-  });
-  return NextResponse.json({ clubs });
+    return NextResponse.json({ clubs });
+  } catch (error) {
+    console.error("Prisma Error fetching user clubs:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(req: Request) {
@@ -50,122 +54,95 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
     const userId = (session as any)?.userId;
     const role = (session as any)?.role;
-    console.log("leader/clubs: auth", { hasUserId: !!userId, role });
 
-    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    if (role !== "leader" && role !== "admin")
+    if (!userId)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (role !== "leader" && role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
     const body = await req.json();
-    const nowIso = new Date().toISOString();
 
-    const clubId = crypto.randomUUID();
-
-    const communityTypeRaw = String(body.communityType ?? "").trim();
-    const communityType = communityTypeRaw ? [communityTypeRaw] : [];
-    const communityStatus = ["Verified"];
-
-    const payload = {
-      clubId,
-      name: String(body.name ?? "").trim(),
-      description: String(body.description ?? "").trim(),
-    clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
-      communityType,
-      communityStatus,
-      contactName: String(body.contactName ?? "").trim(),
-      contactEmail: String(body.contactEmail ?? "").trim(),
-      calendarUrl: String(body.calendarUrl ?? "").trim(),
-      discordUrl: String(body.discordUrl ?? "").trim(),
-      websiteUrl: String(body.websiteUrl ?? "").trim(),
-      instagramUrl: String(body.instagramUrl ?? "").trim(),
-      linkedinUrl: String(body.linkedinUrl ?? "").trim(),
-      updatedAt: nowIso,
-
-      status: "pending",
-      submittedAt: nowIso,
-      reviewNotes: "",
-    };
-
-    if (!payload.name) {
-      return NextResponse.json({ error: "Community name is required." }, { status: 400 });
+    if (!body.name?.trim()) {
+      return NextResponse.json(
+        { error: "Community name is required." },
+        { status: 400 },
+      );
     }
 
-    noteCall(CLUBS_TABLE);
-    let created: any;
-    try {
-      created = await base(CLUBS_TABLE).create([{ fields: payload }]);
-    } catch (err: any) {
-      const msg = String(err?.message ?? "");
-      if (msg.includes("Unknown field") || msg.includes("Unknown field name")) {
-        // Retry without the communityType field in case the Airtable table doesn't have that column yet.
-        const fallback = { ...payload };
-        delete (fallback as any).communityType;
-        delete (fallback as any).clubIcebreakers;
-        created = await base(CLUBS_TABLE).create([{ fields: fallback }]);
-      } else {
-        throw err;
-      }
-    }
+    const rawCommunityType = body.communityType
+      ? String(body.communityType).trim()
+      : undefined;
 
-    // Add membership so creator can manage this club
-    noteCall(MEMBERS_TABLE);
-    await base(MEMBERS_TABLE).create([
-      {
-        fields: {
-          clubId,
-          userId,
-          memberRole: "leader",
-          createdAt: nowIso,
+    const newClub = await prisma.club.create({
+      data: {
+        name: String(body.name).trim(),
+        description: String(body.description ?? "").trim(),
+        clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
+
+        communityType: rawCommunityType as any,
+        communityStatus: "verified",
+
+        contactName: String(body.contactName ?? "").trim(),
+        contactEmail: String(body.contactEmail ?? "").trim(),
+        calendarUrl: String(body.calendarUrl ?? "").trim(),
+        discordUrl: String(body.discordUrl ?? "").trim(),
+        websiteUrl: String(body.websiteUrl ?? "").trim(),
+        instagramUrl: String(body.instagramUrl ?? "").trim(),
+        linkedinUrl: String(body.linkedinUrl ?? "").trim(),
+
+        status: "pending",
+        submittedAt: new Date(),
+        reviewNotes: null,
+
+        members: {
+          create: {
+            userId: userId,
+            memberRole: "leader",
+            name: String(body.contactName ?? "Club Creator").trim(),
+          },
         },
       },
-    ]);
+    });
 
-    try {
-      invalidateTable(CLUBS_TABLE);
-      invalidateTable(MEMBERS_TABLE);
-    } catch (e) {
-      console.warn("Failed to invalidate leader clubs cache", e);
-    }
     try {
       revalidatePath("/leader/dashboard");
     } catch (e) {
       console.warn("Failed to revalidate leader dashboard", e);
     }
 
-    // Notify fixed recipient by email (best-effort)
     try {
       const recipients = ["communityrag-group@ucsc.edu"];
-      const subj = `New club request: ${payload.name}`;
-      const body = `A new club was submitted by ${(session as any)?.user?.email ?? userId}.
+      const subj = `New club request: ${newClub.name}`;
+      const emailBody = `A new club was submitted by ${(session as any)?.user?.email ?? userId}.
 
-Name: ${payload.name}
-ClubId: ${clubId}
-Contact: ${payload.contactName} <${payload.contactEmail}>
+Name: ${newClub.name}
+ClubId: ${newClub.id}
+Contact: ${newClub.contactName} <${newClub.contactEmail}>
 
 Review it in the admin panel.`;
-      const sent = await sendMail({ to: recipients, subject: subj, text: body }).catch((e) => {
-        console.warn("sendMail failed", e);
-        return false;
-      });
-      console.log("leader/clubs: sendMail result=", sent);
+
+      await sendMail({ to: recipients, subject: subj, text: emailBody }).catch(
+        (e) => {
+          console.warn("sendMail failed", e);
+          return false;
+        },
+      );
     } catch (e) {
       console.warn("Failed to notify recipients of new club", e);
     }
 
-    const createdFields = created[0].fields as any;
     return NextResponse.json({
       club: {
-        recordId: created[0].id,
-        ...createdFields,
-        communityType:
-          createdFields.communityType ??
-          createdFields["community Type"] ??
-          createdFields["community type"] ??
-          createdFields["Community Type"],
+        recordId: newClub.id,
+        ...newClub,
       },
     });
   } catch (e: any) {
-    console.error(e);
-    return NextResponse.json({ error: e?.message ?? "Internal error" }, { status: 500 });
+    console.error("Prisma Error creating club:", e);
+    return NextResponse.json(
+      { error: e?.message ?? "Internal error" },
+      { status: 500 },
+    );
   }
 }

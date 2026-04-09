@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import type { Club } from "@/lib/types";
+import { prisma } from "@/lib/prisma";
 import PendingBadge from "@/app/components/PendingBadge";
 import DirectoryClient from "@/app/components/DirectoryClient";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
@@ -10,38 +10,53 @@ import DecorativeBubbles from "@/app/components/DecorativeBubbles";
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
   const isAdmin = (session as any)?.role === "admin";
+  const isLeader = (session as any)?.role === "leader";
 
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs`, {
-    cache: "no-store",
-  });
+  let clubs = [];
 
-  if (!res.ok) {
+  try {
+    clubs = await prisma.club.findMany({
+      where: {
+        status: "approved",
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+  } catch (error) {
+    console.error("Prisma Error loading directory:", error);
     return (
       <main className="container" style={{ position: "relative", zIndex: 1 }}>
         <DecorativeBubbles />
-        <Header session={session} isAdmin={isAdmin} />
+        <Header session={session} isAdmin={isAdmin} isLeader={isLeader} />
         <div className="card">
-          <p className="small">Failed to load clubs.</p>
+          <p className="small">
+            Failed to load communities. Please try again later.
+          </p>
         </div>
       </main>
     );
   }
 
-  const data = await res.json();
-  const raw = (data.clubs ?? []) as Club[];
-  const clubs = raw.filter((c) => c.recordId && c.name);
-
   return (
     <main className="container directoryHome" style={{ zIndex: 1 }}>
       <DecorativeBubbles />
-      <Header session={session} isAdmin={isAdmin} />
+      <Header session={session} isAdmin={isAdmin} isLeader={isLeader} />
 
       <DirectoryClient clubs={clubs} session={session} />
     </main>
   );
 }
 
-function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
+function Header({
+  session,
+  isAdmin,
+  isLeader,
+}: {
+  session: any;
+  isAdmin: boolean;
+  isLeader: boolean;
+}) {
   return (
     <header
       style={{
@@ -121,14 +136,16 @@ function Header({ session, isAdmin }: { session: any; isAdmin: boolean }) {
                   Community Approvals
                   <PendingBadge />
                 </Link>
-                <Link className="btn" href="/admin/access">
+                <Link className="btn" href="/ad min/access">
                   Access Requests
                 </Link>
               </div>
             )}
-            <Link className="btn" href="/leader/dashboard">
-              Dashboard
-            </Link>
+            {(isAdmin || isLeader) && (
+              <Link className="btn" href="/leader/dashboard">
+                Dashboard
+              </Link>
+            )}
           </>
         ) : (
           <>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { Club } from "@/lib/types";
+import { Club } from "@prisma/client";
 
 type ClubDraft = {
   name: string;
@@ -40,19 +40,19 @@ function StatusPill({ status }: { status?: string }) {
     s === "approved"
       ? "2px solid rgba(34,197,94,0.45)"
       : s === "pending"
-      ? "2px solid rgba(234,179,8,0.45)"
-      : s === "rejected"
-      ? "2px solid rgba(239,68,68,0.45)"
-      : "2px solid rgba(148,163,184,0.35)";
+        ? "2px solid rgba(234,179,8,0.45)"
+        : s === "rejected"
+          ? "2px solid rgba(239,68,68,0.45)"
+          : "2px solid rgba(148,163,184,0.35)";
 
   const dot =
     s === "approved"
       ? "rgb(34,197,94)"
       : s === "pending"
-      ? "rgb(234,179,8)"
-      : s === "rejected"
-      ? "rgb(239,68,68)"
-      : "rgb(148,163,184)";
+        ? "rgb(234,179,8)"
+        : s === "rejected"
+          ? "rgb(239,68,68)"
+          : "rgb(148,163,184)";
 
   return (
     <span
@@ -148,7 +148,8 @@ export default function EditClubPage() {
     })();
   }, []);
 
-  const set = (k: keyof ClubDraft, v: string) => setDraft((d) => ({ ...d, [k]: v }));
+  const set = (k: keyof ClubDraft, v: string) =>
+    setDraft((d) => ({ ...d, [k]: v }));
 
   const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -177,12 +178,14 @@ export default function EditClubPage() {
 
     if (nextStatus === "pending") {
       setMsg(
-        "Saved! Your changes were submitted for admin approval. They won't appear in the public community directory until approved."
+        "Saved! Your changes were submitted for admin approval. They won't appear in the public community directory until approved.",
       );
     } else if (nextStatus === "approved") {
       setMsg("Saved! Your club profile is live in the public directory.");
     } else if (nextStatus === "rejected") {
-      setMsg("Saved, but your club is currently rejected. Please review admin notes and resubmit.");
+      setMsg(
+        "Saved, but your club is currently rejected. Please review admin notes and resubmit.",
+      );
     } else {
       setMsg("Saved!");
     }
@@ -202,7 +205,10 @@ export default function EditClubPage() {
 
   return (
     <main className="container">
-      <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+      <div
+        className="row"
+        style={{ justifyContent: "space-between", alignItems: "center" }}
+      >
         <div className="row" style={{ gap: 12, alignItems: "center" }}>
           <h1 style={{ margin: 0 }}>Edit Club Profile</h1>
           <StatusPill status={status} />
@@ -218,22 +224,31 @@ export default function EditClubPage() {
         </div>
       </div>
 
-      {(err || msg || (status?.toLowerCase() === "rejected" && reviewNotes)) && (
+      {(err ||
+        msg ||
+        (status?.toLowerCase() === "rejected" && reviewNotes)) && (
         <div
           className="card"
           style={{
             marginTop: 14,
-            border:
-              err
-                ? "1px solid rgba(239,68,68,0.35)"
-                : status?.toLowerCase() === "pending"
+            border: err
+              ? "1px solid rgba(239,68,68,0.35)"
+              : status?.toLowerCase() === "pending"
                 ? "1px solid rgba(234,179,8,0.25)"
                 : "1px solid rgba(147,197,253,0.20)",
             background: "rgba(255,255,255,0.03)",
           }}
         >
-          {err && <p className="small" style={{ margin: 0 }}>{err}</p>}
-          {msg && <p className="small" style={{ margin: err ? "10px 0 0 0" : 0 }}>{msg}</p>}
+          {err && (
+            <p className="small" style={{ margin: 0 }}>
+              {err}
+            </p>
+          )}
+          {msg && (
+            <p className="small" style={{ margin: err ? "10px 0 0 0" : 0 }}>
+              {msg}
+            </p>
+          )}
 
           {status?.toLowerCase() === "rejected" && reviewNotes && (
             <p className="small" style={{ marginTop: 10, opacity: 0.9 }}>
@@ -245,7 +260,11 @@ export default function EditClubPage() {
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onSave}>
         <label className="label">Community Name *</label>
-        <input className="input" value={draft.name} onChange={(e) => set("name", e.target.value)} />
+        <input
+          className="input"
+          value={draft.name}
+          onChange={(e) => set("name", e.target.value)}
+        />
 
         <div style={{ height: 10 }} />
 
@@ -260,12 +279,20 @@ export default function EditClubPage() {
         <hr />
 
         <label className="label">Point of Contact Name</label>
-        <input className="input" value={draft.contactName} onChange={(e) => set("contactName", e.target.value)} />
+        <input
+          className="input"
+          value={draft.contactName}
+          onChange={(e) => set("contactName", e.target.value)}
+        />
 
         <div style={{ height: 10 }} />
 
         <label className="label">Point of Contact Email</label>
-        <input className="input" value={draft.contactEmail} onChange={(e) => set("contactEmail", e.target.value)} />
+        <input
+          className="input"
+          value={draft.contactEmail}
+          onChange={(e) => set("contactEmail", e.target.value)}
+        />
 
         <hr />
 
@@ -319,7 +346,11 @@ export default function EditClubPage() {
 
         <div className="row" style={{ marginTop: 12 }}>
           <button className="btn btnPrimary" type="submit" disabled={saving}>
-            {saving ? "Saving..." : status?.toLowerCase() === "pending" ? "Submit for approval" : "Save"}
+            {saving
+              ? "Saving..."
+              : status?.toLowerCase() === "pending"
+                ? "Submit for approval"
+                : "Save"}
           </button>
           <Link className="btn" href="/leader/dashboard">
             Cancel

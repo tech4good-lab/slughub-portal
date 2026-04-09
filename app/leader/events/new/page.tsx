@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type ClubOption = {
-  clubId: string;
+  id: string;
   name?: string;
 };
 
@@ -27,21 +27,6 @@ export default function NewEventPage() {
     (async () => {
       setLoading(true);
       setErr(null);
-      try {
-        const raw = localStorage.getItem("leaderClubsCache_v1");
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          const list = (parsed?.clubs ?? []) as ClubOption[];
-          if (Array.isArray(list) && list.length > 0) {
-            setClubs(list);
-            setClubId(String(list[0].clubId ?? ""));
-            setLoading(false);
-            return;
-          }
-        }
-      } catch {
-        // ignore cache errors
-      }
 
       const res = await fetch("/api/leader/clubs");
 
@@ -70,15 +55,9 @@ export default function NewEventPage() {
 
       const list = (data?.clubs ?? []) as ClubOption[];
       setClubs(list);
-      if (list.length > 0) setClubId(String(list[0].clubId ?? ""));
-      try {
-        localStorage.setItem(
-          "leaderClubsCache_v1",
-          JSON.stringify({ ts: Date.now(), clubs: list })
-        );
-      } catch {
-        // ignore cache errors
-      }
+
+      if (list.length > 0) setClubId(String(list[0].id ?? ""));
+
       setLoading(false);
     })();
   }, [router]);
@@ -135,8 +114,12 @@ export default function NewEventPage() {
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Create Event</h1>
         <div className="row">
-          <Link className="btn" href="/leader/dashboard">Dashboard</Link>
-          <Link className="btn" href="/directory">Directory</Link>
+          <Link className="btn" href="/leader/dashboard">
+            Dashboard
+          </Link>
+          <Link className="btn" href="/directory">
+            Directory
+          </Link>
         </div>
       </div>
 
@@ -152,8 +135,8 @@ export default function NewEventPage() {
             <option value="">No community access</option>
           ) : (
             clubs.map((club) => (
-              <option key={club.clubId} value={club.clubId}>
-                {club.name ?? club.clubId}
+              <option key={club.id} value={club.id}>
+                {club.name ?? club.id}
               </option>
             ))
           )}
@@ -162,17 +145,33 @@ export default function NewEventPage() {
         <div style={{ height: 10 }} />
 
         <label className="label">Event Title *</label>
-        <input className="input" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} required />
+        <input
+          className="input"
+          value={eventTitle}
+          onChange={(e) => setEventTitle(e.target.value)}
+          required
+        />
 
         <div style={{ height: 10 }} />
 
         <label className="label">Event Date *</label>
-        <input className="input" type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} required />
+        <input
+          className="input"
+          type="date"
+          value={eventDate}
+          onChange={(e) => setEventDate(e.target.value)}
+          required
+        />
 
         <div style={{ height: 10 }} />
 
         <label className="label">Event Time</label>
-        <input className="input" type="time" value={eventTime} onChange={(e) => setEventTime(e.target.value)} />
+        <input
+          className="input"
+          type="time"
+          value={eventTime}
+          onChange={(e) => setEventTime(e.target.value)}
+        />
 
         <div style={{ height: 10 }} />
 
@@ -194,14 +193,57 @@ export default function NewEventPage() {
           onChange={(e) => setEventDescription(e.target.value)}
         />
 
-        {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
-        {msg && <p className="small" style={{ marginTop: 10 }}>{msg}</p>}
+        {err && (
+          <p className="small" style={{ marginTop: 10 }}>
+            {err}
+          </p>
+        )}
+        {msg && (
+          <p className="small" style={{ marginTop: 10 }}>
+            {msg}
+          </p>
+        )}
 
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" type="submit" disabled={saving || clubs.length === 0} style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}>
+          <button
+            className="btn btnPrimary"
+            type="submit"
+            disabled={saving || clubs.length === 0}
+            style={{
+              padding: "8px 16px",
+              background: "#FDF0A6",
+              border: "1px solid #FDF0A6",
+              borderRadius: 20,
+              color: "#000",
+              fontFamily: "Sarabun",
+              fontSize: 14,
+              fontWeight: 600,
+              lineHeight: "1",
+              textDecoration: "none",
+              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+            }}
+          >
             {saving ? "Creating..." : "Create Event"}
           </button>
-          <Link className="btn btnPrimary" style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }} href="/leader/dashboard">Cancel</Link>
+          <Link
+            className="btn btnPrimary"
+            style={{
+              padding: "8px 16px",
+              background: "#FDF0A6",
+              border: "1px solid #FDF0A6",
+              borderRadius: 20,
+              color: "#000",
+              fontFamily: "Sarabun",
+              fontSize: 14,
+              fontWeight: 600,
+              lineHeight: "1",
+              textDecoration: "none",
+              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+            }}
+            href="/leader/dashboard"
+          >
+            Cancel
+          </Link>
         </div>
 
         <p className="small" style={{ marginTop: 10 }}>
@@ -211,4 +253,3 @@ export default function NewEventPage() {
     </main>
   );
 }
-

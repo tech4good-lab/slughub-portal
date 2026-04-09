@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import type { Club } from "@/lib/types";
+import { Club } from "@prisma/client";
 
 type Props = {
   clubs: Club[];
@@ -10,17 +10,17 @@ type Props = {
 };
 
 const COMMUNITY_TYPE_OPTIONS = [
-  "Academic",
-  "Campus Department/Program",
-  "Cultural and Identity",
-  "Greek-letter",
-  "Media and broadcasting",
-  "Other",
-  "Performing and Visual Arts",
-  "Politics and Advocacy",
-  "Professional and Career",
-  "Research",
-  "Sports and Recreation",
+  { label: "Academic", value: "Academic" },
+  { label: "Campus Department/Program", value: "Campus_Department_Program" },
+  { label: "Cultural and Identity", value: "Cultural_and_Identity" },
+  { label: "Greek-letter", value: "Greek_letter" },
+  { label: "Media and broadcasting", value: "Media_and_Broadcasting" },
+  { label: "Performing and Visual Arts", value: "Performing_and_Visual_Arts" },
+  { label: "Politics and Advocacy", value: "Politics_and_Advocacy" },
+  { label: "Professional and Career", value: "Professional_and_Career" },
+  { label: "Research", value: "Research" },
+  { label: "Sports and Recreation", value: "Sports_and_Recreation" },
+  { label: "Other", value: "Other" },
 ] as const;
 
 const STATUS_OPTIONS = [
@@ -39,8 +39,6 @@ function normalizeList(input: any): string[] {
   const single = normalizeValue(input);
   return single ? [single] : [];
 }
-
-
 
 export default function DirectoryClient({ clubs, session }: Props) {
   const [typeSelected, setTypeSelected] = useState<string[]>([]);
@@ -69,56 +67,56 @@ export default function DirectoryClient({ clubs, session }: Props) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return clubs
-    .filter((c: any) => {
-      const fields = (c ?? {}) as Record<string, unknown>;
-      const statusEntry = Object.entries(fields).find(([key]) => {
-        const k = key.trim().toLowerCase().replace(/\s+/g, "");
-        return k === "communitystatus";
-      });
-      const typeEntry = Object.entries(fields).find(([key]) => {
-        const k = key.trim().toLowerCase().replace(/\s+/g, "");
-        return k === "communitytype";
-      });
-      const statusValues = normalizeList(statusEntry?.[1]).map((v) => v.toLowerCase());
-      const typeValues = normalizeList(typeEntry?.[1]).map((v) => v.toLowerCase());
-      const typeSelectedNormalized = typeSelected.map((v) => v.toLowerCase());
+      .filter((c: any) => {
+        const fields = (c ?? {}) as Record<string, unknown>;
+        const statusEntry = Object.entries(fields).find(([key]) => {
+          const k = key.trim().toLowerCase().replace(/\s+/g, "");
+          return k === "communitystatus";
+        });
+        const typeEntry = Object.entries(fields).find(([key]) => {
+          const k = key.trim().toLowerCase().replace(/\s+/g, "");
+          return k === "communitytype";
+        });
+        const statusValues = normalizeList(statusEntry?.[1]).map((v) =>
+          v.toLowerCase(),
+        );
+        const typeValues = normalizeList(typeEntry?.[1]).map((v) =>
+          v.toLowerCase(),
+        );
+        const typeSelectedNormalized = typeSelected.map((v) => v.toLowerCase());
 
-      const statusOk =
-        statusSelected.length === 0 ||
-        statusValues.some((v) => statusSelected.includes(v));
-      if (!statusOk) return false;
+        const statusOk =
+          statusSelected.length === 0 ||
+          statusValues.some((v) => statusSelected.includes(v));
+        if (!statusOk) return false;
 
-      const typeOk =
-        typeSelected.length === 0 ||
-        typeValues.some((v) => typeSelectedNormalized.includes(v));
-      if (!typeOk) return false;
+        const typeOk =
+          typeSelected.length === 0 ||
+          typeValues.some((v) => typeSelectedNormalized.includes(v));
+        if (!typeOk) return false;
 
-      if (!q) return true;
-      const name = String(c.name ?? "").toLowerCase();
-      const description = String(c.description ?? "").toLowerCase();
-      return name.includes(q) || description.includes(q);
-    })
-    .sort((a,b) =>
-    String(a.name ?? "").localeCompare(String(b.name ?? ""))
-    );
+        if (!q) return true;
+        const name = String(c.name ?? "").toLowerCase();
+        const description = String(c.description ?? "").toLowerCase();
+        return name.includes(q) || description.includes(q);
+      })
+      .sort((a, b) => String(a.name ?? "").localeCompare(String(b.name ?? "")));
   }, [clubs, typeSelected, statusSelected, query]);
 
   const toggleType = (value: string) => {
     setTypeSelected((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   };
 
   const toggleStatus = (value: string) => {
     setStatusSelected((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
     );
   };
 
   return (
     <>
-
-
       <div className="directoryToolbar">
         <div className="directorySearchWrap">
           <input
@@ -145,13 +143,13 @@ export default function DirectoryClient({ clubs, session }: Props) {
               Clear
             </button>
             {COMMUNITY_TYPE_OPTIONS.map((cat) => (
-              <label key={cat} className="directoryDropdownItem">
+              <label key={cat.value} className="directoryDropdownItem">
                 <input
                   type="checkbox"
-                  checked={typeSelected.includes(cat)}
-                  onChange={() => toggleType(cat)}
+                  checked={typeSelected.includes(cat.value)}
+                  onChange={() => toggleType(cat.value)}
                 />
-                {cat}
+                {cat.label}
               </label>
             ))}
           </div>
@@ -193,59 +191,83 @@ export default function DirectoryClient({ clubs, session }: Props) {
         </details>
       </div>
 
-      <div style={{width:"100%"}}>
-      <section>
-        <div className="directoryGrid">
-          {filtered.map((c) => (
-            <Link
-              key={c.recordId}
-              href={`/clubs/${(c as any).clubId ?? c.recordId}`}
-              className="card"
-            >
-              <div>
-                <h2 className="directoryCardTitle">{c.name}</h2>
-                <p className="small" style={{ margin: 0, lineHeight: 1.6, color: "rgba(0,0,0,0.6)" }}>
-                  {(c.description ?? "").slice(0, 140) || "No description yet."}
-                  {(c.description ?? "").length > 140 ? "..." : ""}
-                </p>
-              </div>
+      <div style={{ width: "100%" }}>
+        <section>
+          <div className="directoryGrid">
+            {filtered.map((c) => (
+              <Link
+                key={c.id}
+                href={`/clubs/${(c as any).clubId ?? c.id}`}
+                className="card"
+              >
+                <div>
+                  <h2 className="directoryCardTitle">{c.name}</h2>
+                  <p
+                    className="small"
+                    style={{
+                      margin: 0,
+                      lineHeight: 1.6,
+                      color: "rgba(0,0,0,0.6)",
+                    }}
+                  >
+                    {(c.description ?? "").slice(0, 140) ||
+                      "No description yet."}
+                    {(c.description ?? "").length > 140 ? "..." : ""}
+                  </p>
+                </div>
 
-              <div className="directoryCardLearn">Learn more ...</div>
-            </Link>
-          ))}
-        </div>
-
-        {filtered.length === 0 && (
-          <div className="card" style={{ textAlign: "center", padding: "clamp(20px, 6vw, 60px)" }}>
-            <h2 style={{ marginBottom: 8 }}>No clubs yet</h2>
-            <p className="small" style={{ margin: 0 }}>
-              Be the first to register your club and start building community.
-            </p>
-            {!session && (
-              <Link href="/login" className="btn btnPrimary" style={{ marginTop: 20, display: "inline-flex" }}>
-                Club Lead Login
+                <div className="directoryCardLearn">Learn more ...</div>
               </Link>
-            )}
+            ))}
           </div>
-        )}
 
-        {/* Credit */}
-        <div style={{ marginTop: 36, textAlign: "center" }}>
-          <p style={{ fontSize: 16, fontWeight: 500, color: "rgba(0,0,0,0.6)" }}>
-            Made with ❤️ from the{" "}
-            <a
-              href="https://tech4good.soe.ucsc.edu/"
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: "#FDF0A6", textDecoration: "none", fontWeight: 600 }}
+          {filtered.length === 0 && (
+            <div
+              className="card"
+              style={{ textAlign: "center", padding: "clamp(20px, 6vw, 60px)" }}
             >
-              CommunityRAG Team
-            </a>
-          </p>
-        </div>
-      </section>
+              <h2 style={{ marginBottom: 8 }}>No clubs yet</h2>
+              <p className="small" style={{ margin: 0 }}>
+                Be the first to register your club and start building community.
+              </p>
+              {!session && (
+                <Link
+                  href="/login"
+                  className="btn btnPrimary"
+                  style={{ marginTop: 20, display: "inline-flex" }}
+                >
+                  Club Lead Login
+                </Link>
+              )}
+            </div>
+          )}
+
+          {/* Credit */}
+          <div style={{ marginTop: 36, textAlign: "center" }}>
+            <p
+              style={{
+                fontSize: 16,
+                fontWeight: 500,
+                color: "rgba(0,0,0,0.6)",
+              }}
+            >
+              Made with ❤️ from the{" "}
+              <a
+                href="https://tech4good.soe.ucsc.edu/"
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  color: "#FDF0A6",
+                  textDecoration: "none",
+                  fontWeight: 600,
+                }}
+              >
+                CommunityRAG Team
+              </a>
+            </p>
+          </div>
+        </section>
       </div>
     </>
   );
 }
-

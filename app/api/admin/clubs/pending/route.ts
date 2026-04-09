@@ -1,27 +1,37 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { CLUBS_TABLE, cachedAll } from "@/lib/airtable";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
   const role = (session as any)?.role;
-  if (role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const records = await cachedAll(
-    CLUBS_TABLE,
-    { sort: [{ field: "updatedAt", direction: "desc" }] },
-    600
-  );
+  if (role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
-  const clubs = records
-    .filter((r: any) => String((r.fields as any)?.status ?? "").toLowerCase() === "pending")
-    .sort((a: any, b: any) => {
-      const aTime = Date.parse(String((a.fields as any)?.submittedAt ?? "")) || 0;
-      const bTime = Date.parse(String((b.fields as any)?.submittedAt ?? "")) || 0;
-      return bTime - aTime;
-    })
-    .map((r: any) => ({ recordId: r.id, ...r.fields }));
+  try {
+    const pendingClubs = await prisma.club.findMany({
+      where: {
+        status: "pending",
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
 
-  return NextResponse.json({ clubs });
+    const clubs = pendingClubs.map((club) => ({
+      recordId: club.id,
+      ...club,
+    }));
+
+    return NextResponse.json({ clubs });
+  } catch (error) {
+    console.error("Prisma Error fetching pending clubs:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }

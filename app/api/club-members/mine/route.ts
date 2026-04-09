@@ -1,24 +1,34 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { CLUB_MEMBERS_TABLE, cachedAll } from "@/lib/airtable";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
   const userId = (session as any)?.userId;
+
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const records = await cachedAll(
-    CLUB_MEMBERS_TABLE,
-    { filterByFormula: `{userId}="${userId}"` },
-    300
-  );
+  try {
+    const memberships = await prisma.clubMember.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        clubId: true,
+      },
+    });
 
-  const clubIds = (records || [])
-    .map((r: any) => String((r.fields as any)?.clubId ?? "").trim())
-    .filter(Boolean);
+    const clubIds = memberships.map((m) => m.clubId);
 
-  return NextResponse.json({ clubIds });
+    return NextResponse.json({ clubIds });
+  } catch (error) {
+    console.error("Prisma Error fetching user club IDs:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }

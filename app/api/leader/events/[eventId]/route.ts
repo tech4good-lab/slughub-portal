@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, EVENTS_TABLE, CLUB_MEMBERS_TABLE, cachedAll, cachedFind, invalidateTable, noteCall } from "@/lib/airtable";
+import {
+  base,
+  EVENTS_TABLE,
+  CLUB_MEMBERS_TABLE,
+  cachedAll,
+  cachedFind,
+  invalidateTable,
+  noteCall,
+} from "@/lib/airtable";
 
 function buildEventDate(date: string, time: string) {
   const d = String(date ?? "").trim();
@@ -17,10 +25,10 @@ async function isMember(userId: string, clubId: string) {
   const memberRows = await cachedAll(
     CLUB_MEMBERS_TABLE,
     { filterByFormula: `{userId}="${userId}"` },
-    300
+    300,
   );
   return (memberRows || []).some(
-    (r: any) => String((r.fields as any)?.clubId ?? "") === clubId
+    (r: any) => String((r.fields as any)?.clubId ?? "") === clubId,
   );
 }
 
@@ -28,7 +36,7 @@ async function getUserClubIds(userId: string): Promise<string[]> {
   const memberRows = await cachedAll(
     CLUB_MEMBERS_TABLE,
     { filterByFormula: `{userId}="${userId}"` },
-    300
+    300,
   );
   return (memberRows || [])
     .map((r: any) => String((r.fields as any)?.clubId ?? ""))
@@ -43,20 +51,21 @@ async function getUserEvents(userId: string) {
   const eventRows = await cachedAll(
     EVENTS_TABLE,
     { filterByFormula, sort: [{ field: "eventDate", direction: "desc" }] },
-    3600
+    3600,
   );
   return eventRows || [];
 }
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ eventId: string }> }
+  { params }: { params: Promise<{ eventId: string }> },
 ) {
   const session = await getServerSession(authOptions);
   const userId = (session as any)?.userId;
   const role = (session as any)?.role;
 
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (role !== "leader" && role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -64,25 +73,28 @@ export async function GET(
   const { eventId } = await params;
   const eventRows = await getUserEvents(userId);
   const eventRec = (eventRows || []).find((r: any) => r.id === eventId);
-  if (!eventRec) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!eventRec)
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const f = eventRec.fields as any;
   const clubId = String(f?.clubId ?? "");
-  if (!clubId) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!clubId)
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   return NextResponse.json({ event: { recordId: eventRec.id, ...f } });
 }
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ eventId: string }> }
+  { params }: { params: Promise<{ eventId: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session as any)?.userId;
     const role = (session as any)?.role;
 
-    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!userId)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     if (role !== "leader" && role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -90,11 +102,13 @@ export async function POST(
     const { eventId } = await params;
     const eventRows = await getUserEvents(userId);
     const eventRec = (eventRows || []).find((r: any) => r.id === eventId);
-    if (!eventRec) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!eventRec)
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     const f = eventRec.fields as any;
     const clubId = String(f?.clubId ?? "");
-    if (!clubId) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!clubId)
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     const body = await req.json();
     const eventTitle = String(body.eventTitle ?? "").trim();
@@ -102,10 +116,16 @@ export async function POST(
     const eventTimeRaw = String(body.eventTime ?? "").trim();
 
     if (!eventTitle) {
-      return NextResponse.json({ error: "Event title is required." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Event title is required." },
+        { status: 400 },
+      );
     }
     if (!eventDateRaw) {
-      return NextResponse.json({ error: "Event date is required." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Event date is required." },
+        { status: 400 },
+      );
     }
 
     const payload: any = {
@@ -118,7 +138,9 @@ export async function POST(
     };
 
     noteCall(EVENTS_TABLE);
-    const updated = await base(EVENTS_TABLE).update([{ id: eventRec.id, fields: payload }]);
+    const updated = await base(EVENTS_TABLE).update([
+      { id: eventRec.id, fields: payload },
+    ]);
 
     try {
       invalidateTable(EVENTS_TABLE);
@@ -127,9 +149,14 @@ export async function POST(
     }
 
     const updatedFields = updated[0].fields as any;
-    return NextResponse.json({ event: { recordId: updated[0].id, ...updatedFields } });
+    return NextResponse.json({
+      event: { recordId: updated[0].id, ...updatedFields },
+    });
   } catch (e: any) {
     console.error(e);
-    return NextResponse.json({ error: e?.message ?? "Internal error" }, { status: 500 });
+    return NextResponse.json(
+      { error: e?.message ?? "Internal error" },
+      { status: 500 },
+    );
   }
 }

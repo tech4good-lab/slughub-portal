@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import type { Club } from "@/lib/types";
+import { Club } from "@prisma/client";
 
 type ClubDraft = {
   name: string;
@@ -20,17 +20,17 @@ type ClubDraft = {
 };
 
 const COMMUNITY_TYPE_OPTIONS = [
-  "Academic",
-  "Campus Department/Program",
-  "Cultural and Identity",
-  "Greek-letter",
-  "Media and broadcasting",
-  "Other",
-  "Performing and Visual Arts",
-  "Politics and Advocacy",
-  "Professional and Career",
-  "Research",
-  "Sports and Recreation",
+  { label: "Academic", value: "Academic" },
+  { label: "Campus Department/Program", value: "Campus_Department_Program" },
+  { label: "Cultural and Identity", value: "Cultural_and_Identity" },
+  { label: "Greek-letter", value: "Greek_letter" },
+  { label: "Media and broadcasting", value: "Media_and_Broadcasting" },
+  { label: "Performing and Visual Arts", value: "Performing_and_Visual_Arts" },
+  { label: "Politics and Advocacy", value: "Politics_and_Advocacy" },
+  { label: "Professional and Career", value: "Professional_and_Career" },
+  { label: "Research", value: "Research" },
+  { label: "Sports and Recreation", value: "Sports_and_Recreation" },
+  { label: "Other", value: "Other" },
 ] as const;
 
 const emptyDraft: ClubDraft = {
@@ -39,7 +39,7 @@ const emptyDraft: ClubDraft = {
   clubIcebreakers: "",
   contactName: "",
   contactEmail: "",
-  communityType: "Campus Department/Program",
+  communityType: "Campus_Department_Program",
   calendarUrl: "",
   discordUrl: "",
   websiteUrl: "",
@@ -69,20 +69,7 @@ export default function EditClubPage() {
         const raw = localStorage.getItem("clubDraft");
         const saved = raw ? (JSON.parse(raw) as Partial<ClubDraft>) : null;
         if (saved) {
-          setDraft((d) => ({
-            ...d,
-            name: saved.name ?? "",
-            description: saved.description ?? "",
-            clubIcebreakers: saved.clubIcebreakers ?? "",
-            contactName: saved.contactName ?? "",
-            contactEmail: saved.contactEmail ?? "",
-            communityType: saved.communityType ?? "Campus Department/Program",
-            calendarUrl: saved.calendarUrl ?? "",
-            discordUrl: saved.discordUrl ?? "",
-            websiteUrl: saved.websiteUrl ?? "",
-            instagramUrl: saved.instagramUrl ?? "",
-            linkedinUrl: saved.linkedinUrl ?? "",
-          }));
+          setDraft((d) => ({ ...emptyDraft, ...saved }));
         }
       } catch {
         setErr("Failed to load draft.");
@@ -95,7 +82,9 @@ export default function EditClubPage() {
       setLoading(true);
       setErr(null);
 
-      const res = await fetch(`/api/leader/clubs/${clubId}`, { cache: "no-store" });
+      const res = await fetch(`/api/leader/clubs/${clubId}`, {
+        cache: "no-store",
+      });
 
       if (res.status === 401) {
         router.push("/login");
@@ -123,20 +112,18 @@ export default function EditClubPage() {
       const club = data.club as Club | null;
 
       if (club) {
-        const ctRaw = (club as any).communityType ?? (club as any)["community Type"];
-        const ctValue = Array.isArray(ctRaw) ? ctRaw[0] : ctRaw;
         setDraft({
-          name: (club.name ?? "") as string,
-          description: (club.description ?? "") as string,
-          clubIcebreakers: (club.clubIcebreakers ?? "") as string,
-          contactName: (club.contactName ?? "") as string,
-          contactEmail: (club.contactEmail ?? "") as string,
-          communityType: (ctValue ?? "Campus Department/Program") as string,
-          calendarUrl: (club.calendarUrl ?? "") as string,
-          discordUrl: (club.discordUrl ?? "") as string,
-          websiteUrl: (club.websiteUrl ?? "") as string,
-          instagramUrl: (club.instagramUrl ?? "") as string,
-          linkedinUrl: (club.linkedinUrl ?? "") as string,
+          name: club.name ?? "",
+          description: club.description ?? "",
+          clubIcebreakers: club.clubIcebreakers ?? "",
+          contactName: club.contactName ?? "",
+          contactEmail: club.contactEmail ?? "",
+          communityType: club.communityType ?? "Other",
+          calendarUrl: club.calendarUrl ?? "",
+          discordUrl: club.discordUrl ?? "",
+          websiteUrl: club.websiteUrl ?? "",
+          instagramUrl: club.instagramUrl ?? "",
+          linkedinUrl: club.linkedinUrl ?? "",
         });
       }
 
@@ -144,7 +131,8 @@ export default function EditClubPage() {
     })();
   }, [clubId, router]);
 
-  const set = (k: keyof ClubDraft, v: string) => setDraft((d) => ({ ...d, [k]: v }));
+  const set = (k: keyof ClubDraft, v: string) =>
+    setDraft((d) => ({ ...d, [k]: v }));
 
   const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,16 +174,11 @@ export default function EditClubPage() {
     } else {
       setMsg("Submitted! Your changes are pending admin approval.");
     }
+
     setSaving(false);
 
-    const writeTs = Date.now();
-    document.cookie = `leader_recent_write_at=${writeTs}; Max-Age=180; Path=/; SameSite=Lax`;
-
-    // Optional: redirect after a short delay
-    setTimeout(() => {
-      router.push(`/leader/dashboard?refresh=${writeTs}`);
-      router.refresh();
-    }, 600);
+    router.push("/leader/dashboard");
+    router.refresh();
   };
 
   if (loading) {
@@ -224,12 +207,17 @@ export default function EditClubPage() {
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onSave}>
         <label className="label">Community Name *</label>
-        <input className="input" value={draft.name} onChange={(e) => set("name", e.target.value)} />
+        <input
+          className="input"
+          value={draft.name}
+          onChange={(e) => set("name", e.target.value)}
+        />
 
         <div style={{ height: 10 }} />
 
         <label className="label">Description *</label>
-        <textarea required
+        <textarea
+          required
           className="input"
           rows={4}
           value={draft.description}
@@ -243,28 +231,45 @@ export default function EditClubPage() {
           className="input"
           value={draft.clubIcebreakers}
           onChange={(e) => set("clubIcebreakers", e.target.value)}
-          placeholder={"what would you like to learn from students attending your event?"}
+          placeholder={
+            "what would you like to learn from students attending your event?"
+          }
           style={{ minHeight: 120 }}
         />
 
         <hr />
 
         <label className="label">Point of Contact Name *</label>
-        <input className="input" value={draft.contactName} onChange={(e) => set("contactName", e.target.value)} required />
+        <input
+          className="input"
+          value={draft.contactName}
+          onChange={(e) => set("contactName", e.target.value)}
+          required
+        />
 
         <div style={{ height: 10 }} />
 
         <label className="label">Point of Contact Email *</label>
-        <input 
-        
-        className="input" value={draft.contactEmail} onChange={(e) => set("contactEmail", e.target.value)} required />
+        <input
+          className="input"
+          value={draft.contactEmail}
+          onChange={(e) => set("contactEmail", e.target.value)}
+          required
+        />
 
         <div style={{ height: 10 }} />
 
         <label className="label">Community type</label>
-        <select className="input" value={draft.communityType} onChange={(e) => set("communityType", e.target.value)} required>
+        <select
+          className="input"
+          value={draft.communityType}
+          onChange={(e) => set("communityType", e.target.value)}
+          required
+        >
           {COMMUNITY_TYPE_OPTIONS.map((opt) => (
-            <option key={opt}>{opt}</option>
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
           ))}
         </select>
 
@@ -318,14 +323,56 @@ export default function EditClubPage() {
           placeholder="https://..."
         />
 
-        {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
-        {msg && <p className="small" style={{ marginTop: 10 }}>{msg}</p>}
+        {err && (
+          <p className="small" style={{ marginTop: 10 }}>
+            {err}
+          </p>
+        )}
+        {msg && (
+          <p className="small" style={{ marginTop: 10 }}>
+            {msg}
+          </p>
+        )}
 
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" type="submit" disabled={saving} style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}>
+          <button
+            className="btn btnPrimary"
+            type="submit"
+            disabled={saving}
+            style={{
+              padding: "8px 16px",
+              background: "#FDF0A6",
+              border: "1px solid #FDF0A6",
+              borderRadius: 20,
+              color: "#000",
+              fontFamily: "Sarabun",
+              fontSize: 14,
+              fontWeight: 600,
+              lineHeight: "1",
+              textDecoration: "none",
+              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+            }}
+          >
             {saving ? "Submitting..." : "Submit for Approval"}
           </button>
-          <Link role="button" className="btn btnPrimary" style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }} href="/leader/dashboard">
+          <Link
+            role="button"
+            className="btn btnPrimary"
+            style={{
+              padding: "8px 16px",
+              background: "#FDF0A6",
+              border: "1px solid #FDF0A6",
+              borderRadius: 20,
+              color: "#000",
+              fontFamily: "Sarabun",
+              fontSize: 14,
+              fontWeight: 600,
+              lineHeight: "1",
+              textDecoration: "none",
+              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+            }}
+            href="/leader/dashboard"
+          >
             Cancel
           </Link>
         </div>
@@ -337,5 +384,3 @@ export default function EditClubPage() {
     </main>
   );
 }
-
-

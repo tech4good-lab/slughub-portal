@@ -1,42 +1,35 @@
 import { NextResponse } from "next/server";
-import { CLUBS_TABLE, cachedAll } from "@/lib/airtable";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ clubId: string }> }
+  { params }: { params: Promise<{ clubId: string }> },
 ) {
   const { clubId } = await params;
 
   try {
-    const records = await cachedAll(
-      CLUBS_TABLE,
-      { sort: [{ field: "updatedAt", direction: "desc" }] },
-      600
-    );
+    const isAirtableId = clubId.startsWith("rec");
 
-    const match = (records || []).find((r: any) => {
-      const f = r.fields as any;
-      if (clubId.startsWith("rec")) return r.id === clubId;
-      return String(f?.clubId ?? "") === clubId;
-    });
+    const club = await prisma.club.findFirst({
+      where: {
+        ...(isAirtableId ? { airtableId: clubId } : { id: clubId }),
 
-    if (!match) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    }
-
-    const f = match.fields as any;
-    if (String(f?.status ?? "").toLowerCase() !== "approved") {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    }
-    return NextResponse.json({
-      club: {
-        recordId: match.id,
-        ...f,
-        communityType:
-          f.communityType ?? f["community Type"] ?? f["community type"] ?? f["Community Type"],
+        status: "approved",
       },
     });
-  } catch {
+
+    if (!club) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      club: {
+        recordId: club.id,
+        ...club,
+      },
+    });
+  } catch (error) {
+    console.error(`Prisma Error fetching club ${clubId}:`, error);
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 }

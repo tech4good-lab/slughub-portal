@@ -1,45 +1,57 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { cachedAll, CLUBS_TABLE } from "@/lib/airtable";
-
-const REQUESTS_TABLE = process.env.AIRTABLE_REQUESTS_TABLE || "AccessRequests";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
   const role = (session as any)?.role;
-  if (role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const records = await cachedAll(
-    REQUESTS_TABLE,
-    { filterByFormula: `LOWER(TRIM({status})) = "pending"`, sort: [{ field: "createdAt", direction: "desc" }] },
-    600
-  );
-
-  const clubs = await cachedAll(
-    CLUBS_TABLE,
-    { sort: [{ field: "updatedAt", direction: "desc" }] },
-    600
-  );
-  const clubNameById = new Map<string, string>();
-  for (const c of clubs || []) {
-    const f = (c.fields as any) ?? {};
-    const cid = String(f.clubId ?? "").trim();
-    const name = String(f.name ?? "").trim();
-    if (name) {
-      if (cid) clubNameById.set(cid, name);
-      clubNameById.set(c.id, name);
-    }
+  if (role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const requests = records.map((r: any) => ({
-    recordId: r.id,
-    ...r.fields,
-    clubName:
-      (r.fields as any)?.clubName ??
-      (r.fields as any)?.name ??
-      clubNameById.get(String((r.fields as any)?.clubId ?? "").trim()) ??
-      "",
-  }));
-  return NextResponse.json({ requests });
+  try {
+    const pendingRequests = await prisma.accessRequest.findMany({
+      where: {
+        status: "pending",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const clubIds = Array.from(
+      new Set(pendingRequests.map((r) => r.clubId).filter(Boolean)),
+    );
+
+    const clubs = await prisma.club.findMany({
+      where: {
+        id: { in: clubIds },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    const clubNameById = new Map<string, string>();
+    for (const club of clubs) {
+      clubNameById.set(club.id, club.name);
+    }
+
+    const requests = pendingRequests.map((r) => ({
+      recordId: r.id,
+      ...r,
+      clubName: clubNameById.get(r.clubId) ?? "Unknown Club",
+    }));
+
+    return NextResponse.json({ requests });
+  } catch (error) {
+    console.error("Prisma Error fetching pending requests:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }

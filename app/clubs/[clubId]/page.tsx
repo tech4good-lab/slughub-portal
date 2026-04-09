@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Club } from "@/lib/types";
+import { Club } from "@prisma/client";
 import RequestAccess from "./request-access";
 
 export const linkPillStyle = {
@@ -17,6 +17,25 @@ export const linkPillStyle = {
   display: "inline-flex",
   alignSelf: "flex-start" as const,
 };
+
+// Helper to make the Prisma Enum readable for the UI
+function formatCommunityType(enumValue: string | undefined | null) {
+  if (!enumValue) return null;
+  const labels: Record<string, string> = {
+    Academic: "Academic",
+    Campus_Department_Program: "Campus Department/Program",
+    Cultural_and_Identity: "Cultural and Identity",
+    Greek_Letter: "Greek-letter",
+    Media_and_Broadcasting: "Media and broadcasting",
+    Other: "Other",
+    Performing_and_Visual_Arts: "Performing and Visual Arts",
+    Politics_and_Advocacy: "Politics and Advocacy",
+    Professional_and_Career: "Professional and Career",
+    Research: "Research",
+    Sports_and_Recreation: "Sports and Recreation",
+  };
+  return labels[enumValue] || enumValue;
+}
 
 export default async function ClubDetailPage({
   params,
@@ -54,14 +73,8 @@ export default async function ClubDetailPage({
 
   const data = await res.json();
   const club = data.club as Club;
-  const communityTypeRaw =
-    (club as any).communityType ??
-    (club as any)["community Type"] ??
-    (club as any)["community type"] ??
-    (club as any)["Community Type"];
-  const communityType = Array.isArray(communityTypeRaw)
-    ? communityTypeRaw[0]
-    : communityTypeRaw;
+
+  const communityType = formatCommunityType((club as any).communityType);
 
   return (
     <main className="container clubDetail">

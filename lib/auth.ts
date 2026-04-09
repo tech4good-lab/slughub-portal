@@ -1,13 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import crypto from "crypto";
-import {
-  USERS_TABLE,
-  base,
-  cachedFirstPage,
-  invalidateTable,
-  noteCall,
-} from "@/lib/airtable";
+import { prisma } from "./prisma";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -20,59 +13,49 @@ export const authOptions: NextAuthOptions = {
   debug: true,
   callbacks: {
     async signIn({ user }) {
-      const email = String(user?.email ?? "")
-        .toLowerCase()
-        .trim();
-      if (!email) return false;
+      if (!user.email) return false;
 
-      const existing = await cachedFirstPage(
-        USERS_TABLE,
-        { maxRecords: 1, filterByFormula: `{email} = "${email}"` },
-        60,
-      );
+      const email = user.email.toLowerCase().trim();
 
-      if (!existing || existing.length === 0) {
-        const userId = crypto.randomUUID();
-        noteCall(USERS_TABLE);
-        await base(USERS_TABLE).create([
-          { fields: { userId, email, role: "leader" } },
-        ]);
+      const existing = await prisma.user.findUnique({
+        where: { email },
+      });
 
-        try {
-          invalidateTable(USERS_TABLE);
-        } catch (e) {
-          console.warn("Failed to invalidate users cache", e);
-        }
+      if (!existing) {
+        // Create the user if they don't exist
+        await prisma.user.create({
+          data: {
+            email,
+            role: "leader", // Default role
+            // name: user.name, // Optional: sync name from Google
+          },
+        });
       }
-
       return true;
     },
     async jwt({ token, user }) {
-      const email = String(token.email ?? user?.email ?? "")
-        .toLowerCase()
-        .trim();
-      if (!email) return token;
+      if (user) {
+        token.userId = user.id;
+        token.role = (user as any).role;
+      }
 
-      const existing = await cachedFirstPage(
-        USERS_TABLE,
-        { maxRecords: 1, filterByFormula: `{email} = "${email}"` },
-        60,
-      );
-
-      const record = existing?.[0];
-      const fields = (record?.fields ?? {}) as Record<string, unknown>;
-      const userId =
-        String(fields.userId ?? fields.userID ?? fields.userid ?? "").trim() ||
-        undefined;
-      const role = String(fields.role ?? "").trim() || "leader";
-
-      (token as any).userId = userId;
-      (token as any).role = role;
+      if (!token.role || !token.userId) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email! },
+        });
+        if (dbUser) {
+          token.userId = dbUser.id;
+          token.role = dbUser.role;
+        }
+      }
       return token;
     },
+
     async session({ session, token }) {
-      (session as any).userId = (token as any).userId;
-      (session as any).role = (token as any).role ?? "leader";
+      if (session.user) {
+        (session as any).userId = token.userId;
+        (session as any).role = token.role;
+      }
       return session;
     },
   },

@@ -1,36 +1,28 @@
 import { NextResponse } from "next/server";
-import { CLUBS_TABLE, cachedAll } from "@/lib/airtable";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const records = await cachedAll(
-    CLUBS_TABLE,
-    { sort: [{ field: "updatedAt", direction: "desc" }] },
-    600
-  );
+  try {
+    const approvedClubs = await prisma.club.findMany({
+      where: {
+        status: "approved",
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
 
-  const clubs = records
-    .filter((r: any) => String((r.fields as any)?.status ?? "").toLowerCase() === "approved")
-    .map((r: any) => {
-    const f = r.fields as any;
-    const communityType =
-      f.communityType ??
-      f["community Type"] ??
-      f["community type"] ??
-      f["Community Type"];
-    const communityStatus =
-      f.communityStatus ??
-      f["community status"] ??
-      f["Community Status"];
-    return {
-      recordId: r.id,
-      ...f,
-      verification: f.Verification ?? f.verification,
-      verified: f.Verified ?? f.verified,
-      communityType,
-      communityStatus,
-    };
-  });
+    const clubs = approvedClubs.map((club) => ({
+      recordId: club.id,
+      ...club,
+    }));
 
-  return NextResponse.json({ clubs });
-
+    return NextResponse.json({ clubs });
+  } catch (error) {
+    console.error("Prisma Error fetching approved clubs:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }

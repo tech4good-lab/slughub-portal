@@ -1,45 +1,50 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, CLUBS_TABLE, invalidateTable, noteCall } from "@/lib/airtable";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ recordId: string }> }
+  { params }: { params: Promise<{ recordId: string }> },
 ) {
   const session = await getServerSession(authOptions);
   const role = (session as any)?.role;
-  if (role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  if (role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   const { recordId } = await params;
   const body = await req.json().catch(() => ({}));
   const reviewNotes = String(body.reviewNotes ?? "");
 
-  noteCall(CLUBS_TABLE);
-  const updated = await base(CLUBS_TABLE).update([
-    {
-      id: recordId,
-      fields: {
-        status: "rejected",
-        reviewedAt: new Date().toISOString(),
-        reviewNotes,
-      },
-    },
-  ]);
-
   try {
-    invalidateTable(CLUBS_TABLE);
-  } catch (e) {
-    console.warn("Failed to invalidate clubs cache after reject", e);
-  }
+    const updatedClub = await prisma.club.update({
+      where: {
+        id: recordId,
+      },
+      data: {
+        status: "rejected",
+        reviewedAt: new Date(),
+        reviewNotes: reviewNotes,
+      },
+    });
 
-  const f = updated[0].fields as any;
-  return NextResponse.json({
-    club: {
-      recordId: updated[0].id,
-      ...f,
-      communityType:
-        f.communityType ?? f["community Type"] ?? f["community type"] ?? f["Community Type"],
-    },
-  });
+    return NextResponse.json({
+      club: {
+        recordId: updatedClub.id,
+        ...updatedClub,
+      },
+    });
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return NextResponse.json({ error: "Club not found" }, { status: 404 });
+    }
+
+    console.error("Prisma Error rejecting club:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }

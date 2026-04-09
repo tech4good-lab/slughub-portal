@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { base, EVENTS_TABLE, CLUB_MEMBERS_TABLE, cachedAll, invalidateTable, noteCall } from "@/lib/airtable";
+import {
+  base,
+  EVENTS_TABLE,
+  CLUB_MEMBERS_TABLE,
+  cachedAll,
+  invalidateTable,
+  noteCall,
+} from "@/lib/airtable";
 
 function buildEventDate(date: string, time: string) {
   const d = String(date ?? "").trim();
@@ -21,7 +28,8 @@ export async function POST(req: Request) {
     const userId = (session as any)?.userId;
     const role = (session as any)?.role;
 
-    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!userId)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     if (role !== "leader" && role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -36,21 +44,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Club is required." }, { status: 400 });
     }
     if (!eventTitle) {
-      return NextResponse.json({ error: "Event title is required." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Event title is required." },
+        { status: 400 },
+      );
     }
     if (!eventDateRaw) {
-      return NextResponse.json({ error: "Event date is required." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Event date is required." },
+        { status: 400 },
+      );
     }
 
     const memberRows = await cachedAll(
       CLUB_MEMBERS_TABLE,
       { filterByFormula: `{userId}="${userId}"` },
-      300
+      300,
     );
     const isMember = (memberRows || []).some(
-      (r: any) => String((r.fields as any)?.clubId ?? "") === clubId
+      (r: any) => String((r.fields as any)?.clubId ?? "") === clubId,
     );
-    if (!isMember) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (!isMember)
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const nowIso = new Date().toISOString();
     const payload: any = {
@@ -75,9 +90,14 @@ export async function POST(req: Request) {
     }
 
     const createdFields = created[0].fields as any;
-    return NextResponse.json({ event: { recordId: created[0].id, ...createdFields } });
+    return NextResponse.json({
+      event: { recordId: created[0].id, ...createdFields },
+    });
   } catch (e: any) {
     console.error(e);
-    return NextResponse.json({ error: e?.message ?? "Internal error" }, { status: 500 });
+    return NextResponse.json(
+      { error: e?.message ?? "Internal error" },
+      { status: 500 },
+    );
   }
 }

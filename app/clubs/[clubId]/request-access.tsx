@@ -39,44 +39,39 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
   const load = async () => {
     setLoading(true);
     setErr(null);
+
     try {
       const cached = sessionStorage.getItem("accessRequestsMine");
       if (cached) {
-        const parsed = JSON.parse(cached);
-        setInfo(parsed);
-        setLoading(false);
-        setLoaded(true);
-        return;
+        setInfo(JSON.parse(cached));
       }
     } catch {
-      // ignore cache errors
+      /* ignore */
     }
 
-    const res = await fetch("/api/access-requests/mine", { cache: "no-store" });
-    const data = await safeJson(res);
-    if (res.status === 401) {
-      setInfo({ unauth: true });
-      setLoading(false);
-      setLoaded(true);
-      return;
-    }
-    if (!res.ok) {
-      setErr(data?.error ?? "Failed to load access status.");
-      setLoading(false);
-      setLoaded(true);
-      return;
-    }
-
-    setInfo(data);
     try {
-      sessionStorage.setItem("accessRequestsMine", JSON.stringify(data));
-    } catch {
-      // ignore storage errors
-    }
-    setLoading(false);
-    setLoaded(true);
-  };
+      const res = await fetch("/api/access-requests", {
+        cache: "no-store",
+        headers: { Pragma: "no-cache" },
+      });
 
+      const data = await safeJson(res);
+
+      if (res.status === 401) {
+        setInfo({ unauth: true });
+      } else if (!res.ok) {
+        setErr(data?.error ?? "Failed to load access status.");
+      } else {
+        setInfo(data);
+        sessionStorage.setItem("accessRequestsMine", JSON.stringify(data));
+      }
+    } catch (e) {
+      setErr("Network error loading status.");
+    } finally {
+      setLoading(false);
+      setLoaded(true);
+    }
+  };
   useEffect(() => {
     setLoaded(false);
     setInfo(null);
@@ -150,13 +145,22 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
 
   if (status === "approved") {
     return (
-      <div className="card" style={{ marginTop: 14, border: "1px solid rgba(34,197,94,0.25)" }}>
+      <div
+        className="card"
+        style={{ marginTop: 14, border: "1px solid rgba(34,197,94,0.25)" }}
+      >
         <h3 style={{ marginTop: 0 }}>You have leader access</h3>
         <p className="small" style={{ marginTop: 8 }}>
           This club should appear in your dashboard.
         </p>
         <div className="row" style={{ marginTop: 12 }}>
-          <Link className="btn btnPrimary" href="/leader/dashboard" style={accessBtnStyle}>Go to Dashboard</Link>
+          <Link
+            className="btn btnPrimary"
+            href="/leader/dashboard"
+            style={accessBtnStyle}
+          >
+            Go to Dashboard
+          </Link>
         </div>
       </div>
     );
@@ -164,7 +168,10 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
 
   if (status === "pending") {
     return (
-      <div className="card" style={{ marginTop: 14, border: "1px solid rgba(251,191,36,0.25)" }}>
+      <div
+        className="card"
+        style={{ marginTop: 14, border: "1px solid rgba(251,191,36,0.25)" }}
+      >
         <h3 style={{ marginTop: 0 }}>Leader access request: Pending</h3>
         <p className="small" style={{ marginTop: 8 }}>
           Your request is awaiting admin review.
@@ -175,13 +182,20 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
 
   if (status === "rejected") {
     return (
-      <div className="card" style={{ marginTop: 14, border: "1px solid rgba(239,68,68,0.25)" }}>
+      <div
+        className="card"
+        style={{ marginTop: 14, border: "1px solid rgba(239,68,68,0.25)" }}
+      >
         <h3 style={{ marginTop: 0 }}>Leader access request: Rejected</h3>
         <p className="small" style={{ marginTop: 8 }}>
-          {request?.reviewNotes ? `Admin note: ${request.reviewNotes}` : "You can submit another request with more info."}
+          {request?.reviewNotes
+            ? `Admin note: ${request.reviewNotes}`
+            : "You can submit another request with more info."}
         </p>
 
-        <label className="label" style={{ marginTop: 12 }}>Message (optional)</label>
+        <label className="label" style={{ marginTop: 12 }}>
+          Message (optional)
+        </label>
         <textarea
           className="input"
           rows={3}
@@ -190,11 +204,24 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
           placeholder="Add context (e.g., proof you're an officer, role, email, etc.)"
         />
 
-        {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
-        {msg && <p className="small" style={{ marginTop: 10 }}>{msg}</p>}
+        {err && (
+          <p className="small" style={{ marginTop: 10 }}>
+            {err}
+          </p>
+        )}
+        {msg && (
+          <p className="small" style={{ marginTop: 10 }}>
+            {msg}
+          </p>
+        )}
 
         <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn btnPrimary" onClick={submit} disabled={busy} style={accessBtnStyle}>
+          <button
+            className="btn btnPrimary"
+            onClick={submit}
+            disabled={busy}
+            style={accessBtnStyle}
+          >
             {busy ? "Submitting..." : "Request again"}
           </button>
         </div>
@@ -225,11 +252,24 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
         placeholder="e.g., I'm the treasurer for this club-please grant me leader access."
       />
 
-      {err && <p className="small" style={{ marginTop: 10 }}>{err}</p>}
-      {msg && <p className="small" style={{ marginTop: 10 }}>{msg}</p>}
+      {err && (
+        <p className="small" style={{ marginTop: 10 }}>
+          {err}
+        </p>
+      )}
+      {msg && (
+        <p className="small" style={{ marginTop: 10 }}>
+          {msg}
+        </p>
+      )}
 
       <div className="row" style={{ marginTop: 12 }}>
-        <button className="btn btnPrimary" onClick={submit} disabled={busy || unauth} style={accessBtnStyle}>
+        <button
+          className="btn btnPrimary"
+          onClick={submit}
+          disabled={busy || unauth}
+          style={accessBtnStyle}
+        >
           {busy ? "Submitting..." : "Request access"}
         </button>
       </div>
