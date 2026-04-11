@@ -22,7 +22,7 @@ export async function GET() {
     });
 
     const clubIds = Array.from(
-      new Set(pendingRequests.map((r) => r.clubId).filter(Boolean)),
+      new Set(pendingRequests.map((r: any) => r.clubId).filter(Boolean)),
     );
 
     const clubs = await prisma.club.findMany({
@@ -40,7 +40,7 @@ export async function GET() {
       clubNameById.set(club.id, club.name);
     }
 
-    const requests = pendingRequests.map((r) => ({
+    const requests = pendingRequests.map((r: any) => ({
       recordId: r.id,
       ...r,
       clubName: clubNameById.get(r.clubId) ?? "Unknown Club",

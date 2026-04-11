@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server"; // Changed to NextRequest
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(
-  req: NextRequest, // Using NextRequest is safer for App Router types
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession(authOptions);
@@ -43,7 +43,6 @@ export async function POST(
       );
     }
 
-    // Update Club Status
     try {
       const club = await prisma.club.findUnique({ where: { id: clubId } });
       if (club && club.status !== "approved") {
