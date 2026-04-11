@@ -21,7 +21,7 @@ export async function GET() {
       },
     });
 
-    const clubs = pendingClubs.map((club) => ({
+    const clubs = pendingClubs.map((club: any) => ({
       recordId: club.id,
       ...club,
     }));
