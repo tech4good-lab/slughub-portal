@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ recordId: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession(authOptions);
   const role = (session as any)?.role;
@@ -14,14 +14,14 @@ export async function POST(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { recordId } = await params;
+  const { id } = await params;
   const body = await req.json().catch(() => ({}));
   const reviewNotes = String(body.reviewNotes ?? "");
 
   try {
     const updatedClub = await prisma.club.update({
       where: {
-        id: recordId,
+        id: id,
       },
       data: {
         status: "rejected",
@@ -32,7 +32,6 @@ export async function POST(
 
     return NextResponse.json({
       club: {
-        recordId: updatedClub.id,
         ...updatedClub,
       },
     });
