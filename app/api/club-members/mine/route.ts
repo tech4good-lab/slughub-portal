@@ -21,7 +21,7 @@ export async function GET() {
       },
     });
 
-    const clubIds = memberships.map((m) => m.clubId);
+    const clubIds = memberships.map((m: any) => m.clubId);
 
     return NextResponse.json({ clubIds });
   } catch (error) {
