@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server"; // Changed to NextRequest
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(
-  req: Request,
-  { params }: { params: Promise<{ requestId: string }> },
+  req: NextRequest, // Using NextRequest is safer for App Router types
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession(authOptions);
   const role = (session as any)?.role;
@@ -14,7 +14,10 @@ export async function POST(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { requestId } = await params;
+  const { id } = await params;
+
+  const requestId = id;
+
   const body = await req.json().catch(() => ({}));
   const reviewNotes = String(body.reviewNotes ?? "");
   const clubNameFallback = String(body.clubName ?? "").trim();
@@ -40,37 +43,28 @@ export async function POST(
       );
     }
 
+    // Update Club Status
     try {
       const club = await prisma.club.findUnique({ where: { id: clubId } });
-
-      if (club) {
-        const currentStatus = club.communityStatus || [];
-
-        if (club.communityStatus !== "verified") {
-          await prisma.club.update({
-            where: { id: clubId },
-            data: {
-              communityStatus: "verified",
-              status: "approved",
-              reviewedAt: new Date(),
-            },
-          });
-        }
+      if (club && club.status !== "approved") {
+        await prisma.club.update({
+          where: { id: clubId },
+          data: {
+            communityStatus: "verified",
+            status: "approved",
+            reviewedAt: new Date(),
+          },
+        });
       }
     } catch (e) {
-      console.warn(
-        "Failed to set communityStatus=verified after access approval",
-        e,
-      );
+      console.warn("Failed to update club status during approval", e);
     }
 
     await prisma.clubMember.upsert({
       where: {
         userId_clubId: { userId: userId, clubId: clubId },
       },
-      update: {
-        memberRole: "leader",
-      },
+      update: { memberRole: "leader" },
       create: {
         userId: userId,
         clubId: clubId,
@@ -85,7 +79,6 @@ export async function POST(
         status: "approved",
         reviewedAt: new Date(),
         reviewNotes: reviewNotes,
-        clubId: clubId, // Just in case it was overridden from the body
       },
     });
 
