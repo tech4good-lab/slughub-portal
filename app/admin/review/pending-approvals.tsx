@@ -307,7 +307,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
             <Link
               className="btn auth-header-link"
               href="/directory"
-              style={{  
+              style={{
                 ...linkPillStyle,
                 display: "flex",
                 minWidth: 80,
@@ -339,7 +339,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
               No pending communities!
             </div>
           ) : (
-            clubs.map((c, i) => (
+            clubs.map((c: any, i) => (
               <div
                 key={c.recordId}
                 style={{

@@ -34,7 +34,7 @@ export async function GET() {
       },
     });
 
-    const clubs = userClubs.map((club) => ({
+    const clubs = userClubs.map((club: any) => ({
       ...club,
     }));
 

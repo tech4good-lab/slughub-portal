@@ -131,7 +131,7 @@ export default function NewClubPage() {
           onChange={(e) => setCommunityType(e.target.value)}
           required
         >
-          {COMMUNITY_TYPE_OPTIONS.map((opt) => (
+          {COMMUNITY_TYPE_OPTIONS.map((opt: any) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>

@@ -134,7 +134,7 @@ export default function NewEventPage() {
           {clubs.length === 0 ? (
             <option value="">No community access</option>
           ) : (
-            clubs.map((club) => (
+            clubs.map((club: any) => (
               <option key={club.id} value={club.id}>
                 {club.name ?? club.id}
               </option>

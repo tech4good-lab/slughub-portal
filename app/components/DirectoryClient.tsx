@@ -34,7 +34,7 @@ function normalizeValue(v: any) {
 
 function normalizeList(input: any): string[] {
   if (Array.isArray(input)) {
-    return input.map((v) => normalizeValue(v)).filter(Boolean);
+    return input.map((v: any) => normalizeValue(v)).filter(Boolean);
   }
   const single = normalizeValue(input);
   return single ? [single] : [];
@@ -77,13 +77,15 @@ export default function DirectoryClient({ clubs, session }: Props) {
           const k = key.trim().toLowerCase().replace(/\s+/g, "");
           return k === "communitytype";
         });
-        const statusValues = normalizeList(statusEntry?.[1]).map((v) =>
+        const statusValues = normalizeList(statusEntry?.[1]).map((v: any) =>
           v.toLowerCase(),
         );
-        const typeValues = normalizeList(typeEntry?.[1]).map((v) =>
+        const typeValues = normalizeList(typeEntry?.[1]).map((v: any) =>
           v.toLowerCase(),
         );
-        const typeSelectedNormalized = typeSelected.map((v) => v.toLowerCase());
+        const typeSelectedNormalized = typeSelected.map((v: any) =>
+          v.toLowerCase(),
+        );
 
         const statusOk =
           statusSelected.length === 0 ||
@@ -142,7 +144,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
             >
               Clear
             </button>
-            {COMMUNITY_TYPE_OPTIONS.map((cat) => (
+            {COMMUNITY_TYPE_OPTIONS.map((cat: any) => (
               <label key={cat.value} className="directoryDropdownItem">
                 <input
                   type="checkbox"
@@ -169,7 +171,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
             >
               Clear
             </button>
-            {STATUS_OPTIONS.map((status) => {
+            {STATUS_OPTIONS.map((status: any) => {
               const hint =
                 status.value === "verified"
                   ? "A lead has taken ownership of this community and has curated the community's content"
@@ -194,7 +196,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
       <div style={{ width: "100%" }}>
         <section>
           <div className="directoryGrid">
-            {filtered.map((c) => (
+            {filtered.map((c: any) => (
               <Link
                 key={c.id}
                 href={`/clubs/${(c as any).clubId ?? c.id}`}

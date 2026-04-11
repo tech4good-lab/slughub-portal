@@ -82,7 +82,7 @@ export default async function LeaderDashboard() {
 
         clubs.push(club);
 
-        eventsByClub[club.id] = club.events.map((event) => ({
+        eventsByClub[club.id] = club.events.map((event: any) => ({
           ...event,
         }));
       }

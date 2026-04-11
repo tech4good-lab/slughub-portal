@@ -123,7 +123,7 @@ export default function AccessRequestsList() {
       )}
 
       <div className="grid" style={{ marginTop: 14 }}>
-        {requests.map((r) => (
+        {requests.map((r: any) => (
           <div key={r.recordId} className="card" style={{ background: "#fff" }}>
             <div
               className="row"
