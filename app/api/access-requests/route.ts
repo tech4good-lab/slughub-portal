@@ -14,7 +14,8 @@ function requireAuth(session: any) {
       res: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
     };
   }
-  if (role !== "admin") {
+
+  if (role !== "leader" && role !== "admin") {
     return {
       ok: false,
       res: NextResponse.json({ error: "Forbidden" }, { status: 403 }),

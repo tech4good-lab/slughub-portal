@@ -111,5 +111,4 @@ model ClubEvent {
   iceBreakers      String   @db.Text
   channelId        String?  // Optional field for Discord/Slack channel links
   createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
 }

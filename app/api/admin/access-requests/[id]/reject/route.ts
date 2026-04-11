@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ requestId: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await getServerSession(authOptions);
   const role = (session as any)?.role;
@@ -14,13 +14,13 @@ export async function POST(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { requestId } = await params;
+  const { id } = await params;
   const body = await req.json().catch(() => ({}));
   const reviewNotes = String(body.reviewNotes ?? "");
 
   try {
     const updatedRequest = await prisma.accessRequest.update({
-      where: { id: requestId },
+      where: { id: id },
       data: {
         status: "rejected",
         reviewedAt: new Date(),

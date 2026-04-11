@@ -91,12 +91,15 @@ export default function AccessRequestsList() {
   if (requests.length === 0) {
     return (
       <div
-        className="card"
-        style={{ marginTop: 14, background: "#fff", color: "#000" }}
+        style={{
+          padding: "40px 20px",
+          textAlign: "center",
+          color: "#999",
+          fontSize: 16,
+          fontFamily: "Sarabun",
+        }}
       >
-        <p className="small" style={{ margin: 0 }}>
-          No pending requests 🎉
-        </p>
+        No pending requests! 🎉
       </div>
     );
   }
@@ -121,38 +124,37 @@ export default function AccessRequestsList() {
 
       <div className="grid" style={{ marginTop: 14 }}>
         {requests.map((r) => (
-          <div
-            key={r.recordId}
-            className="card"
-            style={{ background: "#fff", color: "#000" }}
-          >
+          <div key={r.recordId} className="card" style={{ background: "#fff" }}>
             <div
               className="row"
               style={{ justifyContent: "space-between", alignItems: "center" }}
             >
-              <h2 style={{ margin: 0 }}>
+              <h2 style={{ margin: 0, color: "#000" }}>
                 Community: {r.clubName ? r.clubName : r.clubId}
               </h2>
-              <span className="small" style={{ opacity: 0.75 }}>
+              <span className="small" style={{ opacity: 0.75, color: "#000" }}>
                 {r.createdAt ? new Date(r.createdAt).toLocaleString() : ""}
               </span>
             </div>
             {r.clubName && r.clubId && (
-              <p className="small" style={{ marginTop: 6, opacity: 0.7 }}>
+              <p
+                className="small"
+                style={{ marginTop: 6, opacity: 0.7, color: "#000" }}
+              >
                 <strong>Community Id:</strong> {r.clubId}
               </p>
             )}
 
-            <p className="small" style={{ marginTop: 10 }}>
+            <p className="small" style={{ marginTop: 10, color: "#000" }}>
               <strong>User:</strong> {r.requesterEmail ?? "—"} (
               {r.requesterUserId ?? "—"})
             </p>
 
-            <p className="small" style={{ marginTop: 10 }}>
+            <p className="small" style={{ marginTop: 10, color: "#000" }}>
               <strong>Message:</strong> {r.message ?? "—"}
             </p>
 
-            <label className="label" style={{ marginTop: 12 }}>
+            <label className="label" style={{ marginTop: 12, color: "#000" }}>
               Admin notes (optional)
             </label>
             <textarea
@@ -165,9 +167,9 @@ export default function AccessRequestsList() {
               placeholder="Reason / next steps"
             />
 
-            <div className="row" style={{ marginTop: 12 }}>
+            <div className="row" style={{ marginTop: 12, color: "#000" }}>
               <button
-                className="btn btnPrimary"
+                className="btn"
                 onClick={() => act(r.recordId, "approve")}
                 disabled={!!busy[r.recordId]}
               >
@@ -182,8 +184,8 @@ export default function AccessRequestsList() {
                 {busy[r.recordId] ? "Working..." : "Reject"}
               </button>
 
-              <span className="small" style={{ opacity: 0.7 }}>
-                requestId: {r.recordId}
+              <span className="small" style={{ opacity: 0.7, color: "#000" }}>
+                id: {r.recordId}
               </span>
             </div>
           </div>

@@ -10,32 +10,131 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="container authPage" style={{ position: "relative", zIndex: 1 }}>
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: "#EDF4FF",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "clamp(12px, 3vw, 20px)",
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
       <DecorativeBubbles />
 
-      <div className="card" style={{ marginTop: 14 }}>
-        <div style={{ marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <img src="/SlugPathIcon.png" alt="Slug Path Icon" style={{ width: 50, height: 50 }} />
-            <h1 style={{ margin: 0 }}>Club Lead Login</h1>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 600, // Kept at 600px since it's a login card, but with identical styles
+          background: "white",
+          borderRadius: 25,
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          padding: "clamp(16px, 4vw, 40px)",
+          position: "relative",
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            position: "relative",
+            gap: 12,
+            flexWrap: "wrap",
+            marginBottom: 10,
+            paddingBottom: 24,
+            borderBottom: "1px solid rgba(16,24,40,0.08)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+            <img
+              src="/dashboard-icon.png"
+              alt="Slug Path Icon"
+              style={{ width: 50, height: 50 }}
+            />
+            <div>
+              <div
+                style={{
+                  color: "black",
+                  fontSize: "25px",
+                  fontFamily: "Sarabun",
+                  fontWeight: "700",
+                  margin: 0,
+                }}
+              >
+                Club Lead Login
+              </div>
+              <div
+                style={{
+                  color: "#666",
+                  fontSize: 14,
+                  fontFamily: "Sarabun",
+                  fontWeight: "400",
+                  margin: "4px 0 0 0",
+                }}
+              >
+                Sign in with your UCSC Google account.
+              </div>
+            </div>
           </div>
-          <Link className="btn" href="/">View Community Directory</Link>
+          <Link
+            href="/"
+            style={{
+              display: "flex",
+              minWidth: 80,
+              height: 32,
+              padding: "0 16px",
+              background: "#FDF0A6",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+              borderRadius: 20,
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#000",
+              fontSize: 14,
+              fontFamily: "Sarabun",
+              fontWeight: "600",
+              textDecoration: "none",
+            }}
+          >
+            Directory
+          </Link>
         </div>
-        <div style={{ width: "100%", height: 0.5, background: "#333333", marginBottom: 16 }} />
-        <p className="small" style={{ margin: 0 }}>
-          Sign in with your UCSC Google account to access club leader tools.
-        </p>
-        <div className="row" style={{ marginTop: 12 }}>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            paddingTop: "20px",
+            paddingBottom: "10px",
+          }}
+        >
           <button
-            className="btn btnPrimary"
             type="button"
             onClick={onLogin}
-            style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}
+            style={{
+              padding: "8px 32px",
+              background: "#FDF0A6",
+              border: "1px solid #FDF0A6",
+              borderRadius: 25,
+              color: "#000",
+              fontSize: 16,
+              fontFamily: "Sarabun",
+              fontWeight: "600",
+              cursor: "pointer",
+              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             Continue with Google
           </button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

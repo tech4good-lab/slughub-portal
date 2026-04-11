@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import PendingBadge from "@/app/components/PendingBadge";
 import DirectoryClient from "@/app/components/DirectoryClient";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
+import LogoutButton from "@/app/leader/edit/logout-button";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -136,15 +137,18 @@ function Header({
                   Community Approvals
                   <PendingBadge />
                 </Link>
-                <Link className="btn" href="/ad min/access">
+                <Link className="btn" href="/admin/access">
                   Access Requests
                 </Link>
               </div>
             )}
             {(isAdmin || isLeader) && (
-              <Link className="btn" href="/leader/dashboard">
-                Dashboard
-              </Link>
+              <>
+                <Link className="btn" href="/leader/dashboard">
+                  Dashboard
+                </Link>
+                <LogoutButton />
+              </>
             )}
           </>
         ) : (

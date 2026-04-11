@@ -1,25 +1,37 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import {
-  base,
-  EVENTS_TABLE,
-  CLUB_MEMBERS_TABLE,
-  cachedAll,
-  invalidateTable,
-  noteCall,
-} from "@/lib/airtable";
+import { prisma } from "@/lib/prisma";
 
 function buildEventDate(date: string, time: string) {
   const d = String(date ?? "").trim();
   const t = String(time ?? "").trim();
-  if (!d) return "";
 
-  if (!t) return d;
+  if (!d) return null;
 
-  const combined = new Date(`${d}T${t}`);
-  if (Number.isNaN(combined.getTime())) return d;
-  return combined.toISOString();
+  const dateStr = t ? `${d}T${t}` : d;
+  const combined = new Date(dateStr);
+
+  return Number.isNaN(combined.getTime()) ? null : combined;
+}
+
+async function verifyAccess(
+  userId: string,
+  clubId: string,
+  globalRole: string,
+) {
+  if (globalRole === "admin") return true;
+
+  const membership = await prisma.clubMember.findUnique({
+    where: {
+      userId_clubId: { userId: userId, clubId: clubId },
+    },
+  });
+
+  if (!membership) return false;
+  return (
+    membership.memberRole === "leader" || membership.memberRole === "admin"
+  );
 }
 
 export async function POST(req: Request) {
@@ -56,45 +68,39 @@ export async function POST(req: Request) {
       );
     }
 
-    const memberRows = await cachedAll(
-      CLUB_MEMBERS_TABLE,
-      { filterByFormula: `{userId}="${userId}"` },
-      300,
-    );
-    const isMember = (memberRows || []).some(
-      (r: any) => String((r.fields as any)?.clubId ?? "") === clubId,
-    );
-    if (!isMember)
+    const hasAccess = await verifyAccess(userId, clubId, role);
+    if (!hasAccess)
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    const nowIso = new Date().toISOString();
-    const payload: any = {
-      clubId,
-      ownerUserId: userId,
-      name: eventTitle,
-      eventTitle,
-      eventDate: buildEventDate(eventDateRaw, eventTimeRaw),
-      eventLocation: String(body.eventLocation ?? "").trim(),
-      eventDescription: String(body.eventDescription ?? "").trim(),
-      iceBreakers: String(body.IceBreakers ?? body.iceBreakers ?? "").trim(),
-      createdAt: nowIso,
-    };
-
-    noteCall(EVENTS_TABLE);
-    const created = await base(EVENTS_TABLE).create([{ fields: payload }]);
-
-    try {
-      invalidateTable(EVENTS_TABLE);
-    } catch (e) {
-      console.warn("Failed to invalidate events cache", e);
+    const parsedDate = buildEventDate(eventDateRaw, eventTimeRaw);
+    if (!parsedDate) {
+      return NextResponse.json(
+        { error: "Invalid date format." },
+        { status: 400 },
+      );
     }
 
-    const createdFields = created[0].fields as any;
+    const createdEvent = await prisma.clubEvent.create({
+      data: {
+        clubId: clubId,
+        ownerUserId: userId,
+        name: eventTitle,
+        eventTitle: eventTitle,
+        eventDate: parsedDate,
+        eventLocation: String(body.eventLocation ?? "").trim(),
+        eventDescription: String(body.eventDescription ?? "").trim(),
+        iceBreakers: String(body.IceBreakers ?? body.iceBreakers ?? "").trim(),
+      },
+    });
+
     return NextResponse.json({
-      event: { recordId: created[0].id, ...createdFields },
+      event: {
+        recordId: createdEvent.id,
+        ...createdEvent,
+      },
     });
   } catch (e: any) {
-    console.error(e);
+    console.error("Prisma Error creating event:", e);
     return NextResponse.json(
       { error: e?.message ?? "Internal error" },
       { status: 500 },

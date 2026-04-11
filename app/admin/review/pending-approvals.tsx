@@ -257,11 +257,6 @@ export default function PendingApprovals({ email }: { email?: string }) {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
-            <img
-              src="/dashboard-icon.png"
-              alt="Slug Path Icon"
-              style={{ width: 50, height: 50, marginRight: 15 }}
-            />
             <div>
               <div
                 className="admin-text"
@@ -288,24 +283,46 @@ export default function PendingApprovals({ email }: { email?: string }) {
               </div>
             </div>
           </div>
-          <Link
-            className="btn auth-header-link"
-            href="/directory"
-            style={{
-              ...linkPillStyle,
-              display: "flex",
-              minWidth: 80,
-              height: 32,
-              background: "#FDF0A6",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              borderRadius: 20,
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            Back to Directory
-          </Link>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Link
+              className="btn auth-header-link"
+              href="/admin/access"
+              style={{
+                ...linkPillStyle,
+                display: "flex",
+                minWidth: 80,
+                height: 32,
+                background: "#FDF0A6",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                borderRadius: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              Access Requests
+            </Link>
+
+            <Link
+              className="btn auth-header-link"
+              href="/directory"
+              style={{  
+                ...linkPillStyle,
+                display: "flex",
+                minWidth: 80,
+                height: 32,
+                background: "#FDF0A6",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                borderRadius: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              Back to Directory
+            </Link>
+          </div>
         </div>
 
         <div>
