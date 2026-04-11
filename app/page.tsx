@@ -73,7 +73,7 @@ function Header({
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <Link
           className="btn"
-          href="https://chat.slughub.cc/"
+          href="https://ucsantacruz.co1.qualtrics.com/jfe/form/SV_a5BfIizH1QCOAVE"
           target="_blank"
           rel="noopener noreferrer"
           title="Navigate to SlugHub."
