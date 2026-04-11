@@ -72,10 +72,6 @@ export async function POST(
       },
     });
 
-    {
-      /* hello */
-    }
-
     const updatedRequest = await prisma.accessRequest.update({
       where: { id: requestId },
       data: {
