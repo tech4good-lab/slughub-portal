@@ -80,7 +80,6 @@ export async function POST(
         reviewNotes: reviewNotes,
       },
     });
-
     return NextResponse.json({
       request: { recordId: updatedRequest.id, ...updatedRequest },
     });
