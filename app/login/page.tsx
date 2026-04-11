@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
-
 export default function LoginPage() {
   const onLogin = async () => {
     await signIn("google", { callbackUrl: "/leader/dashboard" });
