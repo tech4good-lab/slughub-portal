@@ -31,10 +31,8 @@ export async function POST(
       return NextResponse.json({ error: "Request not found" }, { status: 404 });
     }
 
-    const clubId = String(body.clubId ?? accessRequest.clubId);
-    const userId = String(
-      body.requesterUserId ?? accessRequest.requesterUserId,
-    );
+    const clubId = String(accessRequest.clubId);
+    const userId = String(accessRequest.requesterUserId);
 
     if (!clubId || !userId) {
       return NextResponse.json(
