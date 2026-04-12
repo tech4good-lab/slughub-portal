@@ -141,17 +141,29 @@ export async function POST(
 }
 
 export async function DELETE(
-  req: Request,
+  _req: Request,
   { params }: { params: Promise<{ clubId: string }> },
 ) {
+  const session = await getServerSession(authOptions);
+  const userId = (session as any)?.userId;
+  const role = (session as any)?.role;
+
+  if (!userId)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (role !== "leader" && role !== "admin")
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const { clubId } = await params;
+
+  const hasAccess = await verifyAccess(userId, clubId, role);
+  if (!hasAccess)
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
     await prisma.$transaction([
       prisma.clubMember.deleteMany({ where: { clubId } }),
       prisma.accessRequest.deleteMany({ where: { clubId } }),
       prisma.clubEvent.deleteMany({ where: { clubId } }),
-
       prisma.club.delete({ where: { id: clubId } }),
     ]);
 
