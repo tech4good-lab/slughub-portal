@@ -76,7 +76,7 @@ function Header({
           href="https://ucsantacruz.co1.qualtrics.com/jfe/form/SV_a5BfIizH1QCOAVE"
           target="_blank"
           rel="noopener noreferrer"
-          title="Navigate to SlugHub."
+          title="Sign up for the SlugPath waiting list"
           style={{
             display: "flex",
             alignItems: "center",
@@ -102,7 +102,7 @@ function Header({
               fontWeight: "600",
             }}
           >
-            SlugHub
+            SlugPath
           </span>
         </Link>
 
