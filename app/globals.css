@@ -507,6 +507,16 @@ a:hover {
   color: #000;
 }
 
+.linkIcon {
+  display: inline-flex;
+  color: #666;
+  transition: color 0.15s;
+}
+.linkIcon:hover { color: #000; }
+.linkIcon--discord:hover  { color: #5865F2; }
+.linkIcon--instagram:hover { color: #E1306C; }
+.linkIcon--linkedin:hover  { color: #0A66C2; }
+
 /* Create new club overrides */
 .clubCreate {
   color: #000;
