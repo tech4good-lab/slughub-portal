@@ -233,23 +233,19 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
 
   return (
     <div className="card" style={{ marginTop: 14 }}>
-      <h3 style={{ marginTop: 0 }}>Request leader access</h3>
-      <p className="small" style={{ marginTop: 8 }}>
-        If you are a community leader, request editing access to this community profile.
-      </p>
+      <h3 style={{ marginTop: 0 }}>Are you a leader in this community? Request access.</h3>
       {unauth && (
         <p className="small" style={{ marginTop: 8 }}>
           Sign in to request leader access.
         </p>
       )}
 
-      <label className="label">Message (optional)</label>
       <textarea
         className="input"
         rows={3}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="e.g., I'm the treasurer for this community - please grant me leader access."
+        placeholder="Please describe your leadership role in this community"
       />
 
       {err && (
