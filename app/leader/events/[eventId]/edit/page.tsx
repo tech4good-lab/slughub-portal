@@ -184,7 +184,7 @@ export default function EditEventPage() {
       </div>
 
       <form className="card" style={{ marginTop: 14 }} onSubmit={onSave}>
-        <label className="label">Club</label>
+        <label className="label">Community</label>
         <input className="input" value={clubId} disabled />
 
         <div style={{ height: 10 }} />

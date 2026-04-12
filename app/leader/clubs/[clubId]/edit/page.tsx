@@ -91,7 +91,7 @@ export default function EditClubPage() {
         return;
       }
       if (res.status === 403) {
-        setErr("Forbidden: you don’t have access to edit this club.");
+        setErr("Forbidden: you don’t have access to edit this community.");
         setLoading(false);
         return;
       }
@@ -104,7 +104,7 @@ export default function EditClubPage() {
       }
 
       if (!res.ok) {
-        setErr(data?.error ?? "Failed to load club.");
+        setErr(data?.error ?? "Failed to load community.");
         setLoading(false);
         return;
       }
@@ -170,7 +170,7 @@ export default function EditClubPage() {
       } catch {
         // ignore
       }
-      setMsg("Submitted! Your new club is pending admin approval.");
+      setMsg("Submitted! Your new community is pending admin approval.");
     } else {
       setMsg("Submitted! Your changes are pending admin approval.");
     }
@@ -194,7 +194,7 @@ export default function EditClubPage() {
   return (
     <main className="container clubEdit">
       <div className="row" style={{ justifyContent: "space-between" }}>
-        <h1>Edit Club Profile</h1>
+        <h1>Edit Community Profile</h1>
         <div className="row">
           <Link className="btn" href="/leader/dashboard">
             Dashboard

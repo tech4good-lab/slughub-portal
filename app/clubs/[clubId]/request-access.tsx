@@ -151,7 +151,7 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
       >
         <h3 style={{ marginTop: 0 }}>You have leader access</h3>
         <p className="small" style={{ marginTop: 8 }}>
-          This club should appear in your dashboard.
+          This community should appear in your dashboard.
         </p>
         <div className="row" style={{ marginTop: 12 }}>
           <Link
@@ -235,7 +235,7 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
     <div className="card" style={{ marginTop: 14 }}>
       <h3 style={{ marginTop: 0 }}>Request leader access</h3>
       <p className="small" style={{ marginTop: 8 }}>
-        If you are a club leader, request editing access to this club profile.
+        If you are a community leader, request editing access to this community profile.
       </p>
       {unauth && (
         <p className="small" style={{ marginTop: 8 }}>
@@ -249,7 +249,7 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
         rows={3}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="e.g., I'm the treasurer for this club-please grant me leader access."
+        placeholder="e.g., I'm the treasurer for this community - please grant me leader access."
       />
 
       {err && (

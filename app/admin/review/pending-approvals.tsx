@@ -90,7 +90,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
         style={{ marginTop: 14, background: "#fff", color: "#000" }}
       >
         <p className="small" style={{ color: "#000" }}>
-          Loading pending clubs…
+          Loading pending communities…
         </p>
       </div>
     );

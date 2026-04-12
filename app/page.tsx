@@ -154,7 +154,7 @@ function Header({
         ) : (
           <>
             <Link className="btn" href="/login">
-              Club Lead Login
+              Community Lead Login
             </Link>
           </>
         )}

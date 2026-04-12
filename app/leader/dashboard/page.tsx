@@ -609,11 +609,17 @@ export default async function LeaderDashboard() {
           marginTop: 20,
           position: "relative",
           zIndex: 10,
+          WebkitTextStroke: "0.4px black",
         }}
       >
-        Made with ❤️ from the{" "}
-        <a href="#" style={{ color: "#FDF0A6", textDecoration: "underline" }}>
-          Community RAG Team
+        A project by the CommunityRAG team in the{" "}
+        <a
+          href="https://tech4good.soe.ucsc.edu/"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: "#FDF0A6", textDecoration: "underline", WebkitTextStroke: "0.4px black" }}
+        >
+          Tech4Good Lab
         </a>
       </div>
     </div>

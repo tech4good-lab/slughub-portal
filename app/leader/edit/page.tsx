@@ -181,10 +181,10 @@ export default function EditClubPage() {
         "Saved! Your changes were submitted for admin approval. They won't appear in the public community directory until approved.",
       );
     } else if (nextStatus === "approved") {
-      setMsg("Saved! Your club profile is live in the public directory.");
+      setMsg("Saved! Your community profile is live in the public directory.");
     } else if (nextStatus === "rejected") {
       setMsg(
-        "Saved, but your club is currently rejected. Please review admin notes and resubmit.",
+        "Saved, but your community is currently rejected. Please review admin notes and resubmit.",
       );
     } else {
       setMsg("Saved!");
@@ -210,7 +210,7 @@ export default function EditClubPage() {
         style={{ justifyContent: "space-between", alignItems: "center" }}
       >
         <div className="row" style={{ gap: 12, alignItems: "center" }}>
-          <h1 style={{ margin: 0 }}>Edit Club Profile</h1>
+          <h1 style={{ margin: 0 }}>Edit Community Profile</h1>
           <StatusPill status={status} />
         </div>
 

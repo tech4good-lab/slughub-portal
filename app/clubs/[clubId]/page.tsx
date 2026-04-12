@@ -62,9 +62,9 @@ export default async function ClubDetailPage({
           className="card"
           style={{ marginTop: 20, textAlign: "center", padding: 60 }}
         >
-          <h2 style={{ marginBottom: 8 }}>Club not found</h2>
+          <h2 style={{ marginBottom: 8 }}>Community not found</h2>
           <p className="small">
-            This club may have been removed or doesn't exist.
+            This community may have been removed or doesn't exist.
           </p>
         </div>
       </main>

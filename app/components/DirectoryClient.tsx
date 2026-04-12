@@ -261,9 +261,10 @@ export default function DirectoryClient({ clubs, session }: Props) {
                 fontSize: 16,
                 fontWeight: 500,
                 color: "rgba(0,0,0,0.6)",
+                WebkitTextStroke: "0.4px black",
               }}
             >
-              Made with ❤️ from the{" "}
+              A project by the CommunityRAG team in the{" "}
               <a
                 href="https://tech4good.soe.ucsc.edu/"
                 target="_blank"
@@ -272,9 +273,10 @@ export default function DirectoryClient({ clubs, session }: Props) {
                   color: "#FDF0A6",
                   textDecoration: "none",
                   fontWeight: 600,
+                  WebkitTextStroke: "0.4px black",
                 }}
               >
-                CommunityRAG Team
+                Tech4Good Lab
               </a>
             </p>
           </div>

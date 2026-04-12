@@ -64,7 +64,7 @@ export default function LoginPage() {
                   margin: 0,
                 }}
               >
-                Club Lead Login
+                Community Lead Login
               </div>
               <div
                 style={{

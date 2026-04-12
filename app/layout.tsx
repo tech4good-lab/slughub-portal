@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Club Portal",
+  title: "Community Portal",
   description: "Community directory + leader portal",
 };
 export default function RootLayout({
