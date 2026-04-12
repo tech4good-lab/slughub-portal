@@ -15,7 +15,7 @@ export default function DeleteClubButton({
 
   async function onDelete() {
     const confirmed = window.confirm(
-      `Are you sure you want to delete ${clubName || "this club"}? This will permanently remove all members and events.`,
+      `Are you sure you want to delete ${clubName || "this community"}? This will permanently remove all members and events.`,
     );
     if (!confirmed) return;
 

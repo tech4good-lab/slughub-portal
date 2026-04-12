@@ -382,7 +382,7 @@ export default async function LeaderDashboard() {
                             color: "black",
                           }}
                         >
-                          {club.name ?? "Untitled Club"}
+                          {club.name ?? "Untitled Community"}
                         </h3>
                         <StatusPill status={club.status} />
                       </div>
@@ -395,7 +395,7 @@ export default async function LeaderDashboard() {
                         }}
                       >
                         {(club.description ?? "").slice(0, 140) ||
-                          "Club description..."}
+                          "Community description..."}
                         {(club.description ?? "").length > 140 ? "..." : ""}
                       </p>
                       <div
