@@ -162,34 +162,6 @@ export default async function ClubDetailPage({
                 color: "rgba(251,191,36,0.8)",
               }}
             >
-              Calendar
-            </div>
-            {club.calendarUrl ? (
-              <a
-                className="btn btnPrimary"
-                href={club.calendarUrl}
-                target="_blank"
-                rel="noreferrer"
-                style={{ ...linkPillStyle, marginTop: 8 }}
-              >
-                View Calendar
-              </a>
-            ) : (
-              <span className="small">No calendar available</span>
-            )}
-          </div>
-
-          <div>
-            <div
-              className="small"
-              style={{
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                marginBottom: 8,
-                color: "rgba(251,191,36,0.8)",
-              }}
-            >
               Links
             </div>
             <div
@@ -200,17 +172,6 @@ export default async function ClubDetailPage({
                 marginTop: 8,
               }}
             >
-              {club.discordUrl && (
-                <a
-                  className="btn"
-                  href={club.discordUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={linkPillStyle}
-                >
-                  Discord
-                </a>
-              )}
               {club.websiteUrl && (
                 <a
                   className="btn"
@@ -220,6 +181,17 @@ export default async function ClubDetailPage({
                   style={linkPillStyle}
                 >
                   Website
+                </a>
+              )}
+              {club.discordUrl && (
+                <a
+                  className="btn"
+                  href={club.discordUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={linkPillStyle}
+                >
+                  Discord
                 </a>
               )}
               {club.instagramUrl && (
@@ -248,6 +220,34 @@ export default async function ClubDetailPage({
                 <span className="small">No links available</span>
               )}
             </div>
+          </div>
+
+          <div>
+            <div
+              className="small"
+              style={{
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                marginBottom: 8,
+                color: "rgba(251,191,36,0.8)",
+              }}
+            >
+              Calendar
+            </div>
+            {club.calendarUrl ? (
+              <a
+                className="btn btnPrimary"
+                href={club.calendarUrl}
+                target="_blank"
+                rel="noreferrer"
+                style={{ ...linkPillStyle, marginTop: 8 }}
+              >
+                View Calendar
+              </a>
+            ) : (
+              <span className="small">No calendar available</span>
+            )}
           </div>
         </div>
 
