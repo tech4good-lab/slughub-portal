@@ -131,7 +131,12 @@ export default function DirectoryClient({ clubs, session }: Props) {
         </div>
         <details className="directoryDropdown" ref={typeDropdownRef}>
           <summary className="directoryDropdownSummary">
-            <span>Community type</span>
+            <span>
+              Community type
+              {typeSelected.length > 0 && (
+                <span style={{ fontWeight: 400, fontSize: "0.85em" }}> ({typeSelected.length})</span>
+              )}
+            </span>
           </summary>
           <div className="directoryDropdownMenu">
             <button
@@ -158,7 +163,12 @@ export default function DirectoryClient({ clubs, session }: Props) {
         </details>
         <details className="directoryDropdown" ref={statusDropdownRef}>
           <summary className="directoryDropdownSummary">
-            <span>Status</span>
+            <span>
+              Status
+              {statusSelected.length > 0 && (
+                <span style={{ fontWeight: 400, fontSize: "0.85em" }}> ({statusSelected.length})</span>
+              )}
+            </span>
           </summary>
           <div className="directoryDropdownMenu">
             <button
@@ -228,9 +238,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
               className="card"
               style={{ textAlign: "center", padding: "clamp(20px, 6vw, 60px)" }}
             >
-              <h2 style={{ marginBottom: 8 }}>No clubs yet</h2>
+              <h2 style={{ marginBottom: 8 }}>No communities yet</h2>
               <p className="small" style={{ margin: 0 }}>
-                Be the first to register your club and start building community.
+                Be the first to register your community and start building connections.
               </p>
               {!session && (
                 <Link
@@ -238,7 +248,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
                   className="btn btnPrimary"
                   style={{ marginTop: 20, display: "inline-flex" }}
                 >
-                  Club Lead Login
+                  Community Lead Login
                 </Link>
               )}
             </div>
