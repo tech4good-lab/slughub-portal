@@ -264,7 +264,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
                 WebkitTextStroke: "0.4px black",
               }}
             >
-              A project by the CommunityRAG team in the{" "}
+              A{" "}
               <a
                 href="https://tech4good.soe.ucsc.edu/"
                 target="_blank"
@@ -276,8 +276,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
                   WebkitTextStroke: "0.4px black",
                 }}
               >
-                Tech4Good Lab
-              </a>
+                Tech4Good
+              </a>{" "}
+              project
             </p>
           </div>
         </section>

@@ -612,15 +612,16 @@ export default async function LeaderDashboard() {
           WebkitTextStroke: "0.4px black",
         }}
       >
-        A project by the CommunityRAG team in the{" "}
+        A{" "}
         <a
           href="https://tech4good.soe.ucsc.edu/"
           target="_blank"
           rel="noreferrer"
           style={{ color: "#FDF0A6", textDecoration: "underline", WebkitTextStroke: "0.4px black" }}
         >
-          Tech4Good Lab
-        </a>
+          Tech4Good
+        </a>{" "}
+        project
       </div>
     </div>
   );
