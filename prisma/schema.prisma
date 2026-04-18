@@ -1,19 +1,88 @@
-datasource db {
-  provider = "postgresql"
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "postgresql"
+}
+
 model User {
-  id           String   @id @default(uuid()) // Your userId
-  email        String   @unique
-  passwordHash String?  
-  role         String   @default("leader")
-  memberships  ClubMember[]
+  id             String          @id @default(uuid())
+  email          String          @unique
+  passwordHash   String?
+  role           String          @default("leader")
   accessRequests AccessRequest[]
   ownedEvents    ClubEvent[]     @relation("EventOwner")
+  memberships    ClubMember[]
+}
+
+model Club {
+  id              String          @id @default(uuid())
+  airtableId      String?         @unique
+  name            String
+  description     String?
+  contactName     String?
+  contactEmail    String?
+  calendarUrl     String?
+  discordUrl      String?
+  websiteUrl      String?
+  instagramUrl    String?
+  linkedinUrl     String?
+  clubIcebreakers String?
+  reviewNotes     String?
+  reviewedAt      DateTime?       @default(now())
+  status          Status          @default(pending)
+  submittedAt     DateTime?       @default(now())
+  communityStatus ClubStatus      @default(unofficial)
+  communityType   CommType        @default(Other)
+  updatedAt       DateTime?       @default(now())
+  accessRequests  AccessRequest[]
+  events          ClubEvent[]
+  members         ClubMember[]
+}
+
+model ClubMember {
+  id         Int        @id @default(autoincrement())
+  userId     String
+  clubId     String
+  name       String
+  memberRole MemberRole @default(leader)
+  createdAt  DateTime   @default(now())
+  club       Club       @relation(fields: [clubId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@unique([userId, clubId])
+}
+
+model AccessRequest {
+  id              String    @id @default(uuid())
+  requesterUserId String
+  clubId          String
+  club            Club     @relation(fields: [clubId], references: [id]) 
+  requesterEmail  String
+  message         String
+  reviewNotes     String?
+  createdAt       DateTime  @default(now())
+  reviewedAt      DateTime? @updatedAt
+  status          Status    @default(pending)
+  user            User      @relation(fields: [requesterUserId], references: [id])
+}
+
+model ClubEvent {
+  id               String   @id @default(uuid())
+  clubId           String
+  ownerUserId      String
+  name             String
+  eventTitle       String
+  eventDate        DateTime
+  eventLocation    String
+  eventDescription String
+  iceBreakers      String
+  channelId        String?
+  createdAt        DateTime @default(now())
+  zoomLink         String?
+  club             Club     @relation(fields: [clubId], references: [id])
+  owner            User     @relation("EventOwner", fields: [ownerUserId], references: [id])
 }
 
 enum ClubStatus {
@@ -35,31 +104,6 @@ enum CommType {
   Other
 }
 
-model Club {
-  id             String   @id @default(uuid()) // Your clubId
-  airtableId     String?  @unique // To keep old links working!
-  name           String
-  communityStatus ClubStatus @default(unofficial)
-  communityType  CommType @default(Other)
-  description    String?
-  contactName    String?
-  contactEmail   String?
-  calendarUrl    String?
-  discordUrl     String?
-  websiteUrl     String?
-  instagramUrl   String?
-  linkedinUrl    String?
-  clubIcebreakers String?
-  updatedAt      DateTime? @default(now())
-  status         Status @default(pending)
-  submittedAt    DateTime? @default(now())
-  reviewedAt     DateTime? @default(now())
-  reviewNotes    String?
-  members        ClubMember[]
-  accessRequests AccessRequest[]
-  events         ClubEvent[]
-}
-
 enum Status {
   pending
   approved
@@ -69,46 +113,4 @@ enum Status {
 enum MemberRole {
   admin
   leader
-}
-
-model ClubMember {
-  id         Int        @id @default(autoincrement())
-  user       User       @relation(fields: [userId], references: [id])
-  userId     String
-  club       Club       @relation(fields: [clubId], references: [id])
-  clubId     String
-  name       String     // The name of the member/leader
-  memberRole MemberRole @default(leader)
-  createdAt  DateTime   @default(now())
-  @@unique([userId, clubId]) 
-}
-
-model AccessRequest {
-  id              String        @id @default(uuid())
-  user            User          @relation(fields: [requesterUserId], references: [id])
-  requesterUserId String
-  club            Club          @relation(fields: [clubId], references: [id])
-  clubId          String
-  requesterEmail  String        // Denormalized for quick access
-  message         String        @db.Text
-  status          Status @default(pending)
-  reviewNotes     String?       @db.Text
-  createdAt       DateTime      @default(now())
-  reviewedAt      DateTime?     @updatedAt // Automatically updates when status changes
-}
-
-model ClubEvent {
-  id               String   @id @default(uuid())
-  club             Club     @relation(fields: [clubId], references: [id])
-  clubId           String
-  owner            User     @relation("EventOwner", fields: [ownerUserId], references: [id])
-  ownerUserId      String
-  name             String   
-  eventTitle       String
-  eventDate        DateTime
-  eventLocation    String
-  eventDescription String   @db.Text
-  iceBreakers      String   @db.Text
-  channelId        String?  // Optional field for Discord/Slack channel links
-  createdAt        DateTime @default(now())
 }

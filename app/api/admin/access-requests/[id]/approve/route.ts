@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendMail } from "@/lib/mail";
 
 export async function POST(
   req: NextRequest,
@@ -77,9 +78,36 @@ export async function POST(
         reviewedAt: new Date(),
         reviewNotes: reviewNotes,
       },
+      include: {
+        club: true,
+      },
     });
+    try {
+      if (updatedRequest.requesterEmail) {
+        const clubName = updatedRequest.club?.name || "Community";
+        const recipients = [updatedRequest.requesterEmail];
+        const subj = `Community Access Approved: ${clubName}`;
+        const text = `Great news!\n\nYour request to access club ${clubName} has been approved! You can now log in and view the club dashboard.\n\n${reviewNotes ? `Admin Notes: ${reviewNotes}` : ""}\n\nBest,\nThe Tech4Good Lab`;
+
+        await sendMail({
+          to: recipients,
+          subject: subj,
+          text,
+        }).catch((e) => {
+          console.warn("sendMail to requester failed", e);
+          return false;
+        });
+
+        console.log(`Approval email sent to ${updatedRequest.requesterEmail}`);
+      } else {
+        console.warn("No requester email found for this access request.");
+      }
+    } catch (e) {
+      console.error("Failed to trigger approval email", e);
+    }
+
     return NextResponse.json({
-      request: { recordId: updatedRequest.id, ...updatedRequest },
+      request: { ...updatedRequest },
     });
   } catch (error) {
     console.error("Prisma Error approving access request:", error);

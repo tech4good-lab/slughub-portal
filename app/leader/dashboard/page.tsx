@@ -507,7 +507,7 @@ export default async function LeaderDashboard() {
                                   {e.eventTitle ?? e.name ?? "Untitled Event"}
                                 </div>
                                 <Link
-                                  href={`/leader/events/${e.recordId}/edit`}
+                                  href={`/leader/events/${e.id}/edit`}
                                   style={{
                                     fontSize: 11,
                                     padding: "4px 8px",
@@ -567,7 +567,7 @@ export default async function LeaderDashboard() {
                                   {e.eventTitle ?? e.name ?? "Untitled Event"}
                                 </div>
                                 <Link
-                                  href={`/leader/events/${e.recordId}/edit`}
+                                  href={`/leader/events/${e.id}/edit`}
                                   style={{
                                     fontSize: 11,
                                     padding: "4px 8px",
@@ -617,7 +617,11 @@ export default async function LeaderDashboard() {
           href="https://tech4good.soe.ucsc.edu/"
           target="_blank"
           rel="noreferrer"
-          style={{ color: "#FDF0A6", textDecoration: "underline", WebkitTextStroke: "0.4px black" }}
+          style={{
+            color: "#FDF0A6",
+            textDecoration: "underline",
+            WebkitTextStroke: "0.4px black",
+          }}
         >
           Tech4Good
         </a>{" "}

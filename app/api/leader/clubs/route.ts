@@ -116,11 +116,11 @@ export async function POST(req: Request) {
       const subj = `New club request: ${newClub.name}`;
       const emailBody = `A new club was submitted by ${(session as any)?.user?.email ?? userId}.
 
-Name: ${newClub.name}
-ClubId: ${newClub.id}
-Contact: ${newClub.contactName} <${newClub.contactEmail}>
+      Name: ${newClub.name}
+      ClubId: ${newClub.id}
+      Contact: ${newClub.contactName} <${newClub.contactEmail}>
 
-Review it in the admin panel.`;
+      Review it in the admin panel.`;
 
       await sendMail({ to: recipients, subject: subj, text: emailBody }).catch(
         (e) => {

@@ -22,6 +22,8 @@ export default function NewEventPage() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [zoomLink, setZoomLink] = useState("");
+  const [iceBreakers, setIceBreakers] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -78,6 +80,8 @@ export default function NewEventPage() {
         eventTime,
         eventLocation,
         eventDescription,
+        zoomLink,
+        iceBreakers,
       }),
     });
 
@@ -175,12 +179,32 @@ export default function NewEventPage() {
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Location / Zoom Link</label>
+        <label className="label">Location</label>
         <input
           className="input"
           value={eventLocation}
           onChange={(e) => setEventLocation(e.target.value)}
-          placeholder="Room 101 or https://zoom.us/..."
+          placeholder="Community Room at John R Lewis..."
+        />
+        <div style={{ height: 10 }} />
+
+        <label className="label">Zoom Link</label>
+        <input
+          className="input"
+          type="url"
+          value={zoomLink}
+          onChange={(e) => setZoomLink(e.target.value)}
+          placeholder="https://zoom.us/..."
+        />
+
+        <div style={{ height: 10 }} />
+
+        <label className="label">Icebreaker Question</label>
+        <input
+          className="input"
+          value={iceBreakers}
+          onChange={(e) => setIceBreakers(e.target.value)}
+          placeholder="E.g., What's your favorite book?"
         />
 
         <div style={{ height: 10 }} />
