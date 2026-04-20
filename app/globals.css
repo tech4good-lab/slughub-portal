@@ -1,3 +1,4 @@
+@import "tailwindcss";
 * {
   box-sizing: border-box;
   margin: 0;
@@ -512,10 +513,18 @@ a:hover {
   color: #666;
   transition: color 0.15s;
 }
-.linkIcon:hover { color: #000; }
-.linkIcon--discord:hover  { color: #5865F2; }
-.linkIcon--instagram:hover { color: #E1306C; }
-.linkIcon--linkedin:hover  { color: #0A66C2; }
+.linkIcon:hover {
+  color: #000;
+}
+.linkIcon--discord:hover {
+  color: #5865f2;
+}
+.linkIcon--instagram:hover {
+  color: #e1306c;
+}
+.linkIcon--linkedin:hover {
+  color: #0a66c2;
+}
 
 /* Create new club overrides */
 .clubCreate {

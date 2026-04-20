@@ -216,23 +216,59 @@ export default async function LeaderDashboard() {
             }}
           >
             <div>
-              <h1 style={{ margin: 0, color: "black" }}>Leader Dashboard</h1>
+              <h1
+                style={{
+                  margin: 0,
+                  color: "black",
+                  fontSize: "clamp(24px, 5vw, 32px)",
+                }}
+              >
+                Leader Dashboard
+              </h1>
             </div>
-            <nav className="row">
+
+            {/* Nav requires scrolling on mobile/smaller devices */}
+            <nav
+              className="row"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                flexWrap: "nowrap",
+                overflowX: "auto",
+                paddingBottom: "4px",
+              }}
+            >
               {isAdmin && (
-                <>
-                  <Link className="btn" href="/admin/review">
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
+                >
+                  <Link
+                    className="btn"
+                    href="/admin/review"
+                    style={{ whiteSpace: "nowrap", flexShrink: 0 }}
+                  >
                     Community Approvals
                   </Link>
-                  <Link className="btn" href="/admin/access">
+                  <Link
+                    className="btn"
+                    href="/admin/access"
+                    style={{ whiteSpace: "nowrap", flexShrink: 0 }}
+                  >
                     Access Requests
                   </Link>
-                </>
+                </div>
               )}
-              <Link className="btn" href="/directory">
+              <Link
+                className="btn"
+                href="/directory"
+                style={{ whiteSpace: "nowrap", flexShrink: 0 }}
+              >
                 Directory
               </Link>
-              <LogoutButton />
+              <div style={{ flexShrink: 0 }}>
+                <LogoutButton />
+              </div>
             </nav>
           </header>
 
@@ -289,6 +325,8 @@ export default async function LeaderDashboard() {
                   fontWeight: 600,
                   textDecoration: "none",
                   cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
                 }}
               >
                 Create Event
@@ -306,6 +344,8 @@ export default async function LeaderDashboard() {
                   fontWeight: 600,
                   textDecoration: "none",
                   cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
                 }}
               >
                 Create New Community
@@ -420,6 +460,7 @@ export default async function LeaderDashboard() {
                             textDecoration: "none",
                             cursor: "pointer",
                             boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           Edit
@@ -438,11 +479,14 @@ export default async function LeaderDashboard() {
                             textDecoration: "none",
                             cursor: "pointer",
                             boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           View Public
                         </Link>
-                        <DeleteClubButton clubId={cid} clubName={club.name} />
+                        <div style={{ flexShrink: 0 }}>
+                          <DeleteClubButton clubId={cid} clubName={club.name} />
+                        </div>
                       </div>
                     </div>
 

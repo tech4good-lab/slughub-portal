@@ -41,11 +41,36 @@ function normalizeList(input: any): string[] {
 }
 
 export default function DirectoryClient({ clubs, session }: Props) {
-  const [typeSelected, setTypeSelected] = useState<string[]>([]);
+  const [typeSelected, setTypeSelected] = useState<string[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("typeSelected");
+      if (saved) return JSON.parse(saved);
+    }
+    return [];
+  });
   const [statusSelected, setStatusSelected] = useState<string[]>(["verified"]);
+  const [isMounted, setIsMounted] = useState(false);
+
   const [query, setQuery] = useState("");
   const typeDropdownRef = useRef<HTMLDetailsElement | null>(null);
   const statusDropdownRef = useRef<HTMLDetailsElement | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+
+    const savedType = localStorage.getItem("typeSelected");
+    if (savedType) setTypeSelected(JSON.parse(savedType));
+
+    const savedStatus = localStorage.getItem("statusSelected");
+    if (savedStatus) setStatusSelected(JSON.parse(savedStatus));
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem("typeSelected", JSON.stringify(typeSelected));
+      localStorage.setItem("statusSelected", JSON.stringify(statusSelected));
+    }
+  }, [typeSelected, statusSelected, isMounted]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -134,7 +159,10 @@ export default function DirectoryClient({ clubs, session }: Props) {
             <span>
               Community type
               {typeSelected.length > 0 && (
-                <span style={{ fontWeight: 400, fontSize: "0.85em" }}> ({typeSelected.length})</span>
+                <span style={{ fontWeight: 400, fontSize: "0.85em" }}>
+                  {" "}
+                  ({typeSelected.length})
+                </span>
               )}
             </span>
           </summary>
@@ -165,8 +193,11 @@ export default function DirectoryClient({ clubs, session }: Props) {
           <summary className="directoryDropdownSummary">
             <span>
               Status
-              {statusSelected.length > 0 && (
-                <span style={{ fontWeight: 400, fontSize: "0.85em" }}> ({statusSelected.length})</span>
+              {isMounted && statusSelected.length > 0 && (
+                <span style={{ fontWeight: 400, fontSize: "0.85em" }}>
+                  {" "}
+                  ({statusSelected.length})
+                </span>
               )}
             </span>
           </summary>
@@ -240,7 +271,8 @@ export default function DirectoryClient({ clubs, session }: Props) {
             >
               <h2 style={{ marginBottom: 8 }}>No communities yet</h2>
               <p className="small" style={{ margin: 0 }}>
-                Be the first to register your community and start building connections.
+                Be the first to register your community and start building
+                connections.
               </p>
               {!session && (
                 <Link

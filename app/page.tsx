@@ -117,7 +117,17 @@ function Header({
         </h1>
       </div>
 
-      <nav className="row">
+      {/* Buttons Require Scrolling on mobile. */}
+      <nav
+        className="row"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          flexWrap: "nowrap",
+          overflowX: "auto",
+        }}
+      >
         {session ? (
           <>
             {isAdmin && (
@@ -127,36 +137,45 @@ function Header({
                   position: "relative",
                   display: "flex",
                   alignItems: "center",
+                  gap: "12px",
                 }}
               >
                 <Link
                   className="btn"
                   href="/admin/review"
-                  style={{ position: "relative" }}
+                  style={{ position: "relative", whiteSpace: "nowrap" }}
                 >
                   Community Approvals
                   <PendingBadge />
                 </Link>
-                <Link className="btn" href="/admin/access">
+                <Link
+                  className="btn"
+                  href="/admin/access"
+                  style={{ whiteSpace: "nowrap" }}
+                >
                   Access Requests
                 </Link>
               </div>
             )}
             {(isAdmin || isLeader) && (
               <>
-                <Link className="btn" href="/leader/dashboard">
+                <Link
+                  className="btn"
+                  href="/leader/dashboard"
+                  style={{ whiteSpace: "nowrap" }}
+                >
                   Dashboard
                 </Link>
-                <LogoutButton />
+                <div style={{ flexShrink: 0 }}>
+                  <LogoutButton />
+                </div>
               </>
             )}
           </>
         ) : (
-          <>
-            <Link className="btn" href="/login">
-              Community Lead Login
-            </Link>
-          </>
+          <Link className="btn" href="/login" style={{ whiteSpace: "nowrap" }}>
+            Community Lead Login
+          </Link>
         )}
       </nav>
     </header>
