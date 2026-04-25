@@ -249,7 +249,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
             alignItems: "center",
             justifyContent: "space-between",
             position: "relative",
-            gap: 12,
+            gap: 16,
             flexWrap: "wrap",
             marginBottom: 10,
             paddingBottom: 24,
@@ -262,7 +262,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 className="admin-text"
                 style={{
                   color: "black",
-                  fontSize: "25px",
+                  fontSize: "clamp(20px, 5vw, 25px)",
                   fontFamily: "Sarabun",
                   fontWeight: "700",
                   margin: 0,
@@ -284,7 +284,14 @@ export default function PendingApprovals({ email }: { email?: string }) {
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
             <Link
               className="btn auth-header-link"
               href="/admin/access"
@@ -292,6 +299,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 ...linkPillStyle,
                 display: "flex",
                 minWidth: 80,
+                padding: "0 16px",
                 height: 32,
                 background: "#FDF0A6",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -299,6 +307,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
+                whiteSpace: "nowrap",
               }}
             >
               Access Requests
@@ -311,6 +320,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 ...linkPillStyle,
                 display: "flex",
                 minWidth: 80,
+                padding: "0 16px",
                 height: 32,
                 background: "#FDF0A6",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -318,6 +328,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
+                whiteSpace: "nowrap",
               }}
             >
               Back to Directory
@@ -336,7 +347,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 fontFamily: "Sarabun",
               }}
             >
-              No pending communities!
+              No pending communities! 🎉
             </div>
           ) : (
             clubs.map((c: any, i) => (
@@ -350,10 +361,11 @@ export default function PendingApprovals({ email }: { email?: string }) {
                   display: "flex",
                   alignItems: "flex-start",
                   justifyContent: "space-between",
-                  gap: 12,
+                  gap: 16,
+                  flexWrap: "wrap",
                 }}
               >
-                <div style={{ flex: "1 1 260px", minWidth: 0 }}>
+                <div style={{ flex: "1 1 200px", minWidth: 0 }}>
                   <div
                     style={{
                       color: "black",
@@ -377,7 +389,15 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     {c.description ?? "Community description..."}
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 10,
+                    flexWrap: "wrap",
+                    flexShrink: 0,
+                  }}
+                >
                   <button
                     onClick={() =>
                       !busy[c.recordId] && act(c.recordId, "approve")
@@ -395,6 +415,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                       cursor: busy[c.recordId] ? "not-allowed" : "pointer",
                       opacity: busy[c.recordId] ? 0.6 : 1,
                       boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {busy[c.recordId] ? "Working..." : "Approve"}
@@ -416,6 +437,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                       cursor: busy[c.recordId] ? "not-allowed" : "pointer",
                       opacity: busy[c.recordId] ? 0.6 : 1,
                       boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {busy[c.recordId] ? "Working..." : "Reject"}

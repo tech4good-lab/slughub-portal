@@ -88,8 +88,9 @@ export async function POST(req: Request) {
         eventTitle: eventTitle,
         eventDate: parsedDate,
         eventLocation: String(body.eventLocation ?? "").trim(),
+        zoomLink: String(body.eventLocation ?? "").trim(),
+        iceBreakers: String(body.iceBreakers ?? body.iceBreakers ?? "").trim(),
         eventDescription: String(body.eventDescription ?? "").trim(),
-        iceBreakers: String(body.IceBreakers ?? body.iceBreakers ?? "").trim(),
       },
     });
 

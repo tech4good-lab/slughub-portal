@@ -53,6 +53,7 @@ export async function GET(
   try {
     const event = await prisma.clubEvent.findUnique({
       where: { id: eventId },
+      include: { club: true },
     });
 
     if (!event)
@@ -64,8 +65,8 @@ export async function GET(
 
     return NextResponse.json({
       event: {
-        recordId: event.id,
         ...event,
+        clubName: event.club?.name || "No Name Found",
       },
     });
   } catch (error) {
@@ -140,6 +141,7 @@ export async function POST(
         eventLocation: String(body.eventLocation ?? "").trim(),
         eventDescription: String(body.eventDescription ?? "").trim(),
         iceBreakers: String(body.IceBreakers ?? body.iceBreakers ?? "").trim(),
+        zoomLink: String(body.zoomLink ?? "").trim(),
       },
     });
 
