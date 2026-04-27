@@ -325,12 +325,12 @@ export default function EditEventPage() {
 
         <div style={{ height: 10 }} />
 
-        <label className="label">Icebreaker Question</label>
+        <label className="label">Icebreaker Seeds</label>
         <input
           className="input"
           value={iceBreakers}
           onChange={(e) => setIceBreakers(e.target.value)}
-          placeholder="E.g., What's your favorite book?"
+          placeholder="What kinds of things would you like to learn about students attending this event?"
         />
 
         <div style={{ height: 10 }} />

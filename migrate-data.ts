@@ -77,7 +77,6 @@ async function migrate() {
         websiteUrl: fields.websiteUrl || null,
         instagramUrl: fields.instagramUrl || null,
         linkedinUrl: fields.linkedinUrl || null,
-        clubIcebreakers: fields.clubIcebreakers || "",
         status: (fields.status?.toLowerCase() === "approved"
           ? "approved"
           : "pending") as any,

@@ -29,8 +29,6 @@ export default function NewClubPage() {
   const [communityType, setCommunityType] = useState(
     "Campus_Department_Program",
   );
-  const [clubIcebreakers, setClubIcebreakers] = useState("");
-
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -58,19 +56,15 @@ export default function NewClubPage() {
     setSaving(true);
 
     try {
-      // 1. Pack up the data into a draft
       const draft = {
         name,
         contactName,
         contactEmail,
         communityType,
-        clubIcebreakers,
       };
 
-      // 2. Save it locally (NO backend API call yet!)
       localStorage.setItem("clubDraft", JSON.stringify(draft));
 
-      // 3. Redirect to the Edit page to finish the process
       router.push("/leader/clubs/draft/edit");
     } catch (error) {
       setErr("Failed to save draft locally.");
@@ -139,17 +133,6 @@ export default function NewClubPage() {
         </select>
 
         <div style={{ height: 10 }} />
-
-        <label className="label">Community Icebreakers</label>
-        <textarea
-          className="input"
-          value={clubIcebreakers}
-          onChange={(e) => setClubIcebreakers(e.target.value)}
-          placeholder={
-            "what would you like to learn from students attending your event?"
-          }
-          style={{ minHeight: 120 }}
-        />
 
         {err && (
           <p className="small" style={{ marginTop: 10, color: "red" }}>

@@ -28,7 +28,6 @@ model Club {
   websiteUrl      String?
   instagramUrl    String?
   linkedinUrl     String?
-  clubIcebreakers String?
   reviewNotes     String?
   reviewedAt      DateTime?       @default(now())
   status          Status          @default(pending)

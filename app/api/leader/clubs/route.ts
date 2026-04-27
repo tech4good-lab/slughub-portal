@@ -78,7 +78,6 @@ export async function POST(req: Request) {
       data: {
         name: String(body.name).trim(),
         description: String(body.description ?? "").trim(),
-        clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
 
         communityType: rawCommunityType as any,
         communityStatus: "verified",
