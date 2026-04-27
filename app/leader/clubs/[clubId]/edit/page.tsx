@@ -8,7 +8,6 @@ import { Club } from "@prisma/client";
 type ClubDraft = {
   name: string;
   description: string;
-  clubIcebreakers: string;
   contactName: string;
   contactEmail: string;
   communityType: string;
@@ -36,7 +35,6 @@ const COMMUNITY_TYPE_OPTIONS = [
 const emptyDraft: ClubDraft = {
   name: "",
   description: "",
-  clubIcebreakers: "",
   contactName: "",
   contactEmail: "",
   communityType: "Campus_Department_Program",
@@ -115,7 +113,6 @@ export default function EditClubPage() {
         setDraft({
           name: club.name ?? "",
           description: club.description ?? "",
-          clubIcebreakers: club.clubIcebreakers ?? "",
           contactName: club.contactName ?? "",
           contactEmail: club.contactEmail ?? "",
           communityType: club.communityType ?? "Other",
@@ -225,17 +222,6 @@ export default function EditClubPage() {
         />
 
         <div style={{ height: 10 }} />
-
-        <label className="label">Community Icebreakers</label>
-        <textarea
-          className="input"
-          value={draft.clubIcebreakers}
-          onChange={(e) => set("clubIcebreakers", e.target.value)}
-          placeholder={
-            "what would you like to learn from students attending your event?"
-          }
-          style={{ minHeight: 120 }}
-        />
 
         <hr />
 

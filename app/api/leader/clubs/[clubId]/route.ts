@@ -97,7 +97,6 @@ export async function POST(
       data: {
         name: String(body.name ?? "").trim(),
         description: String(body.description ?? "").trim(),
-        clubIcebreakers: String(body.clubIcebreakers ?? "").trim(),
         contactName: String(body.contactName ?? "").trim(),
         contactEmail: String(body.contactEmail ?? "").trim(),
 
