@@ -110,6 +110,7 @@ export async function POST(
 
         status: "pending",
         submittedAt: new Date(),
+        updatedAt: new Date(),
         reviewedAt: null,
         reviewNotes: null,
       },
