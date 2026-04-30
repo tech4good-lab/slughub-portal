@@ -92,6 +92,7 @@ export async function POST(req: Request) {
 
         status: "pending",
         submittedAt: new Date(),
+        updatedAt: new Date(),
         reviewNotes: null,
 
         members: {
