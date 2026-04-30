@@ -71,6 +71,7 @@ export async function POST(req: Request) {
   const body = await req.json();
   const clubId = String(body.clubId ?? "").trim();
   const message = String(body.message ?? "").trim();
+  const clubName = String(body.name ?? "").trim();
 
   if (!clubId) {
     return NextResponse.json({ error: "clubId is required" }, { status: 400 });
@@ -120,9 +121,14 @@ export async function POST(req: Request) {
     }
 
     try {
+      const club = await prisma.club.findUnique({
+        where: { id: clubId },
+        select: { name: true },
+      });
+
       const recipients = ["communityrag-group@ucsc.edu"];
       const requester = (session as any)?.user?.email ?? auth.userId;
-      const subj = `Access request: ${clubId} by ${requester}`;
+      const subj = `Access request: ${club?.name} by ${requester}`;
       const text = `User ${requester} requested access to club ${clubId}.\n\nMessage: ${message || "(none)"}\n\nView access requests in the admin panel.`;
 
       const sent = await sendMail({
