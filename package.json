@@ -12,6 +12,7 @@
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "@react-oauth/google": "^0.13.4",
+    "@vercel/analytics": "^2.0.1",
     "airtable": "^0.12.2",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.4.1",
