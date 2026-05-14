@@ -50,6 +50,29 @@ export default function NewClubPage() {
     })();
   }, []);
 
+  // At the top with your other states
+  const [isDuplicate, setIsDuplicate] = useState(false);
+
+  useEffect(() => {
+    // Don't check if the name is too short
+    if (name.trim().length < 3) {
+      setIsDuplicate(false);
+      return;
+    }
+
+    const checkName = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/clubs/check-duplicate?name=${encodeURIComponent(name)}`);
+        const data = await res.json();
+        setIsDuplicate(data.exists);
+      } catch (err) {
+        console.error("Lookup failed", err);
+      }
+    }, 500); // Wait 500ms after the user stops typing
+
+    return () => clearTimeout(checkName);
+  }, [name]);
+
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
@@ -94,6 +117,30 @@ export default function NewClubPage() {
           onChange={(e) => setName(e.target.value)}
           required
         />
+
+        {isDuplicate && (
+          <div className="card" style={{ 
+            marginTop: 10, 
+            border: '1px solid #ff4d4d', 
+            backgroundColor: '#fff5f5',
+            padding: '15px' 
+          }}>
+            <p style={{ color: '#d32f2f', fontWeight: 'bold', margin: 0 }}>
+              ⚠️ This club already exists in our directory.
+            </p>
+            <p className="small" style={{ margin: '8px 0' }}>
+              You cannot create a duplicate. Would you like to view the existing club or request access?
+            </p>
+            <button 
+              type="button"
+              className="btn"
+              onClick={() => router.push('/directory')} // Or wherever the "new page" is
+              style={{ background: '#d32f2f', color: 'white' }}
+            >
+              Go to Existing Club
+            </button>
+          </div>
+        )}
 
         <div style={{ height: 10 }} />
 
@@ -144,7 +191,7 @@ export default function NewClubPage() {
           <button
             className="btn btnPrimary"
             type="submit"
-            disabled={saving}
+            disabled={saving || isDuplicate}
             style={{
               padding: "8px 16px",
               background: "#FDF0A6",
