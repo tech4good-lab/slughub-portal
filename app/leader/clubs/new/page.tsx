@@ -38,6 +38,7 @@ export default function NewClubPage() {
   const [err, setErr] = useState<string | null>(null);
 
   // Duplicate-check state
+  // holds duplicate info
   const [duplicate, setDuplicate] = useState<DuplicateInfo | null>(null);
   const [checking, setChecking] = useState(false);
 
@@ -60,6 +61,7 @@ export default function NewClubPage() {
   }, []);
 
   // Clear duplicate warning whenever the name field changes
+  // duplicate warning cleared if user types in name field
   useEffect(() => {
     setDuplicate(null);
     setErr(null);
@@ -68,6 +70,7 @@ export default function NewClubPage() {
   /**
    * Checks whether a club with this name already exists.
    * Returns the duplicate info if found, or null if the name is free.
+   * calls api route, returns null if no duplicate found
    */
   async function checkDuplicate(clubName: string): Promise<DuplicateInfo | null> {
     const res = await fetch(
@@ -78,6 +81,8 @@ export default function NewClubPage() {
     return data.duplicate ? (data.club as DuplicateInfo) : null;
   }
 
+  // when create is hit, system should first check if duplciate exists
+  // if found it shows a warning and stops, else continues
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
@@ -142,8 +147,9 @@ export default function NewClubPage() {
           onChange={(e) => setName(e.target.value)}
           required
         />
-
         {/* ── Duplicate warning ── */}
+        {/* only shows when duplicate isn't null */}
+        {/* offers to go to club's page, or to clear the name and try another */}
         {duplicate && (
           <div
             style={{
