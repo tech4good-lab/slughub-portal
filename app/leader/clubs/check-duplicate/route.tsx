@@ -14,8 +14,10 @@ import { prisma } from "@/lib/prisma";
  */
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
+  console.log("FULL SESSION:", JSON.stringify(session, null, 2));  // add this
   const userId = (session as any)?.userId;
   const role = (session as any)?.role;
+
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -49,6 +51,9 @@ export async function GET(req: Request) {
         status: true,
       },
     });
+
+    console.log("name searched:", name);
+    console.log("match found:", match);
 
     if (match) {
       return NextResponse.json({
