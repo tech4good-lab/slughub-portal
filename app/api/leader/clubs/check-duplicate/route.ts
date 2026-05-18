@@ -13,6 +13,9 @@ export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
   const userId = (session as any)?.userId;
   const role = (session as any)?.role;
+  console.log(role);
+  console.log("Hello");
+  console.log(req);
 
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,7 +23,7 @@ export async function GET(req: Request) {
   if (role !== "leader" && role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-
+  
   //login check
   const { searchParams } = new URL(req.url);
   const name = searchParams.get("name")?.trim() ?? "";

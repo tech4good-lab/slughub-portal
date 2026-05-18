@@ -30,17 +30,11 @@ export default function NewClubPage() {
   const [name, setName] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
-
   const [communityType, setCommunityType] = useState(
     "Campus_Department_Program",
   );
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-
-  // Duplicate-check state
-  // holds duplicate info
-  const [duplicate, setDuplicate] = useState<DuplicateInfo | null>(null);
-  const [checking, setChecking] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -60,33 +54,18 @@ export default function NewClubPage() {
     })();
   }, []);
 
-  // Clear duplicate warning whenever the name field changes
-  // duplicate warning cleared if user types in name field
-  useEffect(() => {
-    setDuplicate(null);
-    setErr(null);
-  }, [name]);
-
-  /**
-   * Checks whether a club with this name already exists.
-   * Returns the duplicate info if found, or null if the name is free.
-   * calls api route, returns null if no duplicate found
-   */
   async function checkDuplicate(clubName: string): Promise<DuplicateInfo | null> {
     const res = await fetch(
-      `/api/leader/clubs/check-duplicate?name=${encodeURIComponent(clubName)}`,
+      `api/leader/clubs/check-duplicate?name=${encodeURIComponent(clubName)}`,
     );
-    if (!res.ok) return null; // treat check failure as non-blocking
+    if (!res.ok) return null;
     const data = await res.json();
     return data.duplicate ? (data.club as DuplicateInfo) : null;
   }
 
-  // when create is hit, system should first check if duplciate exists
-  // if found it shows a warning and stops, else continues
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
-    setDuplicate(null);
 
     const trimmedName = name.trim();
     if (!trimmedName) {
@@ -95,31 +74,36 @@ export default function NewClubPage() {
     }
 
     setSaving(true);
-    setChecking(true);
 
     try {
       const found = await checkDuplicate(trimmedName);
-      setChecking(false);
 
       if (found) {
-        // Surface the duplicate warning and stop here — do NOT write the draft
-        setDuplicate(found);
         setSaving(false);
+        const statusLabel =
+          found.status === "approved"
+            ? " and is live in the directory"
+            : found.status === "pending"
+            ? " and is pending approval"
+            : "";
+        const confirmed = window.confirm(
+          `A community named "${found.name}" already exists${statusLabel}.\n\nIf you are a leader of this community, click OK to go to that community's page and request access.`,
+        );
+        if (confirmed) {
+          router.push(`/clubs/${found.id}`);
+        }
         return;
       }
 
-      // Name is unique — save draft locally and continue to the full edit form
       const draft = {
         name: trimmedName,
         contactName,
         contactEmail,
         communityType,
       };
-
       localStorage.setItem("clubDraft", JSON.stringify(draft));
       router.push("/leader/clubs/draft/edit");
     } catch {
-      setChecking(false);
       setSaving(false);
       setErr("Failed to check for duplicates. Please try again.");
     }
@@ -147,92 +131,6 @@ export default function NewClubPage() {
           onChange={(e) => setName(e.target.value)}
           required
         />
-        {/* ── Duplicate warning ── */}
-        {/* only shows when duplicate isn't null */}
-        {/* offers to go to club's page, or to clear the name and try another */}
-        {duplicate && (
-          <div
-            style={{
-              marginTop: 12,
-              padding: "14px 16px",
-              background: "#FEF3C7",
-              border: "1px solid #FCD34D",
-              borderRadius: 12,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-            }}
-          >
-            <p
-              style={{
-                margin: 0,
-                fontSize: 14,
-                fontFamily: "Sarabun",
-                fontWeight: 600,
-                color: "#92400E",
-              }}
-            >
-              A community named &ldquo;{duplicate.name}&rdquo; already exists
-              {duplicate.status === "approved"
-                ? " and is live in the directory"
-                : duplicate.status === "pending"
-                  ? " and is pending approval"
-                  : ""}.
-            </p>
-            <p
-              style={{
-                margin: 0,
-                fontSize: 13,
-                fontFamily: "Sarabun",
-                color: "#78350F",
-              }}
-            >
-              If you are a leader of this community, you can request edit
-              access instead of creating a duplicate.
-            </p>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
-              <Link
-                href={`/clubs/${duplicate.id}`}
-                style={{
-                  padding: "7px 16px",
-                  background: "#FDF0A6",
-                  border: "1px solid #FCD34D",
-                  borderRadius: 20,
-                  color: "#000",
-                  fontSize: 13,
-                  fontFamily: "Sarabun",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  boxShadow: "0 4px 10px rgba(251,191,36,0.18)",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                View community &amp; request access →
-              </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setDuplicate(null);
-                  setName("");
-                }}
-                style={{
-                  padding: "7px 16px",
-                  background: "transparent",
-                  border: "1px solid rgba(146,64,14,0.3)",
-                  borderRadius: 20,
-                  color: "#92400E",
-                  fontSize: 13,
-                  fontFamily: "Sarabun",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Use a different name
-              </button>
-            </div>
-          </div>
-        )}
 
         <div style={{ height: 10 }} />
 
@@ -264,7 +162,7 @@ export default function NewClubPage() {
           onChange={(e) => setCommunityType(e.target.value)}
           required
         >
-          {COMMUNITY_TYPE_OPTIONS.map((opt: any) => (
+          {COMMUNITY_TYPE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
@@ -298,7 +196,7 @@ export default function NewClubPage() {
               boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
             }}
           >
-            {checking ? "Checking..." : saving ? "Creating Draft..." : "Create"}
+            {saving ? "Checking..." : "Create"}
           </button>
           <Link
             style={{
