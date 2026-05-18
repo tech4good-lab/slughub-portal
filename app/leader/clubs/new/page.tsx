@@ -90,7 +90,7 @@ export default function NewClubPage() {
           `A community named "${found.name}" already exists${statusLabel}.\n\nIf you are a leader of this community, click OK to go to that community's page and request access.`,
         );
         if (confirmed) {
-          router.push(`/leader/clubs/${found.id}`);
+          router.push(`/clubs/${found.id}`);
         }
         return;
       }

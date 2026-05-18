@@ -48,6 +48,8 @@ export default async function ClubDetailPage({
     cache: "no-store",
   });
 
+
+  
   if (!res.ok) {
     return (
       <main className="container clubDetail">
