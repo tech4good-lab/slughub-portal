@@ -56,7 +56,7 @@ export default function NewClubPage() {
 
   async function checkDuplicate(clubName: string): Promise<DuplicateInfo | null> {
     const res = await fetch(
-      `api/leader/clubs/check-duplicate?name=${encodeURIComponent(clubName)}`,
+      `/api/leader/clubs/check-duplicate?name=${encodeURIComponent(clubName)}`,
     );
     if (!res.ok) return null;
     const data = await res.json();
@@ -90,7 +90,7 @@ export default function NewClubPage() {
           `A community named "${found.name}" already exists${statusLabel}.\n\nIf you are a leader of this community, click OK to go to that community's page and request access.`,
         );
         if (confirmed) {
-          router.push(`/clubs/${found.id}`);
+          router.push(`/leader/clubs/${found.id}`);
         }
         return;
       }
