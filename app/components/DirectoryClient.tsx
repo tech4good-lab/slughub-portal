@@ -151,7 +151,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search communities by name..."
-            style={{ background: "#ffffff", fontWeight: 700, color: "#000" }}
+            style={{ background: "#ffffff", fontWeight: 700, color: "#000", zIndex: "1", position: "relative" }}
           />
         </div>
         <details className="directoryDropdown" ref={typeDropdownRef}>
