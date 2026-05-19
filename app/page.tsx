@@ -105,13 +105,9 @@ function Header({
           <span
             style={{
               marginLeft: "3px",
-              // fontSize: "1.1rem",
               fontWeight: "650",
               fontSize: "clamp(0.75rem, 4vw, 1.1rem)",  // text shrinks
-              // marginTop: "2px",
-              // marginBottom: "2px",
-              // marginLeft: "2px",
-              marginRight: "5px"
+              marginRight: "7px"
             }}
           >
             SlugPath
