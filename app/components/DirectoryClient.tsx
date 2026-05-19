@@ -293,7 +293,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
                 fontSize: 16,
                 fontWeight: 500,
                 color: "rgba(0,0,0,0.6)",
-                WebkitTextStroke: "0.4px black",
+                WebkitTextStroke: "0.5px gray",
               }}
             >
               A{" "}
@@ -304,8 +304,8 @@ export default function DirectoryClient({ clubs, session }: Props) {
                 style={{
                   color: "#FDF0A6",
                   textDecoration: "none",
-                  fontWeight: 600,
-                  WebkitTextStroke: "0.4px black",
+                  fontWeight: "1000",
+                  WebkitTextStroke: "0.6px gray",
                 }}
               >
                 Tech4Good

@@ -653,7 +653,7 @@ export default async function LeaderDashboard() {
           marginTop: 20,
           position: "relative",
           zIndex: 10,
-          WebkitTextStroke: "0.4px black",
+          WebkitTextStroke: "0.5px gray",
         }}
       >
         A{" "}
@@ -662,9 +662,10 @@ export default async function LeaderDashboard() {
           target="_blank"
           rel="noreferrer"
           style={{
-            color: "#FDF0A6",
-            textDecoration: "underline",
-            WebkitTextStroke: "0.4px black",
+                  color: "#FDF0A6",
+                  textDecoration: "none",
+                  fontWeight: "1000",
+                  WebkitTextStroke: "0.6px gray",
           }}
         >
           Tech4Good
