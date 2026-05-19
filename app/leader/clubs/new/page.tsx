@@ -36,6 +36,8 @@ export default function NewClubPage() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  const [duplicate, setDuplicate] = useState<DuplicateInfo | null>(null); // react state variable
+
   useEffect(() => {
     (async () => {
       const s = await getSession();
@@ -80,18 +82,7 @@ export default function NewClubPage() {
 
       if (found) {
         setSaving(false);
-        const statusLabel =
-          found.status === "approved"
-            ? " and is live in the directory"
-            : found.status === "pending"
-            ? " and is pending approval"
-            : "";
-        const confirmed = window.confirm(
-          `A community named "${found.name}" already exists${statusLabel}.\n\nIf you are a leader of this community, click OK to go to that community's page and request access.`,
-        );
-        if (confirmed) {
-          router.push(`/clubs/${found.id}`);
-        }
+        setDuplicate(found);
         return;
       }
 
@@ -123,6 +114,36 @@ export default function NewClubPage() {
         </div>
       </div>
 
+
+
+      {duplicate && (
+        <div className="card" style={{ marginTop: 14, border: "1px solid rgba(251,191,36,0.4)" }}>
+          <h2 style={{ marginBottom: 8 }}>Community already exists</h2>
+          <p className="small" style={{ marginBottom: 16 }}>
+            A community named <strong>{duplicate.name}</strong> already exists
+            {duplicate.status === "approved" ? " and is live in the directory" : 
+            duplicate.status === "pending" ? " and is pending approval" : ""}.
+            If you are a leader, request access from its page.
+          </p>
+          <div className="row">
+            <button
+              className="btn btnPrimary"
+              onClick={() => router.push(`/clubs/${duplicate.id}`)}
+              style={{ borderRadius: 20, background: "#FDF0A6", border: "1px solid #FDF0A6", color: "#000", fontWeight: 600 }}
+            >
+              Go to community page
+            </button>
+            <button
+              className="btn"
+              onClick={() => setDuplicate(null)}
+              style={{ borderRadius: 20 }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      
       <form className="card" style={{ marginTop: 14 }} onSubmit={create}>
         <label className="label">Community Name *</label>
         <input
