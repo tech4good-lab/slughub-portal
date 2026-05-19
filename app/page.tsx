@@ -80,12 +80,13 @@ function Header({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "2px",
+            gap: "0px",
             backgroundColor: "#b0dbf6",
             height: "45px",
-            padding: "8px",
+            padding: "4px",
             borderRadius: "16px",
             overflow: "hidden",
+            userSelect: "none",
           }}
         >
           <Image
@@ -93,13 +94,24 @@ function Header({
             alt="SlugPath Logo"
             width={38}
             height={38}
-            style={{ objectFit: "contain" }}
+            style={{ 
+              objectFit: "contain",
+              width: "clamp(28px, 4vw, 38px)",
+              height: "clamp(28px, 4vw, 38px)",
+              marginLeft: "5px"
+
+             }}
           />
           <span
             style={{
-              marginLeft: "4px",
-              fontSize: "1.1rem",
-              fontWeight: "600",
+              marginLeft: "3px",
+              // fontSize: "1.1rem",
+              fontWeight: "650",
+              fontSize: "clamp(0.75rem, 4vw, 1.1rem)",  // text shrinks
+              // marginTop: "2px",
+              // marginBottom: "2px",
+              // marginLeft: "2px",
+              marginRight: "5px"
             }}
           >
             SlugPath
@@ -126,6 +138,7 @@ function Header({
           gap: "12px",
           flexWrap: "nowrap",
           overflowX: "auto",
+
         }}
       >
         {session ? (
