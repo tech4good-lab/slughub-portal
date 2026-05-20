@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getSession } from "next-auth/react";
+import Fuse from "fuse.js";
 
 const COMMUNITY_TYPE_OPTIONS = [
   { label: "Academic", value: "Academic" },
@@ -19,24 +20,19 @@ const COMMUNITY_TYPE_OPTIONS = [
   { label: "Other", value: "Other" },
 ] as const;
 
-type DuplicateInfo = {
-  id: string;
-  name: string;
-  status: string;
-};
+type ClubOption = { id: string; name: string; status: string };
 
 export default function NewClubPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
-  const [communityType, setCommunityType] = useState(
-    "Campus_Department_Program",
-  );
+  const [communityType, setCommunityType] = useState("Campus_Department_Program");
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-
-  const [duplicate, setDuplicate] = useState<DuplicateInfo | null>(null); // react state variable
+  const [allClubs, setAllClubs] = useState<ClubOption[]>([]);
+  const [fuzzyMatches, setFuzzyMatches] = useState<ClubOption[]>([]);
+  const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     (async () => {
@@ -48,56 +44,48 @@ export default function NewClubPage() {
         setContactName(userName);
       } else if (email) {
         const local = String(email).split("@")[0] || "";
-        const derived = local
-          .replace(/[._\-+]/g, " ")
-          .replace(/\b\w/g, (c) => c.toUpperCase());
+        const derived = local.replace(/[._\-+]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
         setContactName(derived);
       }
     })();
-  }, []);
 
-  async function checkDuplicate(clubName: string): Promise<DuplicateInfo | null> {
-    const res = await fetch(
-      `/api/leader/clubs/check-duplicate?name=${encodeURIComponent(clubName)}`,
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.duplicate ? (data.club as DuplicateInfo) : null;
-  }
+    // Pre-fetch all clubs for fuzzy matching
+    fetch("/api/leader/clubs/check-duplicate")
+      .then((r) => r.json())
+      .then((data) => { if (data.clubs) setAllClubs(data.clubs); })
+      .catch(() => {});
+  }, []);
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
 
     const trimmedName = name.trim();
-    if (!trimmedName) {
-      setErr("Community name is required.");
-      return;
-    }
+    if (!trimmedName) { setErr("Community name is required."); return; }
 
     setSaving(true);
 
-    try {
-      const found = await checkDuplicate(trimmedName);
+    // Fuzzy match using Fuse.js
+    const fuse = new Fuse(allClubs, { keys: ["name"], threshold: 0.4, minMatchCharLength: 2 });
+    const results = fuse.search(trimmedName).slice(0, 3).map((r) => r.item);
 
-      if (found) {
-        setSaving(false);
-        setDuplicate(found);
-        return;
-      }
-
-      const draft = {
-        name: trimmedName,
-        contactName,
-        contactEmail,
-        communityType,
-      };
-      localStorage.setItem("clubDraft", JSON.stringify(draft));
-      router.push("/leader/clubs/draft/edit");
-    } catch {
+    if (results.length > 0) {
       setSaving(false);
-      setErr("Failed to check for duplicates. Please try again.");
+      setFuzzyMatches(results);
+      // Scroll popup into view
+      setTimeout(() => popupRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
+      return;
     }
+
+    proceedToCreate(trimmedName);
+  };
+
+  const proceedToCreate = (trimmedName = name.trim()) => {
+    setSaving(true);
+    setFuzzyMatches([]);
+    const draft = { name: trimmedName, contactName, contactEmail, communityType };
+    localStorage.setItem("clubDraft", JSON.stringify(draft));
+    router.push("/leader/clubs/draft/edit");
   };
 
   return (
@@ -105,136 +93,117 @@ export default function NewClubPage() {
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1>Create New Community</h1>
         <div className="row">
-          <Link className="btn" href="/leader/dashboard">
-            Dashboard
-          </Link>
-          <Link className="btn" href="/directory">
-            Directory
-          </Link>
+          <Link className="btn" href="/leader/dashboard">Dashboard</Link>
+          <Link className="btn" href="/directory">Directory</Link>
         </div>
       </div>
 
-
-
-      {duplicate && (
-        <div className="card" style={{ marginTop: 14, border: "1px solid rgba(251,191,36,0.4)" }}>
-          <h2 style={{ marginBottom: 8 }}>Community already exists</h2>
-          <p className="small" style={{ marginBottom: 16 }}>
-            A community named <strong>{duplicate.name}</strong> already exists
-            {duplicate.status === "approved" ? " and is live in the directory" : 
-            duplicate.status === "pending" ? " and is pending approval" : ""}.
-            If you are a leader, request access from its page.
-          </p>
-          <div className="row">
-            <button
-              className="btn btnPrimary"
-              onClick={() => router.push(`/clubs/${duplicate.id}`)}
-              style={{ borderRadius: 20, background: "#FDF0A6", border: "1px solid #FDF0A6", color: "#000", fontWeight: 600 }}
-            >
-              Go to community page
-            </button>
-            <button
-              className="btn"
-              onClick={() => setDuplicate(null)}
-              style={{ borderRadius: 20 }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-      
       <form className="card" style={{ marginTop: 14 }} onSubmit={create}>
         <label className="label">Community Name *</label>
         <input
           className="input"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => { setName(e.target.value); setFuzzyMatches([]); }}
           required
         />
+
+        {/* Fuzzy match popup */}
+        {fuzzyMatches.length > 0 && (
+          <div
+            ref={popupRef}
+            style={{
+              marginTop: 10,
+              padding: "14px 18px",
+              background: "#FFFBEB",
+              border: "1.5px solid rgba(251,191,36,0.5)",
+              borderRadius: 14,
+              boxShadow: "0 4px 16px rgba(251,191,36,0.13)",
+              animation: "fadeSlideIn 0.18s ease-out",
+            }}
+          >
+            <style>{`
+              @keyframes fadeSlideIn {
+                from { opacity: 0; transform: translateY(-6px); }
+                to   { opacity: 1; transform: translateY(0); }
+              }
+            `}</style>
+            <p style={{ margin: "0 0 10px 0", fontSize: 14, fontFamily: "Sarabun", fontWeight: 600, color: "#92400E" }}>
+              Did you mean…
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+              {fuzzyMatches.map((club) => (
+                <Link
+                  key={club.id}
+                  href={`/clubs/${club.id}`}
+                  style={{
+                    fontFamily: "Sarabun",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#2563EB",
+                    textDecoration: "underline",
+                    textUnderlineOffset: 2,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {club.name}
+                </Link>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => proceedToCreate()}
+              style={{
+                padding: "7px 18px",
+                background: "#FDF0A6",
+                border: "1px solid #FDF0A6",
+                borderRadius: 20,
+                color: "#000",
+                fontSize: 13,
+                fontFamily: "Sarabun",
+                fontWeight: 600,
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(251,191,36,0.14)",
+              }}
+            >
+              No, continue with "{name.trim()}"
+            </button>
+          </div>
+        )}
 
         <div style={{ height: 10 }} />
 
         <label className="label">Point of Contact Name *</label>
-        <input
-          className="input"
-          value={contactName}
-          onChange={(e) => setContactName(e.target.value)}
-          required
-        />
+        <input className="input" value={contactName} onChange={(e) => setContactName(e.target.value)} required />
 
         <div style={{ height: 10 }} />
 
         <label className="label">Point of Contact Email *</label>
-        <input
-          className="input"
-          type="email"
-          value={contactEmail}
-          onChange={(e) => setContactEmail(e.target.value)}
-          required
-        />
+        <input className="input" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} required />
 
         <div style={{ height: 10 }} />
 
         <label className="label">Community type</label>
-        <select
-          className="input"
-          value={communityType}
-          onChange={(e) => setCommunityType(e.target.value)}
-          required
-        >
+        <select className="input" value={communityType} onChange={(e) => setCommunityType(e.target.value)} required>
           {COMMUNITY_TYPE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
 
-        <div style={{ height: 10 }} />
-
-        {err && (
-          <p className="small" style={{ marginTop: 10, color: "red" }}>
-            {err}
-          </p>
-        )}
+        {err && <p className="small" style={{ marginTop: 10, color: "red" }}>{err}</p>}
 
         <div className="row" style={{ marginTop: 12 }}>
           <button
             className="btn btnPrimary"
             type="submit"
             disabled={saving}
-            style={{
-              padding: "8px 16px",
-              background: "#FDF0A6",
-              border: "1px solid #FDF0A6",
-              borderRadius: 20,
-              color: "#000",
-              fontFamily: "Sarabun",
-              fontSize: 14,
-              fontWeight: 600,
-              lineHeight: "1",
-              textDecoration: "none",
-              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
-            }}
+            style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}
           >
             {saving ? "Checking..." : "Create"}
           </button>
           <Link
-            style={{
-              padding: "8px 16px",
-              background: "#FDF0A6",
-              border: "1px solid #FDF0A6",
-              borderRadius: 20,
-              color: "#000",
-              fontFamily: "Sarabun",
-              fontSize: 14,
-              fontWeight: 600,
-              lineHeight: "1",
-              textDecoration: "none",
-              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
-            }}
             className="btn btnPrimary"
             href="/leader/dashboard"
+            style={{ padding: "8px 16px", background: "#FDF0A6", border: "1px solid #FDF0A6", borderRadius: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14, fontWeight: 600, lineHeight: "1", textDecoration: "none", boxShadow: "0 6px 14px rgba(251,191,36,0.14)" }}
           >
             Cancel
           </Link>
