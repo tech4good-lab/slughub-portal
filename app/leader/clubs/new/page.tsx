@@ -33,6 +33,7 @@ export default function NewClubPage() {
   const [allClubs, setAllClubs] = useState<ClubOption[]>([]);
   const [fuzzyMatches, setFuzzyMatches] = useState<ClubOption[]>([]);
   const popupRef = useRef<HTMLDivElement>(null);
+  const [warningShown, setWarningShown] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -63,22 +64,27 @@ export default function NewClubPage() {
     const trimmedName = name.trim();
     if (!trimmedName) { setErr("Community name is required."); return; }
 
+    // If warning was already shown, proceed regardless
+    if (warningShown) {
+      proceedToCreate(trimmedName);
+      return;
+    }
+
     setSaving(true);
 
-    // Fuzzy match using Fuse.js
-    const fuse = new Fuse(allClubs, { keys: ["name"], threshold: 0.6, minMatchCharLength: 2 });
+    const fuse = new Fuse(allClubs, { keys: ["name"], threshold: 0.5 });
     const results = fuse.search(trimmedName).slice(0, 3).map((r) => r.item);
 
     if (results.length > 0) {
       setSaving(false);
       setFuzzyMatches(results);
-      // Scroll popup into view
+      setWarningShown(true);
       setTimeout(() => popupRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
       return;
     }
 
     proceedToCreate(trimmedName);
-  };
+  };  
 
   const proceedToCreate = (trimmedName = name.trim()) => {
     setSaving(true);
@@ -103,7 +109,7 @@ export default function NewClubPage() {
         <input
           className="input"
           value={name}
-          onChange={(e) => { setName(e.target.value); setFuzzyMatches([]); }}
+          onChange={(e) => { setName(e.target.value); setFuzzyMatches([]); setWarningShown(false); }}
           required
         />
 
@@ -149,24 +155,6 @@ export default function NewClubPage() {
                 </Link>
               ))}
             </div>
-            {/* <button
-              type="button"
-              onClick={() => proceedToCreate()}
-              style={{
-                padding: "7px 18px",
-                background: "#FDF0A6",
-                border: "1px solid #FDF0A6",
-                borderRadius: 20,
-                color: "#000",
-                fontSize: 13,
-                fontFamily: "Sarabun",
-                fontWeight: 600,
-                cursor: "pointer",
-                boxShadow: "0 2px 8px rgba(251,191,36,0.14)",
-              }}
-            >
-              No, continue with "{name.trim()}"
-            </button> */}
           </div>
         )}
 
