@@ -66,7 +66,7 @@ export default function NewClubPage() {
     setSaving(true);
 
     // Fuzzy match using Fuse.js
-    const fuse = new Fuse(allClubs, { keys: ["name"], threshold: 0.4, minMatchCharLength: 2 });
+    const fuse = new Fuse(allClubs, { keys: ["name"], threshold: 0.6, minMatchCharLength: 2 });
     const results = fuse.search(trimmedName).slice(0, 3).map((r) => r.item);
 
     if (results.length > 0) {
@@ -127,10 +127,10 @@ export default function NewClubPage() {
                 to   { opacity: 1; transform: translateY(0); }
               }
             `}</style>
-            <p style={{ margin: "0 0 10px 0", fontSize: 14, fontFamily: "Sarabun", fontWeight: 600, color: "#92400E" }}>
+            <p style={{ margin: "0 0 0vh 0", fontSize: 14, fontFamily: "Sarabun", fontWeight: 600, color: "#92400E" }}>
               Were you looking for...
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 0 }}>
               {fuzzyMatches.map((club) => (
                 <Link
                   key={club.id}
@@ -149,7 +149,7 @@ export default function NewClubPage() {
                 </Link>
               ))}
             </div>
-            <button
+            {/* <button
               type="button"
               onClick={() => proceedToCreate()}
               style={{
@@ -166,7 +166,7 @@ export default function NewClubPage() {
               }}
             >
               No, continue with "{name.trim()}"
-            </button>
+            </button> */}
           </div>
         )}
 
