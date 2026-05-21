@@ -128,7 +128,7 @@ export default function NewClubPage() {
               }
             `}</style>
             <p style={{ margin: "0 0 10px 0", fontSize: 14, fontFamily: "Sarabun", fontWeight: 600, color: "#92400E" }}>
-              Did you mean…
+              Were you looking for...
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
               {fuzzyMatches.map((club) => (
