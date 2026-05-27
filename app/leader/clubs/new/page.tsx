@@ -32,6 +32,7 @@ export default function NewClubPage() {
   const [err, setErr] = useState<string | null>(null);
   const [allClubs, setAllClubs] = useState<ClubOption[]>([]);
   const [fuzzyMatches, setFuzzyMatches] = useState<ClubOption[]>([]);
+  // const [fuzzyMatches, setFuzzyMatches] = useState<(ClubOption & { score: number })[]>([]);
   const popupRef = useRef<HTMLDivElement>(null);
   const [warningShown, setWarningShown] = useState(false);
 
@@ -72,8 +73,14 @@ export default function NewClubPage() {
 
     setSaving(true);
 
-    const fuse = new Fuse(allClubs, { keys: ["name"], threshold: 0.5 });
+    const fuse = new Fuse(allClubs, { keys: ["name"], threshold:0.5, minMatchCharLength:2});
     const results = fuse.search(trimmedName).slice(0, 3).map((r) => r.item);
+
+    // const results = fuse.search(trimmedName)
+    // .filter((r) => (1 - (r.score ?? 0)) < 0.85) // drop anything scoring 85%+ unless it's a real match
+    // .slice(0, 3)
+    // .map((r) => ({ ...r.item, score: Math.round((1 - (r.score ?? 0)) * 100) }))
+    // // .sort((a, b) => a.name.localeCompare(b.name));
 
     if (results.length > 0) {
       setSaving(false);
@@ -152,6 +159,9 @@ export default function NewClubPage() {
                   }}
                 >
                   {club.name}
+                  {/* <span style={{ marginLeft: 6, fontSize: 12, fontWeight: 400, color: "#92400E" }}>
+                    {club.score}% match
+                  </span> */}
                 </Link>
               ))}
             </div>

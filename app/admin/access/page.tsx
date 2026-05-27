@@ -14,6 +14,7 @@ export default async function AdminAccessPage() {
 
   const email = (session as any)?.user?.email ?? "";
 
+
   return (
     <div
       style={{
@@ -76,7 +77,7 @@ export default async function AdminAccessPage() {
                   margin: "4px 0 0 0",
                 }}
               >
-                Logged in as: {email ?? "<email>"}
+                Logged in as: {email ?? "<email>"} | {role ?? "<role>"}
               </div>
             </div>
           </div>
