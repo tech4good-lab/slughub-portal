@@ -12,7 +12,7 @@ export default function PendingBadge() {
         const res = await fetch("/api/admin/clubs/pending/count", {
           cache: "no-store",
         });
-        
+
         if (res.ok) {
           const data = await res.json();
           setCount(data.count ?? 0);
@@ -26,7 +26,6 @@ export default function PendingBadge() {
 
     fetchCount();
 
-    // Refresh count every 30 seconds
     const interval = setInterval(fetchCount, 30000);
     return () => clearInterval(interval);
   }, []);
@@ -44,24 +43,22 @@ export default function PendingBadge() {
         background: "rgb(239,68,68)",
         color: "white",
         borderRadius: 999,
-        padding: "2px 8px",
-        fontSize: 12,
+        padding: "2px 6px",
+        fontSize: 11,
         fontWeight: 700,
-        minWidth: 20,
+        minWidth: 18,
         textAlign: "center",
+        lineHeight: "16px",
         boxShadow: "0 2px 8px rgba(239,68,68,0.4)",
-        animation: "pulse 2s ease-in-out infinite",
+        pointerEvents: "none",
+        animation: "pendingPulse 2s ease-in-out infinite",
       }}
     >
       {count}
       <style jsx>{`
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.7;
-          }
+        @keyframes pendingPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.85; transform: scale(0.95); }
         }
       `}</style>
     </span>

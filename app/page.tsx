@@ -147,6 +147,7 @@ function Header({
                   display: "flex",
                   alignItems: "center",
                   gap: "12px",
+                  paddingTop: "10px",
                 }}
               >
                 <Link

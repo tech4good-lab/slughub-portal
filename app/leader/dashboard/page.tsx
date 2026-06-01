@@ -7,6 +7,8 @@ import EventsCacheClient from "@/app/components/EventsCacheClient";
 import ClubsCacheClient from "@/app/components/ClubsCacheClient";
 import LogoutButton from "@/app/leader/edit/logout-button";
 import DeleteClubButton from "./delete-club-button";
+import PendingBadge from "@/app/components/PendingBadge";
+
 
 export const dynamic = "force-dynamic";
 
@@ -112,7 +114,9 @@ export default async function LeaderDashboard() {
       style={{
         minHeight: "100dvh",
         background: "rgb(237, 244, 255)",
-        overflow: "auto",
+        // overflow: "auto",
+        overflowX: "hidden",
+        overflowY: "auto",
         display: "flex",
         flexDirection: "column",
         padding: "clamp(12px, 3vw, 20px)",
@@ -249,29 +253,29 @@ export default async function LeaderDashboard() {
                 gap: "12px",
                 flexWrap: "nowrap",
                 overflowX: "auto",
+                overflowY: "visible",
                 paddingBottom: "4px",
+                paddingTop: "9px",
               }}
             >
               {isAdmin && (
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
+              <>
+                <Link
+                  className="btn"
+                  href="/admin/review"
+                  style={{ whiteSpace: "nowrap", flexShrink: 0 }}
                 >
-                  <Link
-                    className="btn"
-                    href="/admin/review"
-                    style={{ whiteSpace: "nowrap", flexShrink: 0 }}
-                  >
-                    Community Approvals
-                  </Link>
-                  <Link
-                    className="btn"
-                    href="/admin/access"
-                    style={{ whiteSpace: "nowrap", flexShrink: 0 }}
-                  >
-                    Access Requests
-                  </Link>
-                </div>
-              )}
+                  Community Approvals
+                </Link>
+                <Link
+                  className="btn"
+                  href="/admin/access"
+                  style={{ whiteSpace: "nowrap", flexShrink: 0 }}
+                >
+                  Access Requests
+                </Link>
+              </>
+            )}
               <Link
                 className="btn"
                 href="/directory"
