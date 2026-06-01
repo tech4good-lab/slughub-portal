@@ -78,15 +78,19 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
     load();
   }, [clubId]);
 
-  const submit = async () => {
+    const submit = async () => {
+    if (!message.trim()) {
+      setErr("Please fill out the field above.");
+      return;
+    }
     setBusy(true);
     setErr(null);
     setMsg(null);
-
+    
     const res = await fetch("/api/access-requests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clubId, message }),
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ clubId, message }),
     });
 
     const data = await safeJson(res);
@@ -233,7 +237,7 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
 
   return (
     <div className="card" style={{ marginTop: 14 }}>
-      <h3 style={{ marginTop: 0 }}>Are you a leader in this community? Request access.</h3>
+      <h3 style={{ marginTop: 0 }}>Are you a leader in this community? Please provide evidence of your role and request access.</h3>
       {unauth && (
         <p className="small" style={{ marginTop: 8 }}>
           Sign in to request leader access.
@@ -245,7 +249,7 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
         rows={3}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="Please describe your leadership role in this community"
+        placeholder="Examples of evidence include your name being on an official webpage, email references, or even a link to your community's Discord Server."
       />
 
       {err && (

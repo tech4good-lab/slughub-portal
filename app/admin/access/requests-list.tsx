@@ -15,178 +15,151 @@ type Req = {
 async function safeJson(res: Response) {
   const text = await res.text();
   if (!text) return null;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return { error: text };
-  }
+  try { return JSON.parse(text); }
+  catch { return { error: text }; }
 }
 
 export default function AccessRequestsList() {
   const [requests, setRequests] = useState<Req[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
-  const [notes, setNotes] = useState<Record<string, string>>({});
-  const [busy, setBusy] = useState<Record<string, boolean>>({});
+  const [loading, setLoading]   = useState(true);
+  const [err, setErr]           = useState<string | null>(null);
+  const [notes, setNotes]       = useState<Record<string, string>>({});
+  const [busy, setBusy]         = useState<Record<string, boolean>>({});
 
   const load = async () => {
     setLoading(true);
     setErr(null);
-    const res = await fetch("/api/admin/access-requests/pending", {
-      cache: "no-store",
-    });
+    const res  = await fetch("/api/admin/access-requests/pending", { cache: "no-store" });
     const data = await safeJson(res);
-    if (!res.ok) {
-      setErr(data?.error ?? "Failed to load.");
-      setLoading(false);
-      return;
-    }
+    if (!res.ok) { setErr(data?.error ?? "Failed to load."); setLoading(false); return; }
     setRequests(data?.requests ?? []);
     setLoading(false);
   };
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
 
   const act = async (id: string, action: "approve" | "reject") => {
     setBusy((b) => ({ ...b, [id]: true }));
     setErr(null);
-
     const req = requests.find((r) => r.recordId === id);
     const res = await fetch(`/api/admin/access-requests/${id}/${action}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        reviewNotes: notes[id] ?? "",
-        clubId: req?.clubId ?? "",
-        requesterUserId: req?.requesterUserId ?? "",
-        requesterEmail: req?.requesterEmail ?? "",
-        clubName: req?.clubName ?? "",
+        reviewNotes:      notes[id] ?? "",
+        clubId:           req?.clubId ?? "",
+        requesterUserId:  req?.requesterUserId ?? "",
+        requesterEmail:   req?.requesterEmail ?? "",
+        clubName:         req?.clubName ?? "",
       }),
     });
-
     const data = await safeJson(res);
-    if (!res.ok) {
-      setErr(data?.error ?? `Failed to ${action}.`);
-      setBusy((b) => ({ ...b, [id]: false }));
-      return;
-    }
-
+    if (!res.ok) { setErr(data?.error ?? `Failed to ${action}.`); setBusy((b) => ({ ...b, [id]: false })); return; }
     await load();
     setBusy((b) => ({ ...b, [id]: false }));
   };
 
-  if (loading) {
-    return (
-      <div
-        className="card"
-        style={{ marginTop: 14, background: "#fff", color: "#000" }}
-      >
-        <p className="small">Loading requests…</p>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div style={{ padding: 20, color: "#000", fontFamily: "Sarabun", fontSize: 14 }}>
+      Loading requests…
+    </div>
+  );
 
-  if (requests.length === 0) {
-    return (
-      <div
-        style={{
-          padding: "40px 20px",
-          textAlign: "center",
-          color: "#999",
-          fontSize: 16,
-          fontFamily: "Sarabun",
-        }}
-      >
-        No pending requests! 🎉
-      </div>
-    );
-  }
+  if (requests.length === 0) return (
+    <div style={{ padding: "40px 20px", textAlign: "center", color: "#999", fontSize: 16, fontFamily: "Sarabun" }}>
+      No pending requests! 🎉
+    </div>
+  );
 
   return (
     <>
       {err && (
-        <div
-          className="card"
-          style={{
-            marginTop: 14,
-            border: "1px solid rgba(239,68,68,0.25)",
-            background: "#fff",
-            color: "#000",
-          }}
-        >
-          <p className="small" style={{ margin: 0 }}>
-            {err}
-          </p>
+        <div style={{ marginBottom: 16, padding: "12px 16px", background: "#FEE2E2", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 10, color: "#DC2626", fontSize: 14, fontFamily: "Sarabun" }}>
+          {err}
         </div>
       )}
 
-      <div className="grid" style={{ marginTop: 14 }}>
-        {requests.map((r: any) => (
-          <div key={r.recordId} className="card" style={{ background: "#fff" }}>
-            <div
-              className="row"
-              style={{ justifyContent: "space-between", alignItems: "center" }}
-            >
-              <h2 style={{ margin: 0, color: "#000" }}>
-                Community: {r.clubName ? r.clubName : r.clubId}
-              </h2>
-              <span className="small" style={{ opacity: 0.75, color: "#000" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {requests.map((r, i) => (
+          <div
+            key={r.recordId}
+            style={{
+              padding: "16px 20px",
+              background: i % 2 === 0 ? "#FAFAFA" : "#F3F4F6",
+              borderRadius: 12,
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 20,
+              flexWrap: "wrap",
+            }}
+          >
+            {/* ── Info ── */}
+            <div style={{ flex: "2 1 280px", minWidth: 0 }}>
+              <div style={{ fontSize: 16, fontFamily: "Sarabun", fontWeight: 600, color: "#000", marginBottom: 6 }}>
+                {r.clubName ?? r.clubId ?? "Unknown Community"}
+              </div>
+              <div style={{ fontSize: 13, fontFamily: "Sarabun", color: "#555", marginBottom: 2 }}>
+                <strong>User:</strong> {r.requesterEmail ?? "—"}
+              </div>
+              <div style={{ fontSize: 13, fontFamily: "Sarabun", color: "#555", marginBottom: 2 }}>
+                <strong>Message:</strong> {r.message || <em style={{ color: "#999" }}>No message provided</em>}
+              </div>
+              <div style={{ fontSize: 12, fontFamily: "Sarabun", color: "#aaa", marginTop: 6 }}>
                 {r.createdAt ? new Date(r.createdAt).toLocaleString() : ""}
-              </span>
+              </div>
             </div>
-            {r.clubName && r.clubId && (
-              <p
-                className="small"
-                style={{ marginTop: 6, opacity: 0.7, color: "#000" }}
-              >
-                <strong>Community Id:</strong> {r.clubId}
-              </p>
-            )}
 
-            <p className="small" style={{ marginTop: 10, color: "#000" }}>
-              <strong>User:</strong> {r.requesterEmail ?? "—"} (
-              {r.requesterUserId ?? "—"})
-            </p>
+            {/* ── Admin notes ── */}
+            <div style={{ flex: "1 1 200px", minWidth: 160 }}>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#555", fontFamily: "Sarabun", marginBottom: 4 }}>
+                Admin note <span style={{ fontWeight: 400, color: "#aaa" }}>(sent if rejected)</span>
+              </label>
+              <textarea
+                rows={3}
+                value={notes[r.recordId] ?? ""}
+                onChange={(e) => setNotes((n) => ({ ...n, [r.recordId]: e.target.value }))}
+                placeholder="Reason"
+                style={{
+                  width: "100%",
+                  padding: "8px 10px",
+                  background: "#fff",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontFamily: "Sarabun",
+                  resize: "vertical",
+                  color: "#000",
+                }}
+              />
+            </div>
 
-            <p className="small" style={{ marginTop: 10, color: "#000" }}>
-              <strong>Message:</strong> {r.message ?? "—"}
-            </p>
-
-            <label className="label" style={{ marginTop: 12, color: "#000" }}>
-              Admin notes (optional)
-            </label>
-            <textarea
-              className="input"
-              rows={3}
-              value={notes[r.recordId] ?? ""}
-              onChange={(e) =>
-                setNotes((n) => ({ ...n, [r.recordId]: e.target.value }))
-              }
-              placeholder="Reason / next steps"
-            />
-
-            <div className="row" style={{ marginTop: 12, color: "#000" }}>
+            {/* ── Actions ── */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, flexShrink: 0, alignSelf: "center" }}>
               <button
-                className="btn"
-                onClick={() => act(r.recordId, "approve")}
+                onClick={() => !busy[r.recordId] && act(r.recordId, "approve")}
                 disabled={!!busy[r.recordId]}
+                style={{
+                  padding: "8px 20px", background: "#FDF0A6", border: "1px solid #FDF0A6",
+                  borderRadius: 20, color: "#000", fontSize: 14, fontFamily: "Sarabun",
+                  fontWeight: 600, cursor: busy[r.recordId] ? "not-allowed" : "pointer",
+                  opacity: busy[r.recordId] ? 0.6 : 1,
+                  boxShadow: "0 6px 14px rgba(251,191,36,0.14)", whiteSpace: "nowrap",
+                }}
               >
                 {busy[r.recordId] ? "Working..." : "Approve"}
               </button>
-
               <button
-                className="btn"
-                onClick={() => act(r.recordId, "reject")}
+                onClick={() => !busy[r.recordId] && act(r.recordId, "reject")}
                 disabled={!!busy[r.recordId]}
+                style={{
+                  padding: "8px 20px", background: "#FEE2E2", border: "1px solid #FCA5A5",
+                  borderRadius: 20, color: "#7F1D1D", fontSize: 14, fontFamily: "Sarabun",
+                  fontWeight: 600, cursor: busy[r.recordId] ? "not-allowed" : "pointer",
+                  opacity: busy[r.recordId] ? 0.6 : 1, whiteSpace: "nowrap",
+                }}
               >
                 {busy[r.recordId] ? "Working..." : "Reject"}
               </button>
-
-              <span className="small" style={{ opacity: 0.7, color: "#000" }}>
-                id: {r.recordId}
-              </span>
             </div>
           </div>
         ))}
