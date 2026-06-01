@@ -76,7 +76,7 @@ function normalizeList(input: any): string[] {
 
 export default function DirectoryClient({ clubs, session }: Props) {
   const [typeSelected, setTypeSelected] = useState<string[]>([]);
-  const [statusSelected, setStatusSelected] = useState<string[]>(["verified"]);
+  const [statusSelected, setStatusSelected] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
   const [query, setQuery] = useState("");
