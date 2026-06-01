@@ -22,6 +22,20 @@ const COMMUNITY_TYPE_OPTIONS = [
 
 type ClubOption = { id: string; name: string; status: string };
 
+const STOPWORDS = /\b(club|org|organization|association|society|chapter|team|group|the|a|an|at|ucsc|uc)\b/g;
+
+function normalize(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .replace(STOPWORDS, "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .sort()
+    .join(" ");
+}
+
 export default function NewClubPage() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -32,7 +46,7 @@ export default function NewClubPage() {
   const [err, setErr] = useState<string | null>(null);
   const [allClubs, setAllClubs] = useState<ClubOption[]>([]);
   const [fuzzyMatches, setFuzzyMatches] = useState<ClubOption[]>([]);
-  // const [fuzzyMatches, setFuzzyMatches] = useState<(ClubOption & { score: number })[]>([]);
+  const [isExactMatch, setIsExactMatch] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
   const [warningShown, setWarningShown] = useState(false);
 
@@ -73,18 +87,31 @@ export default function NewClubPage() {
 
     setSaving(true);
 
-    const fuse = new Fuse(allClubs, { keys: ["name"], threshold:0.5, minMatchCharLength:2});
-    const results = fuse.search(trimmedName).slice(0, 3).map((r) => r.item);
+    const normalizedInput = normalize(trimmedName);
 
-    // const results = fuse.search(trimmedName)
-    // .filter((r) => (1 - (r.score ?? 0)) < 0.85) // drop anything scoring 85%+ unless it's a real match
-    // .slice(0, 3)
-    // .map((r) => ({ ...r.item, score: Math.round((1 - (r.score ?? 0)) * 100) }))
-    // // .sort((a, b) => a.name.localeCompare(b.name));
+    // Stage 1: exact match on normalized names
+    const exact = normalizedInput
+      ? allClubs.filter((c) => normalize(c.name) === normalizedInput)
+      : [];
 
-    if (results.length > 0) {
+    if (exact.length > 0) {
       setSaving(false);
-      setFuzzyMatches(results);
+      setFuzzyMatches(exact.slice(0, 3));
+      setIsExactMatch(true);
+      setWarningShown(true);
+      setTimeout(() => popupRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
+      return;
+    }
+
+    // Stage 2: fuzzy match on normalized names
+    const normalizedClubs = allClubs.map((c) => ({ ...c, _normalized: normalize(c.name) }));
+    const fuse = new Fuse(normalizedClubs, { keys: ["_normalized"], threshold: 0.35, minMatchCharLength: 2 });
+    const fuzzy = fuse.search(normalizedInput).slice(0, 3).map((r) => r.item);
+
+    if (fuzzy.length > 0) {
+      setSaving(false);
+      setFuzzyMatches(fuzzy);
+      setIsExactMatch(false);
       setWarningShown(true);
       setTimeout(() => popupRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
       return;
@@ -116,7 +143,7 @@ export default function NewClubPage() {
         <input
           className="input"
           value={name}
-          onChange={(e) => { setName(e.target.value); setFuzzyMatches([]); setWarningShown(false); }}
+          onChange={(e) => { setName(e.target.value); setFuzzyMatches([]); setIsExactMatch(false); setWarningShown(false); }}
           required
         />
 
@@ -140,8 +167,10 @@ export default function NewClubPage() {
                 to   { opacity: 1; transform: translateY(0); }
               }
             `}</style>
-            <p style={{ margin: "0 0 0vh 0", fontSize: 14, fontFamily: "Sarabun", fontWeight: 600, color: "#92400E" }}>
-              Were you looking for...
+            <p style={{ margin: "0 0 6px 0", fontSize: 14, fontFamily: "Sarabun", fontWeight: 600, color: "#92400E" }}>
+              {isExactMatch
+                ? "This community already exists:"
+                : "Were you looking for..."}
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 0 }}>
               {fuzzyMatches.map((club) => (
