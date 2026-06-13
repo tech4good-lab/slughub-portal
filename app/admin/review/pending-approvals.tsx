@@ -302,7 +302,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 padding: "0 16px",
                 height: 32,
                 background: "#FDF0A6",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 borderRadius: 20,
                 alignItems: "center",
                 justifyContent: "center",
@@ -323,7 +323,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 padding: "0 16px",
                 height: 32,
                 background: "#FDF0A6",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 borderRadius: 20,
                 alignItems: "center",
                 justifyContent: "center",
@@ -331,7 +331,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 whiteSpace: "nowrap",
               }}
             >
-              Back to Directory
+              Directory
             </Link>
           </div>
         </div>
