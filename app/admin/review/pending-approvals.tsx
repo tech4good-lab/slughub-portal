@@ -405,8 +405,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     disabled={busy[c.recordId]}
                     style={{
                       padding: "8px 16px",
-                      background: "#FDF0A6",
-                      border: "1px solid #FDF0A6",
+                      background: "#0BDA51",
+                      border: "1px solid #0BDA51",
                       borderRadius: 20,
                       color: "#000",
                       fontSize: 14,
@@ -427,8 +427,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     disabled={busy[c.recordId]}
                     style={{
                       padding: "8px 16px",
-                      background: "#FDF0A6",
-                      border: "1px solid #FDF0A6",
+                      background: "#F88379",
+                      border: "1px solid #F88379",
                       borderRadius: 20,
                       color: "#000",
                       fontSize: 14,

@@ -66,6 +66,7 @@ export async function GET(
   }
 }
 
+// app/api/leader/clubs/[clubId]/route.ts
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ clubId: string }> },
@@ -91,29 +92,36 @@ export async function POST(
     ? String(body.communityType).trim()
     : undefined;
 
+  const data: any = {
+    name: String(body.name ?? "").trim(),
+    description: String(body.description ?? "").trim(),
+    contactName: String(body.contactName ?? "").trim(),
+    contactEmail: String(body.contactEmail ?? "").trim(),
+    communityType: rawCommunityType as any,
+    calendarUrl: String(body.calendarUrl ?? "").trim(),
+    discordUrl: String(body.discordUrl ?? "").trim(),
+    websiteUrl: String(body.websiteUrl ?? "").trim(),
+    instagramUrl: String(body.instagramUrl ?? "").trim(),
+    linkedinUrl: String(body.linkedinUrl ?? "").trim(),
+    updatedAt: new Date(),
+  };
+
+  if (role === "admin") {
+    // Admin edits publish immediately, no re-review needed.
+    data.status = "approved";
+    data.reviewedAt = new Date();
+  } else {
+    // Leader edits go back into the approval queue.
+    data.status = "pending";
+    data.submittedAt = new Date();
+    data.reviewedAt = null;
+    data.reviewNotes = null;
+  }
+
   try {
     const updatedClub = await prisma.club.update({
       where: { id: clubId },
-      data: {
-        name: String(body.name ?? "").trim(),
-        description: String(body.description ?? "").trim(),
-        contactName: String(body.contactName ?? "").trim(),
-        contactEmail: String(body.contactEmail ?? "").trim(),
-
-        communityType: rawCommunityType as any,
-
-        calendarUrl: String(body.calendarUrl ?? "").trim(),
-        discordUrl: String(body.discordUrl ?? "").trim(),
-        websiteUrl: String(body.websiteUrl ?? "").trim(),
-        instagramUrl: String(body.instagramUrl ?? "").trim(),
-        linkedinUrl: String(body.linkedinUrl ?? "").trim(),
-
-        status: "pending",
-        submittedAt: new Date(),
-        updatedAt: new Date(),
-        reviewedAt: null,
-        reviewNotes: null,
-      },
+      data,
     });
 
     try {
@@ -123,10 +131,7 @@ export async function POST(
     }
 
     return NextResponse.json({
-      club: {
-        recordId: updatedClub.id,
-        ...updatedClub,
-      },
+      club: { recordId: updatedClub.id, ...updatedClub },
     });
   } catch (error: any) {
     if (error.code === "P2025") {
