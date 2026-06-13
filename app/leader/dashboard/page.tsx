@@ -259,23 +259,23 @@ export default async function LeaderDashboard() {
               }}
             >
               {isAdmin && (
-              <>
-                <Link
-                  className="btn"
-                  href="/admin/review"
-                  style={{ whiteSpace: "nowrap", flexShrink: 0 }}
-                >
-                  Community Approvals
-                </Link>
-                <Link
-                  className="btn"
-                  href="/admin/access"
-                  style={{ whiteSpace: "nowrap", flexShrink: 0 }}
-                >
-                  Access Requests
-                </Link>
-              </>
-            )}
+                <>
+                  <Link
+                    className="btn"
+                    href="/admin/review"
+                    style={{ whiteSpace: "nowrap", flexShrink: 0 }}
+                  >
+                    Community Approvals
+                  </Link>
+                  <Link
+                    className="btn"
+                    href="/admin/access"
+                    style={{ whiteSpace: "nowrap", flexShrink: 0 }}
+                  >
+                    Access Requests
+                  </Link>
+                </>
+              )}
               <Link
                 className="btn"
                 href="/directory"

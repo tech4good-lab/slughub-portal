@@ -139,7 +139,7 @@ export default function AccessRequestsList() {
                 onClick={() => !busy[r.recordId] && act(r.recordId, "approve")}
                 disabled={!!busy[r.recordId]}
                 style={{
-                  padding: "8px 20px", background: "#FDF0A6", border: "1px solid #FDF0A6",
+                  padding: "8px 20px", background: "#B8FFB8", border: "1px solid #0BDA51",
                   borderRadius: 20, color: "#000", fontSize: 14, fontFamily: "Sarabun",
                   fontWeight: 600, cursor: busy[r.recordId] ? "not-allowed" : "pointer",
                   opacity: busy[r.recordId] ? 0.6 : 1,

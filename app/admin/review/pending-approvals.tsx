@@ -397,7 +397,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     flexWrap: "wrap",
                     flexShrink: 0,
                   }}
-                >
+                > 
+                {/* helo */}
                   <button
                     onClick={() =>
                       !busy[c.recordId] && act(c.recordId, "approve")
@@ -405,7 +406,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     disabled={busy[c.recordId]}
                     style={{
                       padding: "8px 16px",
-                      background: "#0BDA51",
+                      background: "#B8FFB8",
                       border: "1px solid #0BDA51",
                       borderRadius: 20,
                       color: "#000",
@@ -427,8 +428,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     disabled={busy[c.recordId]}
                     style={{
                       padding: "8px 16px",
-                      background: "#F88379",
-                      border: "1px solid #F88379",
+                      background: "#FEE2E2",
+                      border: "1px solid #FCA5A5",
                       borderRadius: 20,
                       color: "#000",
                       fontSize: 14,

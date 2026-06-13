@@ -106,16 +106,17 @@ export async function POST(
     updatedAt: new Date(),
   };
 
+  // Edits to an existing club go live immediately for both leaders and
+  // admins — no re-review needed. We intentionally do NOT touch
+  // `status`, `submittedAt`, or `reviewNotes` here, so an approved club
+  // stays approved (and a pending/rejected one keeps its existing
+  // review state, independent of content edits).
   if (role === "admin") {
-    // Admin edits publish immediately, no re-review needed.
-    data.status = "approved";
+    const allowedStatuses = ["approved", "pending", "rejected"];
+    data.status = allowedStatuses.includes(String(body.status))
+      ? String(body.status)
+      : "approved";
     data.reviewedAt = new Date();
-  } else {
-    // Leader edits go back into the approval queue.
-    data.status = "pending";
-    data.submittedAt = new Date();
-    data.reviewedAt = null;
-    data.reviewNotes = null;
   }
 
   try {
@@ -126,8 +127,10 @@ export async function POST(
 
     try {
       revalidatePath("/leader/dashboard");
+      revalidatePath("/");
+      revalidatePath(`/clubs/${clubId}`);
     } catch (e) {
-      console.warn("Failed to revalidate leader dashboard", e);
+      console.warn("Failed to revalidate paths after club update", e);
     }
 
     return NextResponse.json({
@@ -181,3 +184,5 @@ export async function DELETE(
     );
   }
 }
+
+
