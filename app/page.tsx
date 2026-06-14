@@ -161,7 +161,7 @@ function Header({
                 <Link
                   className="btn"
                   href="/admin/access"
-                  style={{ whiteSpace: "nowrap" }}
+                  style={{ position: "relative", whiteSpace: "nowrap" }}
                 >
                   Access Requests
                 </Link>

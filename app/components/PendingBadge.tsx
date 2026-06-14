@@ -2,14 +2,18 @@
 
 import { useEffect, useState } from "react";
 
-export default function PendingBadge() {
+export default function PendingBadge({
+  endpoint = "/api/admin/clubs/pending/count",
+}: {
+  endpoint?: string;
+}) {
   const [count, setCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const res = await fetch("/api/admin/clubs/pending/count", {
+        const res = await fetch(endpoint, {
           cache: "no-store",
         });
 
@@ -28,7 +32,7 @@ export default function PendingBadge() {
 
     const interval = setInterval(fetchCount, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [endpoint]);
 
   if (loading || count === null || count === 0) {
     return null;
