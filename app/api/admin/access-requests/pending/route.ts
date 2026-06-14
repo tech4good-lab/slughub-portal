@@ -19,6 +19,11 @@ export async function GET() {
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        user: {
+          select: {name: true},
+        },
+      },
     });
 
     const clubIds = Array.from(
@@ -43,6 +48,7 @@ export async function GET() {
     const requests = pendingRequests.map((r: any) => ({
       recordId: r.id,
       ...r,
+      requesterName: r.user?.name ?? null,
       clubName: clubNameById.get(r.clubId) ?? "Unknown Club",
     }));
 

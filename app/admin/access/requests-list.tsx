@@ -103,6 +103,9 @@ export default function AccessRequestsList() {
                 <strong>Name:</strong> {r.requesterName || <em style={{ color: "#999" }}>No name provided</em>}
               </div>
               <div style={{ fontSize: 13, fontFamily: "Sarabun", color: "#555", marginBottom: 2 }}>
+                <strong>Email:</strong> {r.requesterEmail || <em style={{ color: "#999" }}>No email provided</em>}
+              </div>
+              <div style={{ fontSize: 13, fontFamily: "Sarabun", color: "#555", marginBottom: 2 }}>
                 <strong>Message:</strong> {r.message || <em style={{ color: "#999" }}>No message provided</em>}
               </div>
               <div style={{ fontSize: 12, fontFamily: "Sarabun", color: "#aaa", marginTop: 6 }}>
