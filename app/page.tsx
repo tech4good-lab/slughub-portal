@@ -164,6 +164,7 @@ function Header({
                   style={{ position: "relative", whiteSpace: "nowrap" }}
                 >
                   Access Requests
+                  <PendingBadge endpoint="/api/admin/access-requests/pending/count" />
                 </Link>
               </div>
             )}
@@ -172,7 +173,7 @@ function Header({
                 <Link
                   className="btn"
                   href="/leader/dashboard"
-                  style={{ whiteSpace: "nowrap" }}
+                  style={{ whiteSpace: "nowrap", flexShrink: 0, alignSelf: "flex-end" }}
                 >
                   Dashboard
                 </Link>
