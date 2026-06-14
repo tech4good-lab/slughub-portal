@@ -10,6 +10,7 @@ type Req = {
   clubName?: string;
   message?: string;
   createdAt?: string;
+  requesterName?: string;
 };
 
 async function safeJson(res: Response) {
@@ -99,7 +100,7 @@ export default function AccessRequestsList() {
                 {r.clubName ?? r.clubId ?? "Unknown Community"}
               </div>
               <div style={{ fontSize: 13, fontFamily: "Sarabun", color: "#555", marginBottom: 2 }}>
-                <strong>User:</strong> {r.requesterEmail ?? "—"}
+                <strong>Name:</strong> {r.requesterName || <em style={{ color: "#999" }}>No name provided</em>}
               </div>
               <div style={{ fontSize: 13, fontFamily: "Sarabun", color: "#555", marginBottom: 2 }}>
                 <strong>Message:</strong> {r.message || <em style={{ color: "#999" }}>No message provided</em>}

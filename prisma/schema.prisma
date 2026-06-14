@@ -10,6 +10,7 @@ model User {
   id             String          @id @default(uuid())
   email          String          @unique
   passwordHash   String?
+  name           String?         // ← add this
   role           String          @default("leader")
   accessRequests AccessRequest[]
   ownedEvents    ClubEvent[]     @relation("EventOwner")

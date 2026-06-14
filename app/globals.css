@@ -759,16 +759,22 @@ a:hover {
 
 .directoryDropdownItem {
   display: flex;
-  align-items: flex-start; 
+  align-items: flex-start;
   gap: 10px;
   padding: 6px 2px;
   font-size: 13px;
   color: #111827;
-  flex-wrap: nowrap;  
+  flex-wrap: nowrap;
+  cursor: pointer;
 }
 .directoryDropdownItem input[type="checkbox"] {
-  flex-shrink: 0;   /* keep checkbox from squishing */
-  margin-top: 2px;  /* optically align with first line of text */
+  flex-shrink: 0;
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  cursor: pointer;
 }
 
 .directoryDropdownHint {
@@ -915,8 +921,8 @@ a:hover {
   }
   
   .directoryDropdownItem {
-    flex-wrap: wrap;
-    align-items: center;
+    flex-wrap: nowrap;
+    align-items: flex-start;
   }
 }
 
