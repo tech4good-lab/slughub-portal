@@ -10,8 +10,8 @@ model User {
   id             String          @id @default(uuid())
   email          String          @unique
   passwordHash   String?
-  name           String?         // ← add this
   role           String          @default("leader")
+  name           String?
   accessRequests AccessRequest[]
   ownedEvents    ClubEvent[]     @relation("EventOwner")
   memberships    ClubMember[]
@@ -58,13 +58,13 @@ model AccessRequest {
   id              String    @id @default(uuid())
   requesterUserId String
   clubId          String
-  club            Club     @relation(fields: [clubId], references: [id]) 
   requesterEmail  String
   message         String
   reviewNotes     String?
   createdAt       DateTime  @default(now())
   reviewedAt      DateTime? @updatedAt
   status          Status    @default(pending)
+  club            Club      @relation(fields: [clubId], references: [id])
   user            User      @relation(fields: [requesterUserId], references: [id])
 }
 

@@ -33,6 +33,7 @@ export const authOptions: NextAuthOptions = {
           data: { name: user.name },
         });
       }
+      console.log("signIn user object:", user); // check if user.name exists
       return true;
     },
 
