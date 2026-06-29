@@ -58,7 +58,7 @@ const COMMUNITY_TYPE_LABEL: Record<string, string> = {
 };
 
 const STATUS_OPTIONS = [
-  { label: "Unofficial", value: "unofficial" },
+  { label: "Unaffliated", value: "unofficial" },
   { label: "Verified", value: "verified" },
 ] as const;
 
