@@ -108,7 +108,7 @@ export async function POST(req: Request) {
     try {
       const recipients = ["communityrag-group@ucsc.edu"];
       const subj = `New club request: ${newClub.name}`;
-      const emailBody = `A new club was submitted by ${(session as any)?.user?.email ?? userId}.
+      const emailBody = `A new club was submitted by ${(session as any)?.user?.name ?? userId} (${(session as any)?.user.?.email ?? "no email"}).
 
       Name: ${newClub.name}
       ClubId: ${newClub.id}
