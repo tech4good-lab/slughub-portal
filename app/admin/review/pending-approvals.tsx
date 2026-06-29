@@ -302,7 +302,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 padding: "0 16px",
                 height: 32,
                 background: "#FDF0A6",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 borderRadius: 20,
                 alignItems: "center",
                 justifyContent: "center",
@@ -323,7 +323,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 padding: "0 16px",
                 height: 32,
                 background: "#FDF0A6",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 borderRadius: 20,
                 alignItems: "center",
                 justifyContent: "center",
@@ -331,7 +331,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 whiteSpace: "nowrap",
               }}
             >
-              Back to Directory
+              Directory
             </Link>
           </div>
         </div>
@@ -397,7 +397,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     flexWrap: "wrap",
                     flexShrink: 0,
                   }}
-                >
+                > 
+                {/* helo */}
                   <button
                     onClick={() =>
                       !busy[c.recordId] && act(c.recordId, "approve")
@@ -405,8 +406,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     disabled={busy[c.recordId]}
                     style={{
                       padding: "8px 16px",
-                      background: "#FDF0A6",
-                      border: "1px solid #FDF0A6",
+                      background: "#B8FFB8",
+                      border: "1px solid #0BDA51",
                       borderRadius: 20,
                       color: "#000",
                       fontSize: 14,
@@ -427,8 +428,8 @@ export default function PendingApprovals({ email }: { email?: string }) {
                     disabled={busy[c.recordId]}
                     style={{
                       padding: "8px 16px",
-                      background: "#FDF0A6",
-                      border: "1px solid #FDF0A6",
+                      background: "#FEE2E2",
+                      border: "1px solid #FCA5A5",
                       borderRadius: 20,
                       color: "#000",
                       fontSize: 14,

@@ -759,21 +759,26 @@ a:hover {
 
 .directoryDropdownItem {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   padding: 6px 2px;
   font-size: 13px;
   color: #111827;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  cursor: pointer;
+}
+.directoryDropdownItem input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  cursor: pointer;
 }
 
 .directoryDropdownHint {
-  width: 100%;
-  margin-left: 24px;
-  margin-top: -6px;
-  font-size: 12px;
-  color: rgba(17, 24, 39, 0.7);
-  line-height: 1.4;
+  display: none;  /* hide on all screens by default */
 }
 
 .directoryHome .card {
@@ -903,6 +908,21 @@ a:hover {
 
   .filtersList {
     grid-template-columns: 1fr;
+  }
+
+  .directoryDropdownHint {
+    display: block;
+    width: 100%;
+    margin-left: 24px;
+    margin-top: -4px;
+    font-size: 12px;
+    color: rgba(17, 24, 39, 0.7);
+    line-height: 1.4;
+  }
+  
+  .directoryDropdownItem {
+    flex-wrap: nowrap;
+    align-items: flex-start;
   }
 }
 

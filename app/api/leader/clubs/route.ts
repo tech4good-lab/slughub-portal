@@ -22,16 +22,10 @@ export async function GET() {
 
   try {
     const userClubs = await prisma.club.findMany({
-      where: {
-        members: {
-          some: {
-            userId: userId,
-          },
-        },
+      where: role === "admin" ? {} : {
+        members: { some: { userId: userId } },
       },
-      orderBy: {
-        updatedAt: "desc",
-      },
+      orderBy: { updatedAt: "desc" },
     });
 
     const clubs = userClubs.map((club: any) => ({

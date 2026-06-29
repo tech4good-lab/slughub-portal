@@ -14,6 +14,7 @@ export default async function AdminAccessPage() {
 
   const email = (session as any)?.user?.email ?? "";
 
+
   return (
     <div
       style={{
@@ -65,7 +66,7 @@ export default async function AdminAccessPage() {
                   margin: 0,
                 }}
               >
-                Admin: Leader Access Requests
+                Admin: Access Requests
               </div>
               <div
                 style={{
@@ -76,7 +77,7 @@ export default async function AdminAccessPage() {
                   margin: "4px 0 0 0",
                 }}
               >
-                Logged in as: {email ?? "<email>"}
+                Logged in as: {email ?? "<email>"} | {role ?? "<role>"}
               </div>
             </div>
           </div>
@@ -90,7 +91,7 @@ export default async function AdminAccessPage() {
                 height: 32,
                 padding: "0 16px",
                 background: "#FDF0A6",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 borderRadius: 20,
                 alignItems: "center",
                 justifyContent: "center",
@@ -112,7 +113,7 @@ export default async function AdminAccessPage() {
                 height: 32,
                 padding: "0 16px",
                 background: "#FDF0A6",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 borderRadius: 20,
                 alignItems: "center",
                 justifyContent: "center",
@@ -124,7 +125,7 @@ export default async function AdminAccessPage() {
                 textDecoration: "none",
               }}
             >
-              Back to Directory
+              Directory
             </Link>
           </div>
         </div>

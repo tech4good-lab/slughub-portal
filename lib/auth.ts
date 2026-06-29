@@ -14,29 +14,34 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user }) {
       if (!user.email) return false;
-
       const email = user.email.toLowerCase().trim();
 
-      const existing = await prisma.user.findUnique({
-        where: { email },
-      });
+      const existing = await prisma.user.findUnique({ where: { email } });
 
       if (!existing) {
-        // Create the user if they don't exist
         await prisma.user.create({
           data: {
             email,
-            role: "leader", // Default role
-            // name: user.name, // Optional: sync name from Google
+            name: user.name ?? null,  // ← save Google name
+            role: "leader",
           },
         });
+      } else if (user.name && !existing.name) {
+        // backfill name for existing users who signed in before this change
+        await prisma.user.update({
+          where: { email },
+          data: { name: user.name },
+        });
       }
+      console.log("signIn user object:", user); // check if user.name exists
       return true;
     },
+
     async jwt({ token, user }) {
       if (user) {
         token.userId = user.id;
         token.role = (user as any).role;
+        token.name = user.name;  // ← add this
       }
 
       if (!token.role || !token.userId) {
@@ -46,6 +51,7 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.userId = dbUser.id;
           token.role = dbUser.role;
+          token.name = dbUser.name;  // ← add this
         }
       }
       return token;
@@ -55,6 +61,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session as any).userId = token.userId;
         (session as any).role = token.role;
+        (session as any).userName = token.name;  // ← add this
       }
       return session;
     },

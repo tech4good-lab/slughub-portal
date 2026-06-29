@@ -7,6 +7,8 @@ import EventsCacheClient from "@/app/components/EventsCacheClient";
 import ClubsCacheClient from "@/app/components/ClubsCacheClient";
 import LogoutButton from "@/app/leader/edit/logout-button";
 import DeleteClubButton from "./delete-club-button";
+import PendingBadge from "@/app/components/PendingBadge";
+
 
 export const dynamic = "force-dynamic";
 
@@ -63,28 +65,41 @@ export default async function LeaderDashboard() {
   let eventsByClub: Record<string, any[]> = {};
 
   try {
-    const userMemberships = await prisma.clubMember.findMany({
-      where: { userId: userId },
-      include: {
-        club: {
-          include: {
-            events: {
-              orderBy: { eventDate: "desc" },
+    if (isAdmin) {
+      const allClubs = await prisma.club.findMany({
+        include: {
+          events: { orderBy: { eventDate: "desc" } },
+        },
+        orderBy: { updatedAt: "desc" },
+      });
+      for (const club of allClubs) {
+        clubs.push(club);
+        eventsByClub[club.id] = club.events.map((event: any) => ({ ...event }));
+      }
+    } else {
+      const userMemberships = await prisma.clubMember.findMany({
+        where: { userId: userId },
+        include: {
+          club: {
+            include: {
+              events: {
+                orderBy: { eventDate: "desc" },
+              },
             },
           },
         },
-      },
-    });
+      });
 
-    for (const membership of userMemberships) {
-      if (membership.club) {
-        const club = membership.club;
+      for (const membership of userMemberships) {
+        if (membership.club) {
+          const club = membership.club;
 
-        clubs.push(club);
+          clubs.push(club);
 
-        eventsByClub[club.id] = club.events.map((event: any) => ({
-          ...event,
-        }));
+          eventsByClub[club.id] = club.events.map((event: any) => ({
+            ...event,
+          }));
+        }
       }
     }
 
@@ -99,7 +114,9 @@ export default async function LeaderDashboard() {
       style={{
         minHeight: "100dvh",
         background: "rgb(237, 244, 255)",
-        overflow: "auto",
+        // overflow: "auto",
+        overflowX: "hidden",
+        overflowY: "auto",
         display: "flex",
         flexDirection: "column",
         padding: "clamp(12px, 3vw, 20px)",
@@ -223,7 +240,7 @@ export default async function LeaderDashboard() {
                   fontSize: "clamp(24px, 5vw, 32px)",
                 }}
               >
-                Leader Dashboard
+                Dashboard
               </h1>
             </div>
 
@@ -236,13 +253,13 @@ export default async function LeaderDashboard() {
                 gap: "12px",
                 flexWrap: "nowrap",
                 overflowX: "auto",
+                overflowY: "visible",
                 paddingBottom: "4px",
+                paddingTop: "9px",
               }}
             >
               {isAdmin && (
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
-                >
+                <>
                   <Link
                     className="btn"
                     href="/admin/review"
@@ -257,7 +274,7 @@ export default async function LeaderDashboard() {
                   >
                     Access Requests
                   </Link>
-                </div>
+                </>
               )}
               <Link
                 className="btn"
@@ -282,7 +299,7 @@ export default async function LeaderDashboard() {
                 margin: "0 0 12px 0",
               }}
             >
-              Logged in as: {session?.user?.email}
+              Logged in as: {session?.user?.email} | {role ?? "<role>"}
             </p>
             <div
               style={{ width: "100%", height: 0.5, background: "#333333" }}
@@ -592,7 +609,7 @@ export default async function LeaderDashboard() {
                         ) : (
                           past.slice(0, 4).map((e: any) => (
                             <div
-                              key={e.recordId}
+                              key={e.id}
                               style={{
                                 fontSize: 12,
                                 color: "#111",
@@ -662,9 +679,10 @@ export default async function LeaderDashboard() {
           target="_blank"
           rel="noreferrer"
           style={{
-            color: "#FDF0A6",
-            textDecoration: "underline",
-            WebkitTextStroke: "0.4px black",
+                  color: "#FDF0A6",
+                  textDecoration: "none",
+                  fontWeight: "1000",
+                  WebkitTextStroke: "0.3px black",
           }}
         >
           Tech4Good

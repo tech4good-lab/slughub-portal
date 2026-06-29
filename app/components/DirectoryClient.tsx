@@ -9,6 +9,26 @@ type Props = {
   session: any;
 };
 
+// Accent colors for community types
+const CLUB_TYPE_COLORS: Record<string, [string, string, string]> = {
+  Academic:                   ["#EEF2FF", "#C7D2FE", "#3730A3"],
+  Campus_Department_Program:  ["#F0FDF4", "#BBF7D0", "#166534"],
+  Cultural_and_Identity:      ["#FFF7ED", "#FED7AA", "#9A3412"],
+  Greek_letter:               ["#FDF4FF", "#E9D5FF", "#6B21A8"],
+  Media_and_Broadcasting:     ["#FFF1F2", "#FECDD3", "#9F1239"],
+  Performing_and_Visual_Arts: ["#FFFBEB", "#FDE68A", "#92400E"],
+  Politics_and_Advocacy:      ["#EFF6FF", "#BFDBFE", "#1E40AF"],
+  Professional_and_Career:    ["#F0FDFA", "#99F6E4", "#115E59"],
+  Research: ["#FEFCE8", "#FEF08A", "#713F12"],
+  Sports_and_Recreation:      ["#FFF7ED", "#FDBA74", "#9A3412"],
+  Other:                      ["#F9FAFB", "#E5E7EB", "#374151"],
+};
+
+function getTypeColors(communityType: any): [string, string, string] {
+  const t = String(communityType ?? "Other");
+  return CLUB_TYPE_COLORS[t] ?? CLUB_TYPE_COLORS["Other"];
+}
+
 const COMMUNITY_TYPE_OPTIONS = [
   { label: "Academic", value: "Academic" },
   { label: "Campus Department/Program", value: "Campus_Department_Program" },
@@ -22,6 +42,20 @@ const COMMUNITY_TYPE_OPTIONS = [
   { label: "Sports and Recreation", value: "Sports_and_Recreation" },
   { label: "Other", value: "Other" },
 ] as const;
+
+const COMMUNITY_TYPE_LABEL: Record<string, string> = {
+  Academic: "Academic",
+  Campus_Department_Program: "Campus Dept/Program",
+  Cultural_and_Identity: "Cultural & Identity",
+  Greek_letter: "Greek-letter",
+  Media_and_Broadcasting: "Media & Broadcasting",
+  Performing_and_Visual_Arts: "Performing & Visual Arts",
+  Politics_and_Advocacy: "Politics & Advocacy",
+  Professional_and_Career: "Professional & Career",
+  Research: "Research",
+  Sports_and_Recreation: "Sports & Recreation",
+  Other: "Other",
+};
 
 const STATUS_OPTIONS = [
   { label: "Unofficial", value: "unofficial" },
@@ -41,14 +75,8 @@ function normalizeList(input: any): string[] {
 }
 
 export default function DirectoryClient({ clubs, session }: Props) {
-  const [typeSelected, setTypeSelected] = useState<string[]>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("typeSelected");
-      if (saved) return JSON.parse(saved);
-    }
-    return [];
-  });
-  const [statusSelected, setStatusSelected] = useState<string[]>(["verified"]);
+  const [typeSelected, setTypeSelected] = useState<string[]>([]);
+  const [statusSelected, setStatusSelected] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
   const [query, setQuery] = useState("");
@@ -151,7 +179,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search communities by name..."
-            style={{ background: "#ffffff", fontWeight: 700, color: "#000" }}
+            style={{ background: "#ffffff", fontWeight: 700, color: "#000", zIndex: "1", position: "relative" }}
           />
         </div>
         <details className="directoryDropdown" ref={typeDropdownRef}>
@@ -237,31 +265,67 @@ export default function DirectoryClient({ clubs, session }: Props) {
       <div style={{ width: "100%" }}>
         <section>
           <div className="directoryGrid">
-            {filtered.map((c: any) => (
-              <Link
-                key={c.id}
-                href={`/clubs/${(c as any).clubId ?? c.id}`}
-                className="card"
-              >
-                <div>
-                  <h2 className="directoryCardTitle">{c.name}</h2>
-                  <p
-                    className="small"
-                    style={{
-                      margin: 0,
-                      lineHeight: 1.6,
-                      color: "rgba(0,0,0,0.6)",
-                    }}
-                  >
-                    {(c.description ?? "").slice(0, 140) ||
-                      "No description yet."}
-                    {(c.description ?? "").length > 140 ? "..." : ""}
-                  </p>
-                </div>
+            {filtered.map((c: any) => {
+              const [bgColor, borderColor, accentText] = getTypeColors(c.communityType);
+              return (
+                <Link
+                  key={c.id}
+                  href={`/clubs/${(c as any).clubId ?? c.id}`}
+                  className="card"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    // borderTop: `3px solid ${borderColor}`,
+                  }}
+                >
+                  {/* type badge */}
+                  {c.communityType && (
+                    <span
+                      style={{
+                        display: "inline-block",
+                        alignSelf: "flex-start",
+                        marginBottom: 10,
+                        padding: "3px 9px",
+                        borderRadius: 6,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
+                        background: bgColor,
+                        color: accentText,
+                        // border: `1px solid ${borderColor}`,
+                      }}
+                    >
+                      {COMMUNITY_TYPE_OPTIONS.find((o) => o.value === c.communityType)?.label ?? c.communityType}
+                    </span>
+                  )}
 
-                <div className="directoryCardLearn">Learn more ...</div>
-              </Link>
-            ))}
+                  {/* card body — grows to fill available space */}
+                  <div style={{ flex: 1 }}>
+                    <h2 className="directoryCardTitle">{c.name}</h2>
+                    <p
+                      className="small"
+                      style={{
+                        margin: 0,
+                        lineHeight: 1.6,
+                        color: "rgba(0,0,0,0.6)",
+                      }}
+                    >
+                      {(c.description ?? "").slice(0, 140) || "No description yet."}
+                      {(c.description ?? "").length > 140 ? "..." : ""}
+                    </p>
+                  </div>
+
+                  {/* pinned footer */}
+                  <div
+                    className="directoryCardLearn"
+                    style={{ color: "rgb(51,78,91)" }}
+                  >
+                    Learn more...
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
           {filtered.length === 0 && (
@@ -304,8 +368,8 @@ export default function DirectoryClient({ clubs, session }: Props) {
                 style={{
                   color: "#FDF0A6",
                   textDecoration: "none",
-                  fontWeight: 600,
-                  WebkitTextStroke: "0.4px black",
+                  fontWeight: "1000",
+                  WebkitTextStroke: "0.3px black",
                 }}
               >
                 Tech4Good

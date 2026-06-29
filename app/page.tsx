@@ -80,12 +80,13 @@ function Header({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "2px",
+            gap: "0px",
             backgroundColor: "#b0dbf6",
             height: "45px",
-            padding: "8px",
+            padding: "4px",
             borderRadius: "16px",
             overflow: "hidden",
+            userSelect: "none",
           }}
         >
           <Image
@@ -93,13 +94,20 @@ function Header({
             alt="SlugPath Logo"
             width={38}
             height={38}
-            style={{ objectFit: "contain" }}
+            style={{ 
+              objectFit: "contain",
+              width: "clamp(28px, 4vw, 38px)",
+              height: "clamp(28px, 4vw, 38px)",
+              marginLeft: "5px"
+
+             }}
           />
           <span
             style={{
-              marginLeft: "4px",
-              fontSize: "1.1rem",
-              fontWeight: "600",
+              marginLeft: "3px",
+              fontWeight: "650",
+              fontSize: "clamp(0.75rem, 4vw, 1.1rem)",  // text shrinks
+              marginRight: "7px"
             }}
           >
             SlugPath
@@ -126,6 +134,7 @@ function Header({
           gap: "12px",
           flexWrap: "nowrap",
           overflowX: "auto",
+
         }}
       >
         {session ? (
@@ -138,6 +147,7 @@ function Header({
                   display: "flex",
                   alignItems: "center",
                   gap: "12px",
+                  paddingTop: "10px",
                 }}
               >
                 <Link
@@ -151,9 +161,10 @@ function Header({
                 <Link
                   className="btn"
                   href="/admin/access"
-                  style={{ whiteSpace: "nowrap" }}
+                  style={{ position: "relative", whiteSpace: "nowrap" }}
                 >
                   Access Requests
+                  <PendingBadge endpoint="/api/admin/access-requests/pending/count" />
                 </Link>
               </div>
             )}
@@ -162,7 +173,7 @@ function Header({
                 <Link
                   className="btn"
                   href="/leader/dashboard"
-                  style={{ whiteSpace: "nowrap" }}
+                  style={{ whiteSpace: "nowrap", flexShrink: 0, alignSelf: "flex-end" }}
                 >
                   Dashboard
                 </Link>

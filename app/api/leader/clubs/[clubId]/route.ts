@@ -66,6 +66,7 @@ export async function GET(
   }
 }
 
+// app/api/leader/clubs/[clubId]/route.ts
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ clubId: string }> },
@@ -91,42 +92,49 @@ export async function POST(
     ? String(body.communityType).trim()
     : undefined;
 
+  const data: any = {
+    name: String(body.name ?? "").trim(),
+    description: String(body.description ?? "").trim(),
+    contactName: String(body.contactName ?? "").trim(),
+    contactEmail: String(body.contactEmail ?? "").trim(),
+    communityType: rawCommunityType as any,
+    calendarUrl: String(body.calendarUrl ?? "").trim(),
+    discordUrl: String(body.discordUrl ?? "").trim(),
+    websiteUrl: String(body.websiteUrl ?? "").trim(),
+    instagramUrl: String(body.instagramUrl ?? "").trim(),
+    linkedinUrl: String(body.linkedinUrl ?? "").trim(),
+    updatedAt: new Date(),
+  };
+
+  // Edits to an existing club go live immediately for both leaders and
+  // admins — no re-review needed. We intentionally do NOT touch
+  // `status`, `submittedAt`, or `reviewNotes` here, so an approved club
+  // stays approved (and a pending/rejected one keeps its existing
+  // review state, independent of content edits).
+  if (role === "admin") {
+    const allowedStatuses = ["approved", "pending", "rejected"];
+    data.status = allowedStatuses.includes(String(body.status))
+      ? String(body.status)
+      : "approved";
+    data.reviewedAt = new Date();
+  }
+
   try {
     const updatedClub = await prisma.club.update({
       where: { id: clubId },
-      data: {
-        name: String(body.name ?? "").trim(),
-        description: String(body.description ?? "").trim(),
-        contactName: String(body.contactName ?? "").trim(),
-        contactEmail: String(body.contactEmail ?? "").trim(),
-
-        communityType: rawCommunityType as any,
-
-        calendarUrl: String(body.calendarUrl ?? "").trim(),
-        discordUrl: String(body.discordUrl ?? "").trim(),
-        websiteUrl: String(body.websiteUrl ?? "").trim(),
-        instagramUrl: String(body.instagramUrl ?? "").trim(),
-        linkedinUrl: String(body.linkedinUrl ?? "").trim(),
-
-        status: "pending",
-        submittedAt: new Date(),
-        updatedAt: new Date(),
-        reviewedAt: null,
-        reviewNotes: null,
-      },
+      data,
     });
 
     try {
       revalidatePath("/leader/dashboard");
+      revalidatePath("/");
+      revalidatePath(`/clubs/${clubId}`);
     } catch (e) {
-      console.warn("Failed to revalidate leader dashboard", e);
+      console.warn("Failed to revalidate paths after club update", e);
     }
 
     return NextResponse.json({
-      club: {
-        recordId: updatedClub.id,
-        ...updatedClub,
-      },
+      club: { recordId: updatedClub.id, ...updatedClub },
     });
   } catch (error: any) {
     if (error.code === "P2025") {
@@ -176,3 +184,5 @@ export async function DELETE(
     );
   }
 }
+
+

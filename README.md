@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SlugHub Portal
 
 SlugHub Portal is a Next.js app for UCSC community leaders to manage and publish their organization’s profile, events, and contact info in the SlugHub directory.
@@ -84,3 +85,6 @@ Auth is handled by NextAuth with Google OAuth. Users are stored in Airtable and 
 
 - This repo uses Next.js App Router.
 - If you change Airtable field names, check related API routes in `app/api/`.
+=======
+
+>>>>>>> 59c4ef1 (Create README.md)

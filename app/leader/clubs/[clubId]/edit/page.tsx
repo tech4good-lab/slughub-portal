@@ -139,8 +139,10 @@ export default function EditClubPage() {
     setMsg(null);
     setSaving(true);
 
-    const endpoint =
-      clubId === "draft" ? "/api/leader/clubs" : `/api/leader/clubs/${clubId}`;
+    const isNewClub = clubId === "draft";
+    const endpoint = isNewClub
+      ? "/api/leader/clubs"
+      : `/api/leader/clubs/${clubId}`;
 
     const res = await fetch(endpoint, {
       method: "POST",
@@ -161,7 +163,7 @@ export default function EditClubPage() {
       return;
     }
 
-    if (clubId === "draft") {
+    if (isNewClub) {
       try {
         localStorage.removeItem("clubDraft");
       } catch {
@@ -169,7 +171,7 @@ export default function EditClubPage() {
       }
       setMsg("Submitted! Your new community is pending admin approval.");
     } else {
-      setMsg("Submitted! Your changes are pending admin approval.");
+      setMsg("Saved! Your changes are live.");
     }
 
     setSaving(false);
@@ -339,7 +341,11 @@ export default function EditClubPage() {
               boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
             }}
           >
-            {saving ? "Submitting..." : "Submit for Approval"}
+            {saving
+            ? "Saving..."
+            : clubId === "draft"
+              ? "Submit for Approval"
+              : "Save Changes"}
           </button>
           <Link
             role="button"
