@@ -252,6 +252,7 @@ export default async function ClubDetailPage({
               Calendar
             </div>
             {club.calendarUrl ? (
+              <>
               <a
                 className="btn btnPrimary"
                 href={club.calendarUrl}
@@ -259,8 +260,13 @@ export default async function ClubDetailPage({
                 rel="noreferrer"
                 style={{ ...linkPillStyle, marginTop: 8 }}
               >
-                View Calendar
+                Add to my calendar
               </a>
+              <iframe
+                src="" // link needs to be added here
+                style={{ border: 0, width: "100%", height: 400, borderRadius: 8, marginTop: 8 }}
+              />
+              </>
             ) : (
               <span className="small">No calendar available</span>
             )}
