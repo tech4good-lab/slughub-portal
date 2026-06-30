@@ -37,6 +37,43 @@ function formatCommunityType(enumValue: string | undefined | null) {
   return labels[enumValue] || enumValue;
 }
 
+function embedUrl(input: string): string | null {
+  try {
+    const url = new URL(input);
+
+    if (input.toLowerCase().endsWith(".ics")) {
+      return `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(input)}&ctz=local`;
+    }
+    if (url.pathname.includes("/embed")) return input;
+
+    const cid = url.searchParams.get("cid") || url.searchParams.get("src");
+    if (!cid) return null;
+
+    let calendarId = cid;
+    try {
+      const decoded = Buffer.from(cid, "base64").toString("utf-8");
+      if (decoded.includes("@")) calendarId = decoded;
+    } catch {
+      src=cid;
+
+    }
+    const now = new Date();
+    const twoWeeksLater = new Date();
+    twoWeeksLater.setDate(now.getDate() + 14);
+
+    const calc_date = (d: Date) => 
+      d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    return (
+      `https://calendar.google.com/calendar/embed` +
+      `?src=${encodeURIComponent(calendarId)}&ctz=local` +
+      `&mode=AGENDA` +
+      `&dates=${calc_date(now)}/${calc_date(twoWeeksLater)}`
+    );
+  } catch {
+    return null;
+  }
+}
+
 export default async function ClubDetailPage({
   params,
 }: {
@@ -47,8 +84,6 @@ export default async function ClubDetailPage({
   const res = await fetch(`${process.env.NEXTAUTH_URL}/api/clubs/${clubId}`, {
     cache: "no-store",
   });
-
-
   
   if (!res.ok) {
     return (
@@ -262,11 +297,20 @@ export default async function ClubDetailPage({
               >
                 Add to my calendar
               </a>
-              <iframe
-                src="" // link needs to be added here
-                style={{ border: 0, width: "100%", height: 400, borderRadius: 8, marginTop: 8 }}
-              />
-              </>
+               {embedUrl(club.calendarUrl) ? (
+                    <iframe
+                      src={embedUrl(club.calendarUrl)!}
+                      style={{ border: 0, width: "100%", height: 400, borderRadius: 8, marginTop: 8 }}
+                    />
+                  ) : (
+                    <p className="small" style={{ marginTop: 8, opacity: 0.6 }}>
+                      Calendar preview unavailable.{" "}
+                      <a href={club.calendarUrl} target="_blank" rel="noreferrer">
+                        Open it directly
+                      </a>.
+                    </p>
+                  )}
+                </>
             ) : (
               <span className="small">No calendar available</span>
             )}
