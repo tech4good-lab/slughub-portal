@@ -99,10 +99,10 @@ function Header({
               width: "clamp(28px, 4vw, 38px)",
               height: "clamp(28px, 4vw, 38px)",
               marginLeft: "5px"
-
              }}
           />
           <span
+            className="hidden min-[500px]:inline"
             style={{
               marginLeft: "3px",
               fontWeight: "650",
