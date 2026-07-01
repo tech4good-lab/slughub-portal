@@ -33,7 +33,7 @@ model Club {
   reviewedAt      DateTime?       @default(now())
   status          Status          @default(pending)
   submittedAt     DateTime?       @default(now())
-  communityStatus ClubStatus      @default(unaffliated)
+  communityStatus ClubStatus      @default(unaffiliated)
   communityType   CommType        @default(Other)
   updatedAt       DateTime?       @default(now())
   accessRequests  AccessRequest[]
@@ -87,7 +87,7 @@ model ClubEvent {
 
 enum ClubStatus {
   verified
-  unaffliated
+  unaffiliated
 }
 
 enum CommType {

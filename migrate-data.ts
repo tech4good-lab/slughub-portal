@@ -65,7 +65,7 @@ async function migrate() {
         name: String(fields.name || "Unnamed Club"),
         communityStatus: Array.isArray(fields.communityStatus)
           ? fields.communityStatus[0].toLowerCase()
-          : "unaffliated",
+          : "unaffiliated",
         communityType: Array.isArray(fields.communityType)
           ? fields.communityType[0].replace(/[\s\/&-]+/g, "_")
           : "Other",
