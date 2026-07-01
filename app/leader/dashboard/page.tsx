@@ -108,7 +108,8 @@ export default async function LeaderDashboard() {
       }
     }
 
-    clubs.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    //clubs.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    clubs.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
   } catch (error) {
     console.error("Prisma Error loading Leader Dashboard:", error);
   }
@@ -493,106 +494,42 @@ export default async function LeaderDashboard() {
                         </div>
                       </div>
                     </div>
-
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      <div style={{ marginTop: 10 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>
-                          Upcoming Events
-                        </div>
-                        {upcoming.length === 0 ? (
-                          <div style={{ fontSize: 12, color: "#666" }}>No upcoming events</div>
-                        ) : (
-                          <>
-                            {upcomingInNextMonth.slice(0, 4).map((e: any) => (
-                              <div key={e.id} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    gap: 8,
-                                  }}
-                                >
-                                  <div style={{ fontWeight: 600 }}>
-                                    {e.eventTitle ?? e.name ?? "Untitled Event"}
-                                  </div>
-                                  <Link
-                                    href={`/leader/events/${e.id}/edit`}
-                                    style={{
-                                      fontSize: 11,
-                                      padding: "4px 8px",
-                                      borderRadius: 999,
-                                      background: "#E5E7EB",
-                                      color: "#000",
-                                      textDecoration: "none",
-                                      whiteSpace: "nowrap",
-                                    }}
-                                  >
-                                    Edit
-                                  </Link>
-                                </div>
-                                <div style={{ color: "#666" }}>
-                                  {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
-                                </div>
-                              </div>
-                            ))}
-                            {upcomingInNextMonth.length > 4 && (
-                              <details>
-                                <summary style={{ fontSize: 11, color: "#ebc325", cursor: "pointer" }}>
-                                  Show more
-                                </summary>
-                                {upcomingInNextMonth.slice(4).map((e: any) => (
-                                  <div
-                                    key={e.id}
-                                    style={{ fontSize: 12, color: "#111", marginBottom: 6, marginTop: 6 }}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "space-between",
-                                        gap: 8,
-                                      }}
-                                    >
-                                      <div style={{ fontWeight: 600 }}>
-                                        {e.eventTitle ?? e.name ?? "Untitled Event"}
-                                      </div>
-                                      <Link
-                                        href={`/leader/events/${e.id}/edit`}
-                                        style={{
-                                          fontSize: 11,
-                                          padding: "4px 8px",
-                                          borderRadius: 999,
-                                          background: "#E5E7EB",
-                                          color: "#000",
-                                          textDecoration: "none",
-                                          whiteSpace: "nowrap",
-                                        }}
-                                      >
-                                        Edit
-                                      </Link>
-                                    </div>
-                                    <div style={{ color: "#666" }}>
-                                      {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
-                                    </div>
-                                  </div>
-                                ))}
-                              </details>
-                            )}
-                          </>
-                        )}
-                      </div>
-
-                      {!hasManyUpcoming && (
+                    {/* <div style={{ 
+                      display: "flex", 
+                      flexDirection: "column",
+                      flex: "1 1 260px",
+                      minWidth: 0,
+                      width: "100%",
+                    }}>
+                      <div style={{
+                        padding: "6px 14px",
+                        borderRadius: 999,
+                        background: "#FDF0A6",
+                        color: "#000",
+                        fontSize: 13,
+                        fontFamily: "Sarabun",
+                        fontWeight: 600,
+                        textAlign: "center",
+                        width: "fit-content",
+                      }}>
+                        Events
+                      </div> */}
+                      <div style={{ 
+                        display: "flex", 
+                        flexDirection: "column",
+                        flex: "1 1 260px",
+                        minWidth: 0,
+                        width: "100%",
+                      }}>
                         <div style={{ marginTop: 10 }}>
                           <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>
-                            Past Events
+                            Upcoming Events
                           </div>
-                          {past.length === 0 ? (
-                            <div style={{ fontSize: 12, color: "#666" }}>No past events</div>
+                          {upcoming.length === 0 ? (
+                            <div style={{ fontSize: 12, color: "#666" }}>No upcoming events</div>
                           ) : (
                             <>
-                              {past.slice(0, 4).map((e: any) => (
+                              {upcomingInNextMonth.slice(0, 4).map((e: any) => (
                                 <div key={e.id} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
                                   <div
                                     style={{
@@ -625,12 +562,12 @@ export default async function LeaderDashboard() {
                                   </div>
                                 </div>
                               ))}
-                              {past.length > 4 && (
+                              {upcomingInNextMonth.length > 4 && (
                                 <details>
                                   <summary style={{ fontSize: 11, color: "#ebc325", cursor: "pointer" }}>
                                     Show more
                                   </summary>
-                                  {past.slice(4).map((e: any) => (
+                                  {upcomingInNextMonth.slice(4).map((e: any) => (
                                     <div
                                       key={e.id}
                                       style={{ fontSize: 12, color: "#111", marginBottom: 6, marginTop: 6 }}
@@ -671,9 +608,99 @@ export default async function LeaderDashboard() {
                             </>
                           )}
                         </div>
-                      )}
+
+                        {!hasManyUpcoming && (
+                          <div style={{ marginTop: 10 }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>
+                              Past Events
+                            </div>
+                            {past.length === 0 ? (
+                              <div style={{ fontSize: 12, color: "#666" }}>No past events</div>
+                            ) : (
+                              <>
+                                {past.slice(0, 4).map((e: any) => (
+                                  <div key={e.id} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        gap: 8,
+                                      }}
+                                    >
+                                      <div style={{ fontWeight: 600 }}>
+                                        {e.eventTitle ?? e.name ?? "Untitled Event"}
+                                      </div>
+                                      <Link
+                                        href={`/leader/events/${e.id}/edit`}
+                                        style={{
+                                          fontSize: 11,
+                                          padding: "4px 8px",
+                                          borderRadius: 999,
+                                          background: "#E5E7EB",
+                                          color: "#000",
+                                          textDecoration: "none",
+                                          whiteSpace: "nowrap",
+                                        }}
+                                      >
+                                        Edit
+                                      </Link>
+                                    </div>
+                                    <div style={{ color: "#666" }}>
+                                      {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
+                                    </div>
+                                  </div>
+                                ))}
+                                {past.length > 4 && (
+                                  <details>
+                                    <summary style={{ fontSize: 11, color: "#ebc325", cursor: "pointer" }}>
+                                      Show more
+                                    </summary>
+                                    {past.slice(4).map((e: any) => (
+                                      <div
+                                        key={e.id}
+                                        style={{ fontSize: 12, color: "#111", marginBottom: 6, marginTop: 6 }}
+                                      >
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            gap: 8,
+                                          }}
+                                        >
+                                          <div style={{ fontWeight: 600 }}>
+                                            {e.eventTitle ?? e.name ?? "Untitled Event"}
+                                          </div>
+                                          <Link
+                                            href={`/leader/events/${e.id}/edit`}
+                                            style={{
+                                              fontSize: 11,
+                                              padding: "4px 8px",
+                                              borderRadius: 999,
+                                              background: "#E5E7EB",
+                                              color: "#000",
+                                              textDecoration: "none",
+                                              whiteSpace: "nowrap",
+                                            }}
+                                          >
+                                            Edit
+                                          </Link>
+                                        </div>
+                                        <div style={{ color: "#666" }}>
+                                          {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </details>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  /*</div>*/
                 );
               })
             )}
