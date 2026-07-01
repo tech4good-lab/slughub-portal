@@ -54,8 +54,7 @@ function embedUrl(input: string): string | null {
       const decoded = Buffer.from(cid, "base64").toString("utf-8");
       if (decoded.includes("@")) calendarId = decoded;
     } catch {
-      src=cid;
-
+      
     }
     const now = new Date();
     const twoWeeksLater = new Date();
@@ -300,7 +299,7 @@ export default async function ClubDetailPage({
                {embedUrl(club.calendarUrl) ? (
                     <iframe
                       src={embedUrl(club.calendarUrl)!}
-                      style={{ border: 0, width: "100%", height: 400, borderRadius: 8, marginTop: 8 }}
+                      style={{ display: "flex", border: 0, width: "100%", height: 400, borderRadius: 8, marginTop: 8 }}
                     />
                   ) : (
                     <p className="small" style={{ marginTop: 8, opacity: 0.6 }}>

@@ -10,7 +10,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "ClubStatus" AS ENUM ('verified', 'unofficial');
+CREATE TYPE "ClubStatus" AS ENUM ('verified', 'unaffiliated');
 
 -- CreateEnum
 CREATE TYPE "CommType" AS ENUM ('Campus_Department_Program', 'Professional_and_Career', 'Performing_and_Visual_Arts', 'Cultural_and_Identity', 'Greek_letter', 'Academic', 'Sports_and_Recreation', 'Media_and_Broadcasting', 'Politics_and_Advocacy', 'Research', 'Other');
@@ -31,7 +31,7 @@ ADD COLUMN     "reviewedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN     "status" "Status" NOT NULL DEFAULT 'pending',
 ADD COLUMN     "submittedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 DROP COLUMN "communityStatus",
-ADD COLUMN     "communityStatus" "ClubStatus" NOT NULL DEFAULT 'unofficial',
+ADD COLUMN     "communityStatus" "ClubStatus" NOT NULL DEFAULT 'unaffiliated',
 DROP COLUMN "communityType",
 ADD COLUMN     "communityType" "CommType" NOT NULL DEFAULT 'Other';
 
