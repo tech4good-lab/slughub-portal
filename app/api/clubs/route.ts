@@ -33,7 +33,7 @@
         const ok = await sendMail({
           to: [club.contactEmail],
           subject: "Reminder: Update Your Club Information",
-          text: `...`,
+          text: `Hello ${club.name}. As it's been over a year since your last update, please take a moment to update your club information on the SlugHub portal. Thank you!`,
         });
         if (ok) {
           await prisma.club.update({
