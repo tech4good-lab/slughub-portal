@@ -35,6 +35,7 @@ model Club {
   communityStatus ClubStatus      @default(unaffiliated)
   communityType   CommType        @default(Other)
   updatedAt       DateTime?       @default(now())
+  lastUpdateSentAt DateTime?
   accessRequests  AccessRequest[]
   events          ClubEvent[]
   members         ClubMember[]
