@@ -111,6 +111,7 @@ export default async function ClubDetailPage({
   const club = data.club as Club;
 
   const communityType = formatCommunityType((club as any).communityType);
+  const calendarEmbedUrl = club.calendarUrl ? embedUrl(club.calendarUrl) : null;
 
   return (
     <main className="container clubDetail">
@@ -300,9 +301,9 @@ export default async function ClubDetailPage({
             )}
           </div>
         </div>
-        {embedUrl(club.calendarUrl) ? (
+        {calendarEmbedUrl ? (
           <iframe
-              src={embedUrl(club.calendarUrl)!}
+              src={calendarEmbedUrl}
               style={{ display: "flex", justifyContent: "flex-start", alignItems: "stretch", border: 0, width: "100%", height: 350, borderRadius: 8, marginTop: 8 }}
             />
           ) : (

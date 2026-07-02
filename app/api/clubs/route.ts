@@ -14,6 +14,7 @@
       where: {
         status: "approved",
         updatedAt: { lt: oneYearAgo },
+        contactEmail: { not: null },
         OR: [
           { lastUpdateSentAt: null },
           { lastUpdateSentAt: { lt: reminderCooldownDate } },
@@ -29,6 +30,8 @@
     let failedCount = 0;
 
     for (const club of clubsNeedingReminders) {
+      if (!club.contactEmail) continue; 
+      
       try {
         const ok = await sendMail({
           to: [club.contactEmail],
