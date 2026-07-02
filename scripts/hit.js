@@ -6,16 +6,10 @@
 
   console.log('Running', iterations, 'iterations against', endpoints.length, 'endpoints');
 
-  // Reset stats
-  await fetch(base + '/api/debug/airtable-stats', {
-    method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'reset' })
-  });
-
   for (let i = 0; i < iterations; i++) {
     await Promise.all(endpoints.map((p) => fetch(base + p).catch(() => null)));
   }
 
-  const res = await fetch(base + '/api/debug/airtable-stats');
   const json = await res.json();
   console.log('Stats after run:', JSON.stringify(json, null, 2));
 })();

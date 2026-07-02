@@ -19,7 +19,6 @@ model User {
 
 model Club {
   id              String          @id @default(uuid())
-  airtableId      String?         @unique
   name            String
   description     String?
   contactName     String?

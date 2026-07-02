@@ -11,7 +11,6 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Club" (
     "id" TEXT NOT NULL,
-    "airtableId" TEXT,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "contactName" TEXT,
@@ -43,9 +42,6 @@ CREATE TABLE "Member" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Club_airtableId_key" ON "Club"("airtableId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Member_userId_clubId_key" ON "Member"("userId", "clubId");
