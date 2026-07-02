@@ -309,7 +309,7 @@ export default async function ClubDetailPage({
           ) : (
             <p className="small" style={{ marginTop: 8, opacity: 0.6 }}>
               Calendar preview unavailable.{" "}
-              <a href={club.calendarUrl} target="_blank" rel="noreferrer">
+              <a href={club.calendarUrl ?? undefined} target="_blank" rel="noreferrer">
                 Open it directly
               </a>.
             </p>
