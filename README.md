@@ -25,7 +25,6 @@ Open `http://localhost:3000`.
 
 - Node.js (LTS recommended)
 - npm (bundled with Node.js)
-- An Airtable base with the required tables and fields (see `docs/airtable-config.md`)
 - A Google OAuth client for NextAuth (see Auth Setup)
 
 ## Scripts
@@ -37,12 +36,9 @@ Open `http://localhost:3000`.
 
 ## Environment Variables
 
-Create or update `.env.local` with the following. The app will not work without Airtable and google auth set up.
+Create or update `.env.local` with the following. The app will not work without google auth set up.
 
 Required env:
-
-- `AIRTABLE_API_KEY` Airtable API key
-- `AIRTABLE_BASE_ID` Airtable base ID
 - `GOOGLE_CLIENT_ID` Google OAuth client id
 - `GOOGLE_CLIENT_SECRET` Google OAuth client secret
 - `NEXTAUTH_URL` Base URL for NextAuth (ex: `http://localhost:3000`)
@@ -56,22 +52,9 @@ Email notification env (optional):
 ## Project Structure
 
 - `app/` Next.js App Router pages and API routes
-- `lib/` shared utilities (Airtable, auth, permissions, mail)
+- `lib/` shared utilities (auth, permissions, mail)
 - `public/` static assets
 - `scripts/` helper scripts for debugging
-
-## Airtable Data Access
-
-Airtable helpers are in `lib/airtable.ts` with basic caching. API routes found under `app/api/`.
-
-## Auth Setup and Roles
-
-Auth is handled by NextAuth with Google OAuth. Users are stored in Airtable and assigned a role (`leader` by default, `admin` for admin features). Roles are checked in admin routes and pages.
-
-1. Create a Google OAuth app in Google Cloud Console.
-2. Add authorized redirect URIs: `http://localhost:3000/api/auth/callback/google`, `https://portal.slughub.cc/api/auth/callback/google`.
-3. Copy the client ID and client secret into `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
-4. If your OAuth app is in Testing, add your user emails as test users.
 
 ## Common Pages
 
@@ -84,7 +67,6 @@ Auth is handled by NextAuth with Google OAuth. Users are stored in Airtable and 
 ## Notes
 
 - This repo uses Next.js App Router.
-- If you change Airtable field names, check related API routes in `app/api/`.
 =======
 
 >>>>>>> 59c4ef1 (Create README.md)
