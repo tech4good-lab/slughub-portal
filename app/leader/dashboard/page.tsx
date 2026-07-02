@@ -9,50 +9,11 @@ import ClubsCacheClient from "@/app/components/ClubsCacheClient";
 import LogoutButton from "@/app/leader/edit/logout-button";
 import DeleteClubButton from "./delete-club-button";
 import PendingBadge from "@/app/components/PendingBadge";
+import ClubsSearchList from "./clubs-list";
 
 export const dynamic = "force-dynamic";
 
-function StatusPill({ status }: { status?: any }) {
-  const s = String(status ?? "").toLowerCase();
-  const label = s || "unknown";
 
-  const style: React.CSSProperties =
-    s === "approved"
-      ? {
-          border: "1px solid rgba(34,197,94,0.35)",
-          color: "rgba(34,197,94,0.95)",
-        }
-      : s === "pending"
-        ? {
-            border: "1px solid rgba(251,191,36,0.35)",
-            color: "rgba(251,191,36,0.95)",
-          }
-        : s === "rejected"
-          ? {
-              border: "1px solid rgba(239,68,68,0.35)",
-              color: "rgba(239,68,68,0.95)",
-            }
-          : {
-              border: "1px solid rgba(255,255,255,0.2)",
-              color: "rgba(255,255,255,0.75)",
-            };
-
-  return (
-    <span
-      className="small"
-      style={{
-        padding: "4px 10px",
-        borderRadius: 999,
-        textTransform: "capitalize",
-        ...style,
-      }}
-    >
-      {label}
-    </span>
-  );
-}
-
-const UPCOMING_THRESHOLD = 2;
 
 export default async function LeaderDashboard() {
   const session = await getServerSession(authOptions);
@@ -61,7 +22,7 @@ export default async function LeaderDashboard() {
   const now = new Date();
   const oneMonthOut = new Date();
   oneMonthOut.setMonth(now.getMonth() + 1);
-  //const [query, setQuery] = useState("");
+  
 
   if (!userId) redirect("/login");
 
@@ -109,7 +70,6 @@ export default async function LeaderDashboard() {
       }
     }
 
-    //clubs.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
     clubs.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
   } catch (error) {
     console.error("Prisma Error loading Leader Dashboard:", error);
@@ -383,22 +343,6 @@ export default async function LeaderDashboard() {
                 </Link>
               </div>
             </div>
-            <div className="dashBoardSearchWrap" 
-              style={{
-                display: "flex", 
-                justifyContent: "flex-end", 
-                width: "100%",
-                maxWidth: 400,
-                position: "relative",
-              }}>
-              {/* <input
-                className="input"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search communities by name..."
-                style={{ background: "#ffffff", fontWeight: 700, color: "#000", zIndex: "1", position: "relative" }}
-              /> */}
-            </div>
           </div>
 
           {/* Clubs list */}
@@ -411,227 +355,7 @@ export default async function LeaderDashboard() {
               overflow: "auto",
             }}
           >
-            {clubs.length === 0 ? (
-              <p
-                style={{
-                  color: "#666",
-                  fontSize: 14,
-                  fontFamily: "Sarabun",
-                  textAlign: "center",
-                  padding: "40px 20px",
-                }}
-              >
-                You don't have any community access yet.
-              </p>
-            ) : (
-              clubs.map((club: any) => {
-                const cid = club.id;
-                const events = eventsByClub[cid] ?? [];
-
-                const upcoming = events.filter((e: any) => {
-                  const d = new Date(e.eventDate ?? "");
-                  if (Number.isNaN(d.getTime())) return true;
-                  return d >= now;
-                });
-                const past = events
-                  .filter((e: any) => new Date(e.eventDate) < now)
-                  .sort((a: any, b: any) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
-                  
-                const upcomingInNextMonth = upcoming.filter((e: any) => {
-                  const d = new Date(e.eventDate ?? "");
-                  return d <= oneMonthOut;
-                });
-                const hasManyUpcoming = upcomingInNextMonth.length >= UPCOMING_THRESHOLD;
-
-                return (
-                  <div
-                    key={cid}
-                    style={{
-                      padding: "16px 20px",
-                      background: "#FAFAFA",
-                      borderRadius: 12,
-                      display: "flex",
-                      alignItems: "flex-start",
-                      justifyContent: "space-between",
-                      gap: 20,
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div style={{ flex: "1 1 260px", minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
-                        <h3
-                          style={{
-                            fontSize: 16,
-                            fontFamily: "Sarabun",
-                            fontWeight: 600,
-                            margin: 0,
-                            color: "black",
-                          }}
-                        >
-                          {club.name ?? "Untitled Community"}
-                        </h3>
-                        <StatusPill status={club.status} />
-                      </div>
-                      <p style={{ color: "#666", fontSize: 13, fontFamily: "Sarabun", margin: 0 }}>
-                        {(club.description ?? "").slice(0, 140) || "Community description..."}
-                        {(club.description ?? "").length > 140 ? "..." : ""}
-                      </p>
-                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-                        <Link
-                          href={`/leader/clubs/${cid}/edit`}
-                          style={{
-                            padding: "8px 16px",
-                            background: "#FDF0A6",
-                            border: "1px solid #FDF0A6",
-                            borderRadius: 20,
-                            color: "#000",
-                            fontSize: 14,
-                            fontFamily: "Sarabun",
-                            fontWeight: 600,
-                            textDecoration: "none",
-                            cursor: "pointer",
-                            boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          Edit
-                        </Link>
-                        <Link
-                          href={`/clubs/${club.id}`}
-                          style={{
-                            padding: "8px 16px",
-                            background: "#FDF0A6",
-                            border: "1px solid #FDF0A6",
-                            borderRadius: 20,
-                            color: "#000",
-                            fontSize: 14,
-                            fontFamily: "Sarabun",
-                            fontWeight: 600,
-                            textDecoration: "none",
-                            cursor: "pointer",
-                            boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          View Public
-                        </Link>
-                        <div style={{ flexShrink: 0 }}>
-                          <DeleteClubButton clubId={cid} clubName={club.name} />
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{ 
-                      display: "flex", 
-                      flexDirection: "column",
-                      flex: "1 1 260px",
-                      minWidth: 0,
-                      width: "100%",
-                    }}>
-                      <div style={{ marginTop: 10 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>
-                          Upcoming Events
-                        </div>
-                        {upcoming.length === 0 ? (
-                          <div style={{ fontSize: 12, color: "#666" }}>No upcoming events</div>
-                        ) : (
-                          <>
-                            {upcomingInNextMonth.slice(0, 2).map((e: any) => (
-                              <div key={e.id} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    gap: 8,
-                                  }}
-                                >
-                                  <div style={{ fontWeight: 600 }}>
-                                    {e.eventTitle ?? e.name ?? "Untitled Event"}
-                                  </div>
-                                  <Link
-                                    href={`/leader/events/${e.id}/edit`}
-                                    style={{
-                                      fontSize: 11,
-                                      padding: "4px 8px",
-                                      borderRadius: 999,
-                                      background: "#E5E7EB",
-                                      color: "#000",
-                                      textDecoration: "none",
-                                      whiteSpace: "nowrap",
-                                    }}
-                                  >
-                                    Edit
-                                  </Link>
-                                </div>
-                                <div style={{ color: "#666" }}>
-                                  {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
-                                </div>
-                              </div>
-                            ))}
-                            {upcomingInNextMonth.length > 2 && (
-                               <div style={{ fontSize: 11, color: "#ebc325", cursor: "pointer" }}>
-                                  {upcomingInNextMonth.length - 2} more events later this month
-                                </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                      {!hasManyUpcoming && (
-                        <div style={{ marginTop: 10 }}>
-                          <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>
-                            Past Events
-                          </div>
-                          {past.length === 0 ? (
-                            <div style={{ fontSize: 12, color: "#666" }}>No past events</div>
-                          ) : (
-                            <>
-                              {past.slice(0, 2).map((e: any) => (
-                                <div key={e.id} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "space-between",
-                                      gap: 8,
-                                    }}
-                                  >
-                                    <div style={{ fontWeight: 600 }}>
-                                      {e.eventTitle ?? e.name ?? "Untitled Event"}
-                                    </div>
-                                    <Link
-                                      href={`/leader/events/${e.id}/edit`}
-                                      style={{
-                                        fontSize: 11,
-                                        padding: "4px 8px",
-                                        borderRadius: 999,
-                                        background: "#E5E7EB",
-                                        color: "#000",
-                                        textDecoration: "none",
-                                        whiteSpace: "nowrap",
-                                      }}
-                                    >
-                                      Edit
-                                    </Link>
-                                  </div>
-                                  <div style={{ color: "#666" }}>
-                                    {e.eventDate ? new Date(e.eventDate).toLocaleString() : "Date TBD"}
-                                  </div>
-                                </div>
-                              ))}
-                              {past.length > 2 && (
-                                <div style={{ fontSize: 11, color: "#ebc325", cursor: "pointer" }}>
-                                    {past.length - 2} more past events
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
-            )}
+            <ClubsSearchList clubs={clubs} eventsByClub={eventsByClub} now={now} oneMonthOut={oneMonthOut}/>
           </div>
         </div>
       </div>
