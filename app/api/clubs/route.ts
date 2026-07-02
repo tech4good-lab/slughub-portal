@@ -2,7 +2,7 @@
   import { prisma } from "@/lib/prisma";
   import { sendMail } from "@/lib/mail";
 
-  const ONE_YEAR_IN_MS = 60 * 1000;
+  const ONE_YEAR_IN_MS = 365* 24 * 60 * 60 * 1000;
   const REMINDER_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
 
   async function checkAndSendReminders() {
