@@ -65,7 +65,7 @@ function embedUrl(input: string): string | null {
     return (
       `https://calendar.google.com/calendar/embed` +
       `?src=${encodeURIComponent(calendarId)}&ctz=local` +
-      `&mode=AGENDA` +
+      `&mode=WEEK` +
       `&dates=${calc_date(now)}/${calc_date(twoWeeksLater)}`
     );
   } catch {
@@ -286,7 +286,6 @@ export default async function ClubDetailPage({
               Calendar
             </div>
             {club.calendarUrl ? (
-              <>
               <a
                 className="btn btnPrimary"
                 href={club.calendarUrl}
@@ -296,25 +295,25 @@ export default async function ClubDetailPage({
               >
                 Add to my calendar
               </a>
-               {embedUrl(club.calendarUrl) ? (
-                    <iframe
-                      src={embedUrl(club.calendarUrl)!}
-                      style={{ display: "flex", border: 0, width: "100%", height: 400, borderRadius: 8, marginTop: 8 }}
-                    />
-                  ) : (
-                    <p className="small" style={{ marginTop: 8, opacity: 0.6 }}>
-                      Calendar preview unavailable.{" "}
-                      <a href={club.calendarUrl} target="_blank" rel="noreferrer">
-                        Open it directly
-                      </a>.
-                    </p>
-                  )}
-                </>
             ) : (
               <span className="small">No calendar available</span>
             )}
           </div>
         </div>
+        {embedUrl(club.calendarUrl) ? (
+          <iframe
+              src={embedUrl(club.calendarUrl)!}
+              style={{ display: "flex", justifyContent: "flex-start", alignItems: "stretch", border: 0, width: "100%", height: 350, borderRadius: 8, marginTop: 8 }}
+            />
+          ) : (
+            <p className="small" style={{ marginTop: 8, opacity: 0.6 }}>
+              Calendar preview unavailable.{" "}
+              <a href={club.calendarUrl} target="_blank" rel="noreferrer">
+                Open it directly
+              </a>.
+            </p>
+          )}
+        
 
         <p
           className="small"
