@@ -44,7 +44,7 @@ function StatusPill({ status }: { status?: any }) {
   );
 }
 
-const UPCOMING_THRESHOLD = 2;
+const UPCOMING_THRESHOLD = 4;
 
 function fuzzyScore(query: string, target: string): number | null {
   const q = query.trim().toLowerCase();
@@ -215,7 +215,7 @@ export default function ClubsSearchList({
                         <div style={{ fontSize: 12, color: "#666" }}>No upcoming events</div>
                     ) : (
                         <>
-                          {upcomingInNextMonth.slice(0, 2).map((e: any) => (
+                          {upcomingInNextMonth.slice(0, 4).map((e: any) => (
                             <div key={e.id} style={{ fontSize: 12, color: "#111", marginBottom: 6 }}>
                             <div
                                 style={{
@@ -248,9 +248,9 @@ export default function ClubsSearchList({
                             </div>
                             </div>
                         ))}
-                        {upcomingInNextMonth.length > 2 && (
+                        {upcomingInNextMonth.length > 4 && (
                             <div style={{ fontSize: 11, color: "#ebc325", cursor: "pointer" }}>
-                                {upcomingInNextMonth.length - 2} more events later this month
+                                {upcomingInNextMonth.length - 4} more events later this month
                             </div>
                         )}
                       </>
