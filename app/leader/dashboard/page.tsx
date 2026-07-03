@@ -237,7 +237,7 @@ export default async function LeaderDashboard() {
                   <Link
                     className="btn"
                     href="/admin/access"
-                    style={{ whiteSpace: "nowrap", flexShrink: 0 }}
+                    style={{ whiteSpace: "nowrap", flexShrink: 0}}
                   >
                     Access Requests
                   </Link>
@@ -250,7 +250,7 @@ export default async function LeaderDashboard() {
               >
                 Directory
               </Link>
-              <div style={{ flexShrink: 0 }}>
+              <div style={{ flexShrink: 0, alignSelf: "center" }}>
                 <LogoutButton />
               </div>
             </nav>

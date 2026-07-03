@@ -173,18 +173,18 @@ function Header({
                 <Link
                   className="btn"
                   href="/leader/dashboard"
-                  style={{ whiteSpace: "nowrap", flexShrink: 0, alignSelf: "flex-end" }}
+                  style={{ whiteSpace: "nowrap", flexShrink: 0, flexGrow: 0, alignSelf: "flex-end", position: "relative" }}
                 >
                   Dashboard
                 </Link>
-                <div style={{ flexShrink: 0 }}>
+                <div style={{ flexShrink: 0, alignSelf: "flex-end", position: "relative" }}>
                   <LogoutButton />
                 </div>
               </>
             )}
           </>
         ) : (
-          <Link className="btn" href="/login" style={{ whiteSpace: "nowrap" }}>
+          <Link className="btn" href="/login" style={{ whiteSpace: "nowrap", position: "relative"}}>
             Community Lead Login
           </Link>
         )}
