@@ -303,17 +303,19 @@ export default async function ClubDetailPage({
         </div>
         {calendarEmbedUrl ? (
           <iframe
-              src={calendarEmbedUrl}
-              style={{ display: "flex", justifyContent: "flex-start", alignItems: "stretch", border: 0, width: "100%", height: 350, borderRadius: 8, marginTop: 8 }}
-            />
-          ) : (
-            <p className="small" style={{ marginTop: 8, opacity: 0.6 }}>
-              Calendar preview unavailable.{" "}
-              <a href={club.calendarUrl ?? undefined} target="_blank" rel="noreferrer">
-                Open it directly
-              </a>.
-            </p>
-          )}
+            src={calendarEmbedUrl}
+            style={{ display: "flex", justifyContent: "flex-start", alignItems: "stretch", border: 0, width: "100%", height: 350, borderRadius: 8, marginTop: 8 }}
+          />
+        ) : club.calendarUrl ? (
+          <p className="small" style={{ marginTop: 8, opacity: 0.6 }}>
+            Calendar preview unavailable.{" "}
+            <a href={club.calendarUrl} target="_blank" rel="noreferrer">
+              Open it directly
+            </a>.
+          </p>
+        ): (
+          null
+        )}
         
 
         <p

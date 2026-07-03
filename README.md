@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SlugHub Portal
 
 SlugHub Portal is a Next.js app for UCSC community leaders to manage and publish their organization’s profile, events, and contact info in the SlugHub directory.
@@ -26,12 +25,15 @@ Open `http://localhost:3000`.
 - Node.js (LTS recommended)
 - npm (bundled with Node.js)
 - A Google OAuth client for NextAuth (see Auth Setup)
+- Supabase for database of clubs, events, club memebers, etc.
+- Prisma for database integration and querying
 
 ## Scripts
 
 - `npm run dev` Start the dev server
 - `npm run build` Build for production
 - `npm run start` Start the production server
+- `npx prisma generate` Sync changes made in schema.prisma to the database
 - `npm run lint` Run ESLint
 
 ## Environment Variables
@@ -53,6 +55,7 @@ Email notification env (optional):
 
 - `app/` Next.js App Router pages and API routes
 - `lib/` shared utilities (auth, permissions, mail)
+- `prisma/` includes models for database
 - `public/` static assets
 - `scripts/` helper scripts for debugging
 
@@ -67,6 +70,3 @@ Email notification env (optional):
 ## Notes
 
 - This repo uses Next.js App Router.
-=======
-
->>>>>>> 59c4ef1 (Create README.md)
