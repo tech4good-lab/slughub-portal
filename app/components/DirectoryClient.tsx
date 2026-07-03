@@ -260,7 +260,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
             })}
           </div>
         </details>
-        <span style={{ fontSize: 14, color: "rgb(0,0,0,0.5)", alignSelf: "center" }}>
+        <span style={{ fontSize: 14, color: "rgb(0,0,0,0.5)", alignSelf: "center", position: "relative"}}>
             {filtered.length} {filtered.length === 1 ? "community" : "communities"} showing
         </span>
       </div>
