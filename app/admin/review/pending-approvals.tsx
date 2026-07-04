@@ -298,9 +298,9 @@ export default function PendingApprovals({ email }: { email?: string }) {
               style={{
                 ...linkPillStyle,
                 display: "flex",
-                minWidth: 80,
+                minWidth: 40,
                 padding: "0 16px",
-                height: 32,
+                height: 38,
                 background: "#FDF0A6",
                 // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 borderRadius: 20,
@@ -319,9 +319,9 @@ export default function PendingApprovals({ email }: { email?: string }) {
               style={{
                 ...linkPillStyle,
                 display: "flex",
-                minWidth: 80,
+                minWidth: 40,
                 padding: "0 16px",
-                height: 32,
+                height: 38,
                 background: "#FDF0A6",
                 // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 borderRadius: 20,

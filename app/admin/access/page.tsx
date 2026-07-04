@@ -87,8 +87,8 @@ export default async function AdminAccessPage() {
               href="/admin/review"
               style={{
                 display: "flex",
-                minWidth: 80,
-                height: 32,
+                minWidth: 40,
+                height: 38,
                 padding: "0 16px",
                 background: "#FDF0A6",
                 // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -109,8 +109,8 @@ export default async function AdminAccessPage() {
               href="/"
               style={{
                 display: "flex",
-                minWidth: 80,
-                height: 32,
+                minWidth: 40,
+                height: 38,
                 padding: "0 16px",
                 background: "#FDF0A6",
                 // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -123,6 +123,7 @@ export default async function AdminAccessPage() {
                 fontFamily: "Sarabun",
                 fontWeight: "600",
                 textDecoration: "none",
+                alignSelf: "center",
               }}
             >
               Directory
