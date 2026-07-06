@@ -100,14 +100,14 @@ export default function ClubsSearchList({
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <div
         className="dashBoardSearchWrap"
-        style={{ display: "flex", justifyContent: "flex-end", width: "100%", maxWidth: 400, position: "relative" }}
+        style={{ maxWidth: 400 }}
       >
         <input
           className="input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search communities by name..."
-          style={{ background: "#ffffff", fontWeight: 700, color: "#000", zIndex: 1, position: "relative" }}
+          style={{ background: "#ffffff", border: "1px solid #bcb9b9",fontWeight: 700, color: "#000", zIndex: 1, position: "relative"}}
         />
       </div>
 
@@ -207,7 +207,7 @@ export default function ClubsSearchList({
                 </div>
               </div>
 
-              <div style={{ marginTop: 10 }}>
+              <div style={{ flex: "1 1 25%",marginTop: 10, display: "flex", minWidth: 260, flexDirection: "column", gap: 6 }}>
                     <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: "#111" }}>
                         Upcoming Events
                     </div>

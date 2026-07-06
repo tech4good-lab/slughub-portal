@@ -431,13 +431,13 @@ export default function PendingApprovals({ email }: { email?: string }) {
                       background: "#FEE2E2",
                       border: "1px solid #FCA5A5",
                       borderRadius: 20,
-                      color: "#000",
+                      color: "#7F1D1D",
                       fontSize: 14,
                       fontFamily: "Sarabun",
                       fontWeight: "600",
                       cursor: busy[c.recordId] ? "not-allowed" : "pointer",
                       opacity: busy[c.recordId] ? 0.6 : 1,
-                      boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+                      //boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
                       whiteSpace: "nowrap",
                     }}
                   >

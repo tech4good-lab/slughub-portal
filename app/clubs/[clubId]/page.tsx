@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Club } from "@prisma/client";
 import RequestAccess from "./request-access";
+import CalendarEmbed from "./embeddedCalendar";
 
 export const linkPillStyle = {
   padding: "8px 16px",
@@ -112,6 +113,7 @@ export default async function ClubDetailPage({
 
   const communityType = formatCommunityType((club as any).communityType);
   const calendarEmbedUrl = club.calendarUrl ? embedUrl(club.calendarUrl) : null;
+
 
   return (
     <main className="container clubDetail">
@@ -302,10 +304,15 @@ export default async function ClubDetailPage({
           </div>
         </div>
         {calendarEmbedUrl ? (
-          <iframe
-            src={calendarEmbedUrl}
-            style={{ display: "flex", justifyContent: "flex-start", alignItems: "stretch", border: 0, width: "100%", height: 350, borderRadius: 8, marginTop: 8 }}
-          />
+          <div>
+            <CalendarEmbed src={calendarEmbedUrl} />
+            <p
+              className="small"
+              style={{ marginTop: 6, opacity: 0.6, textAlign: "center" }}
+            >
+              Click the calendar to expand it, then click anywhere outside to close.
+            </p>
+          </div>
         ) : club.calendarUrl ? (
           <p className="small" style={{ marginTop: 8, opacity: 0.6 }}>
             Calendar preview unavailable.{" "}

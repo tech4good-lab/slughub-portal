@@ -58,7 +58,7 @@ const COMMUNITY_TYPE_LABEL: Record<string, string> = {
 };
 
 const STATUS_OPTIONS = [
-  { label: "unaffiliated", value: "unaffiliated" },
+  { label: "Unaffiliated", value: "unaffiliated" },
   { label: "Verified", value: "verified" },
 ] as const;
 
@@ -304,16 +304,9 @@ export default function DirectoryClient({ clubs, session }: Props) {
                   )}
 
                   {/* card body — grows to fill available space */}
-                  <div style={{ flex: 1 }}>
+                  <div style={{ flex: 1, minHeight: 0 }}>
                     <h2 className="directoryCardTitle">{c.name}</h2>
-                    <p
-                      className="small"
-                      style={{
-                        margin: 0,
-                        lineHeight: 1.6,
-                        color: "rgba(0,0,0,0.6)",
-                      }}
-                    >
+                    <p className="directoryCardDescription">
                       {(c.description ?? "").slice(0, 140) || "No description yet."}
                       {(c.description ?? "").length > 140 ? "..." : ""}
                     </p>

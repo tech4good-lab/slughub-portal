@@ -87,6 +87,7 @@ function Header({
             borderRadius: "16px",
             overflow: "hidden",
             userSelect: "none",
+            border: "1px solid #b0dbf6",
           }}
         >
           <Image

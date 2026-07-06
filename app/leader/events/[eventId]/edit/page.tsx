@@ -23,6 +23,8 @@ export default function EditEventPage() {
   const [err, setErr] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
+
+
   useEffect(() => {
     if (!eventId || eventId === "undefined") {
       setErr("No valid event ID provided.");
@@ -291,7 +293,6 @@ export default function EditEventPage() {
           onChange={(e) => setEventDate(e.target.value)}
           required
         />
-
         <div style={{ height: 10 }} />
 
         <label className="label">Event Time</label>

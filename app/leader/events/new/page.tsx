@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
 
 type ClubOption = {
   id: string;
@@ -24,6 +25,9 @@ export default function NewEventPage() {
   const [msg, setMsg] = useState<string | null>(null);
   const [zoomLink, setZoomLink] = useState("");
   const [iceBreakers, setIceBreakers] = useState("");
+
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const timeInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     (async () => {
@@ -160,10 +164,12 @@ export default function NewEventPage() {
 
         <label className="label">Event Date *</label>
         <input
+          ref={dateInputRef}
           className="input"
           type="date"
           value={eventDate}
           onChange={(e) => setEventDate(e.target.value)}
+          onClick={() => dateInputRef.current?.showPicker?.()}
           required
         />
 
@@ -171,10 +177,12 @@ export default function NewEventPage() {
 
         <label className="label">Event Time</label>
         <input
+          ref={timeInputRef}
           className="input"
           type="time"
           value={eventTime}
           onChange={(e) => setEventTime(e.target.value)}
+          onClick={() => timeInputRef.current?.showPicker?.()}
         />
 
         <div style={{ height: 10 }} />
