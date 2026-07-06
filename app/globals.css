@@ -763,12 +763,12 @@ a:hover {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 6px 2px;
-  font-size: 13px;
+  padding: 8px 2px;
+  font-size: 14px;
   color: #111827;
-  flex-wrap: nowrap;
   cursor: pointer;
 }
+
 .directoryDropdownItem input[type="checkbox"] {
   flex-shrink: 0;
   margin-top: 2px;
@@ -779,8 +779,18 @@ a:hover {
   cursor: pointer;
 }
 
+.directoryDropdownItemLabel {
+  flex: 0 0 90px;
+  font-weight: 600;
+}
+
 .directoryDropdownHint {
-  display: none;  /* hide on all screens by default */
+  display: block;
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.5);
+  line-height: 1.35;
 }
 
 .directoryHome .card {

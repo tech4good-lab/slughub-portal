@@ -253,7 +253,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
                     onChange={() => toggleStatus(status.value)}
                     aria-label={`${status.label}. ${hint}`}
                   />
-                  <span>{status.label}</span>
+                  <span className="directoryDropdownItemLabel">{status.label}</span>
                   <span className="directoryDropdownHint">{hint}</span>
                 </label>
               );
