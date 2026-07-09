@@ -12,7 +12,7 @@
 
     const clubsNeedingReminders = await prisma.club.findMany({
       where: {
-        name: "Tech4Good",
+        name: "Tech4Good", // take this out later on
         status: "approved",
         updatedAt: { lt: oneYearAgo },
         contactEmail: { not: null },

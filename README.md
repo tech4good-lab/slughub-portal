@@ -45,6 +45,7 @@ Required env:
 - `GOOGLE_CLIENT_SECRET` Google OAuth client secret
 - `NEXTAUTH_URL` Base URL for NextAuth (ex: `http://localhost:3000`)
 - `NEXTAUTH_SECRET` Secret for NextAuth (required in production, recommended in dev)
+- `CRON_SECRET` Secret for vercel cron job that runs automatic email reminder every day at 9am
 
 Email notification env (optional):
 
