@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import PendingBadge from "@/app/components/PendingBadge";
 import DirectoryClient from "@/app/components/DirectoryClient";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
+import ChatBubble from "@/app/components/ChatBubble";
 import LogoutButton from "@/app/leader/edit/logout-button";
 
 export default async function HomePage() {
@@ -35,6 +36,7 @@ export default async function HomePage() {
             Failed to load communities. Please try again later.
           </p>
         </div>
+        <ChatBubble />
       </main>
     );
   }
@@ -45,6 +47,7 @@ export default async function HomePage() {
       <Header session={session} isAdmin={isAdmin} isLeader={isLeader} />
 
       <DirectoryClient clubs={clubs} session={session} />
+      <ChatBubble />
     </main>
   );
 }

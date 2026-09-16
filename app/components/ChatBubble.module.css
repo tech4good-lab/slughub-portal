@@ -1,0 +1,238 @@
+.container {
+  position: fixed;
+  bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  right: max(24px, env(safe-area-inset-right, 24px));
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+/* Interactive elements inside enable pointer events */
+.interactive {
+  pointer-events: auto;
+}
+
+/* Text speech bubble positioned right above the square bubble */
+.textBubble {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  right: 0;
+  width: 205px;
+  max-width: calc(100vw - 36px);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+  padding: 16px 14px;
+  padding-right: 28px;
+  box-shadow: 0 12px 30px -4px rgba(0, 60, 108, 0.18), 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: visible; /* Retains speech bubble shape and lets the tail arrow project outside without scrolling */
+  animation: bubbleFadeIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 10;
+}
+
+.textBubble:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -4px rgba(0, 60, 108, 0.24), 0 6px 14px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Downward pointing triangle/tail towards the square button */
+.textBubble::after {
+  content: "";
+  position: absolute;
+  bottom: -7px;
+  right: 24px;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  transform: rotate(45deg);
+  border-bottom: 1px solid rgba(2, 132, 199, 0.25);
+  border-right: 1px solid rgba(2, 132, 199, 0.25);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Close button on speech bubble */
+.closeBtn {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  z-index: 2;
+  padding: 0;
+}
+
+/* Generous touch target for mobile fingers */
+.closeBtn::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+}
+
+.closeBtn:hover {
+  color: #1e293b;
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.closeBtn:active {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.bubbleMessage {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #1e293b;
+  font-weight: 550;
+  margin: 0;
+}
+
+.bubbleCta {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Main Square Bubble wrapper */
+.squareWrapper {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+}
+
+/* Square button styling */
+.squareButton {
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 60, 108, 0.22), 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  box-sizing: border-box;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.25s ease;
+  animation: subtleFloat 3.5s ease-in-out infinite;
+  border: 1px solid white;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hover glow & shadow */
+@media (hover: hover) {
+  .squareButton:hover {
+    transform: translateY(-2px) scale(1.06);
+    box-shadow: 0 0 100px 5px rgba(3, 152, 227, 0.737), 0 10px 24px rgba(0, 60, 108, 0.3);
+  }
+}
+
+.squareButton:active {
+  transform: translateY(0px) scale(0.95);
+  box-shadow: 0 0 35px 2px rgba(3, 152, 227, 0.6), 0 6px 14px rgba(0, 60, 108, 0.25);
+}
+
+.squareButton:focus-visible {
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.5), 0 0 25px rgba(2, 132, 199, 0.7);
+}
+
+/* Logo image fills out the entire square box */
+.logoImage {
+  object-fit: cover;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 18px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  display: block;
+}
+
+/* Animations */
+@keyframes bubbleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes subtleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Mobile Screens */
+@media (max-width: 640px) {
+  .container {
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    right: max(16px, env(safe-area-inset-right, 16px));
+  }
+
+  .textBubble {
+    width: 195px;
+    max-width: calc(100vw - 32px);
+    padding: 15px 13px;
+    padding-right: 28px;
+    bottom: calc(100% + 12px);
+    overflow: visible; /* Never scroll, keep natural speech bubble shape */
+  }
+
+  .textBubble::after {
+    right: 22px;
+  }
+
+  .squareButton {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+
+  .squareWrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  .logoImage {
+    border-radius: 16px;
+  }
+}
