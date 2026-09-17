@@ -14,12 +14,12 @@
   pointer-events: auto;
 }
 
-/* Text speech bubble positioned right above the square bubble */
+/* Text speech bubble positioned right above the slug logo */
 .textBubble {
   position: absolute;
-  bottom: calc(100% + 14px);
+  bottom: calc(100% + 4px);
   right: 0;
-  width: 205px;
+  width: 220px;
   max-width: calc(100vw - 36px);
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(12px);
@@ -30,29 +30,28 @@
   padding: 16px 14px;
   padding-right: 28px;
   box-shadow: 0 12px 30px -4px rgba(0, 60, 108, 0.18), 0 4px 12px -2px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-  text-decoration: none;
+  cursor: default;
+  user-select: text;
   color: inherit;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: visible; /* Retains speech bubble shape and lets the tail arrow project outside without scrolling */
+  overflow: visible; /* Never scroll, keep natural speech bubble shape */
   animation: bubbleFadeIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease;
   z-index: 10;
 }
 
 .textBubble:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 36px -4px rgba(0, 60, 108, 0.24), 0 6px 14px -2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 14px 32px -4px rgba(0, 60, 108, 0.22), 0 4px 12px -2px rgba(0, 0, 0, 0.1);
 }
 
-/* Downward pointing triangle/tail towards the square button */
+/* Downward pointing triangle/tail connecting directly into the head of the slug mascot */
 .textBubble::after {
   content: "";
   position: absolute;
-  bottom: -7px;
-  right: 24px;
+  bottom: -6px;
+  right: 70px;
   width: 14px;
   height: 14px;
   background: #ffffff;
@@ -109,75 +108,157 @@
   margin: 0;
 }
 
-.bubbleCta {
+.bubbleActions {
   margin-top: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #0284c7;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 }
 
-/* Main Square Bubble wrapper */
-.squareWrapper {
+.bubbleLink {
+  font-size: 12.5px;
+  font-weight: 650;
+  color: #0284c7;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  margin-left: -6px;
+  border-radius: 6px;
+  transition: color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+
+.bubbleLink:hover {
+  color: #0369a1;
+  background-color: rgba(2, 132, 199, 0.08);
+}
+
+.bubbleLink:active {
+  transform: scale(0.96);
+}
+
+.chatLink {
+  color: #0284c7;
+  font-weight: 700;
+  margin-left: 0;
+}
+
+.chatLink:hover svg {
+  transform: translateX(2px);
+}
+
+.chatLink svg {
+  transition: transform 0.15s ease;
+}
+
+.linkSeparator {
+  color: #94a3b8;
+  font-size: 11px;
+  user-select: none;
+}
+
+/* Main Slug Avatar Wrapper (10% bigger: 132px x 128px) */
+.slugWrapper {
   position: relative;
-  width: 68px;
-  height: 68px;
+  width: 132px;
+  height: 128px;
   flex-shrink: 0;
 }
 
-/* Square button styling */
-.squareButton {
-  width: 68px;
-  height: 68px;
-  border-radius: 18px;
-  overflow: hidden;
+/* Slug interactive button (natural slithering crawl in from right) */
+.slugButton {
+  width: 100%;
+  height: 100%;
   background: transparent;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(0, 60, 108, 0.22), 0 2px 8px rgba(0, 0, 0, 0.08);
   text-decoration: none;
   position: relative;
   outline: none;
   cursor: pointer;
   padding: 0;
   box-sizing: border-box;
+  transform-origin: 50% 90%;
+  animation: slugSlideIn 2.1s ease-in-out forwards,
+             subtleSlugFloat 3.5s ease-in-out 2.1s infinite;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.18));
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.25s ease;
-  animation: subtleFloat 3.5s ease-in-out infinite;
-  border: 1px solid white;
+              filter 0.25s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Hover glow & shadow */
+/* Hover glow & shadow conforming directly to slug silhouette */
 @media (hover: hover) {
-  .squareButton:hover {
-    transform: translateY(-2px) scale(1.06);
-    box-shadow: 0 0 100px 5px rgba(3, 152, 227, 0.737), 0 10px 24px rgba(0, 60, 108, 0.3);
+  .slugButton:hover {
+    transform: translateY(-3px) scale(1.06);
+    filter: drop-shadow(0 0 20px rgb(242, 202, 4)) drop-shadow(0 10px 20px rgba(175, 176, 176, 0.38));
   }
 }
 
-.squareButton:active {
-  transform: translateY(0px) scale(0.95);
-  box-shadow: 0 0 35px 2px rgba(3, 152, 227, 0.6), 0 6px 14px rgba(0, 60, 108, 0.25);
+.slugButton:active {
+  transform: translateY(0px) scale(0.96);
+  filter: drop-shadow(0 0 20px rgba(242, 202, 4, 0.724));
 }
 
-.squareButton:focus-visible {
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.5), 0 0 25px rgba(2, 132, 199, 0.7);
+.slugButton:focus-visible {
+  filter: drop-shadow(0 0 20px rgb(242, 202, 4)) drop-shadow(0 0 20px rgb(242, 202, 4));
 }
 
-/* Logo image fills out the entire square box */
-.logoImage {
-  object-fit: cover;
+/* Container for animated face layers */
+.imageLayerContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Base face is always solid underneath so no background ever flashes through */
+.baseFace {
+  object-fit: contain;
   width: 100% !important;
   height: 100% !important;
-  border-radius: 18px;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
   display: block;
+  z-index: 1;
+}
+
+/* Overlay face frames (instant cut, no opacity transition to prevent semi-transparent flash) */
+.logoImage {
+  object-fit: contain;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  display: block;
+}
+
+.blinkClearLayer {
+  z-index: 2;
+}
+
+.mouthLayer {
+  z-index: 3;
+}
+
+.blinkMouthLayer {
+  z-index: 4;
+}
+
+.activeFace {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hiddenFace {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* Animations */
@@ -192,12 +273,51 @@
   }
 }
 
-@keyframes subtleFloat {
-  0%, 100% {
-    transform: translateY(0);
+/* Organic slithering with 3 distinct wriggles and pronounced expansion & deflation */
+@keyframes slugSlideIn {
+  0% {
+    transform: translateX(210px) translateY(0) scale(1, 1) skewX(0deg) rotate(0deg);
+    opacity: 0;
+  }
+  16% {
+    /* Wriggle 1 - Bunch & Puff Up: body arches high, expands vertically (+18%), squashes horizontally (-16%) */
+    transform: translateX(165px) translateY(-10px) scale(0.84, 1.18) skewX(-4deg) rotate(-3deg);
+    opacity: 1;
+  }
+  33% {
+    /* Wriggle 1 - Surge & Deflate: body stretches forward (+16%), deflates flat against the ground (-15%) */
+    transform: translateX(120px) translateY(0px) scale(1.16, 0.85) skewX(3.5deg) rotate(2deg);
   }
   50% {
-    transform: translateY(-4px);
+    /* Wriggle 2 - Bunch & Puff Up: second strong expansion and vertical arch */
+    transform: translateX(78px) translateY(-8.5px) scale(0.86, 1.15) skewX(-3.5deg) rotate(-2.5deg);
+  }
+  67% {
+    /* Wriggle 2 - Surge & Deflate: second forward elongation and deflation */
+    transform: translateX(42px) translateY(0px) scale(1.13, 0.88) skewX(3deg) rotate(1.5deg);
+  }
+  83% {
+    /* Wriggle 3 - Bunch & Puff Up: final arch and expansion into deceleration */
+    transform: translateX(16px) translateY(-6px) scale(0.90, 1.10) skewX(-2deg) rotate(-1.5deg);
+  }
+  94% {
+    /* Wriggle 3 - Final gentle stretch reaching home */
+    transform: translateX(3px) translateY(0px) scale(1.05, 0.95) skewX(1deg) rotate(0.5deg);
+  }
+  100% {
+    /* Settled smoothly into home position */
+    transform: translateX(0) translateY(0) scale(1, 1) skewX(0deg) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Gentle organic breathing idle animation */
+@keyframes subtleSlugFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scaleX(1.015) scaleY(0.985);
   }
 }
 
@@ -211,28 +331,18 @@
   .textBubble {
     width: 195px;
     max-width: calc(100vw - 32px);
-    padding: 15px 13px;
-    padding-right: 28px;
-    bottom: calc(100% + 12px);
-    overflow: visible; /* Never scroll, keep natural speech bubble shape */
+    padding: 14px 12px;
+    padding-right: 26px;
+    bottom: calc(100% + 4px);
+    overflow: visible;
   }
 
   .textBubble::after {
-    right: 22px;
+    right: 48px;
   }
 
-  .squareButton {
-    width: 60px;
-    height: 60px;
-    border-radius: 16px;
-  }
-
-  .squareWrapper {
-    width: 60px;
-    height: 60px;
-  }
-
-  .logoImage {
-    border-radius: 16px;
+  .slugWrapper {
+    width: 92px;
+    height: 90px;
   }
 }

@@ -74,6 +74,7 @@ function Header({
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        {/* Preserved SlugPath button code:
         <Link
           className="btn"
           href="https://ucsantacruz.co1.qualtrics.com/jfe/form/SV_a5BfIizH1QCOAVE"
@@ -117,6 +118,7 @@ function Header({
             SlugPath
           </span>
         </Link>
+        */}
 
         <h1
           style={{
