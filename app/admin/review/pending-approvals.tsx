@@ -331,7 +331,7 @@ export default function PendingApprovals({ email }: { email?: string }) {
                 whiteSpace: "nowrap",
               }}
             >
-              Directory
+              Portal
             </Link>
           </div>
         </div>

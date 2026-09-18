@@ -93,7 +93,7 @@ export default async function ClubDetailPage({
           href="/directory"
           style={{ ...linkPillStyle, marginBottom: 24 }}
         >
-          Back to Directory
+          Back to Portal
         </Link>
         <div
           className="card"
@@ -122,7 +122,7 @@ export default async function ClubDetailPage({
         href="/directory"
         style={{ ...linkPillStyle, marginBottom: 24 }}
       >
-        Back to Directory
+        Back to Portal
       </Link>
 
       <div className="card" style={{ marginTop: 20 }}>

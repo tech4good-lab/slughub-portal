@@ -126,7 +126,7 @@ export default function NewEventPage() {
             Dashboard
           </Link>
           <Link className="btn" href="/directory">
-            Directory
+            Portal
           </Link>
         </div>
       </div>

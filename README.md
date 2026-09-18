@@ -63,7 +63,7 @@ Email notification env (optional):
 ## Common Pages
 
 - `app/page.tsx` Home / landing
-- `app/directory` Community directory
+- `app/directory` UCSC Community Portal
 - `app/leader/dashboard` Leader dashboard
 - `app/admin/review` Community approvals
 - `app/admin/access` Access requests

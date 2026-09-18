@@ -22,6 +22,27 @@ const CHAT_URL = "https://chat.slughub.cc/";
 const ABOUT_URL = "https://chat.slughub.cc/about";
 const EMIT_INTERVAL_MS = 2 * 60 * 1000; // 2 minutes
 const AUTO_DISMISS_MS = 14 * 1000; // 14 seconds display per emission
+const BLINK_INTERVAL_MS = 5000; // Standardized to blink every 5 seconds
+const BLINK_DURATION_MS = 150; // Natural blink duration (150ms)
+const MAX_SESSION_EMISSIONS = 4; // Maximum messages emitted in one session
+const SESSION_STORAGE_KEY = "slugpath_emission_count";
+
+const getSessionCount = (): number => {
+  if (typeof window === "undefined") return 0;
+  try {
+    const val = sessionStorage.getItem(SESSION_STORAGE_KEY);
+    return val ? parseInt(val, 10) || 0 : 0;
+  } catch {
+    return 0;
+  }
+};
+
+const setSessionCount = (count: number) => {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.setItem(SESSION_STORAGE_KEY, String(count));
+  } catch {}
+};
 
 export default function ChatBubble() {
   const [currentMessage, setCurrentMessage] = useState<string>("");
@@ -32,7 +53,12 @@ export default function ChatBubble() {
   const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastMessageIndexRef = useRef<number>(-1);
 
-  const emitRandomMessage = useCallback(() => {
+  const emitRandomMessage = useCallback((): boolean => {
+    const currentCount = getSessionCount();
+    if (currentCount >= MAX_SESSION_EMISSIONS) {
+      return false; // Limit reached, no more messages
+    }
+
     let nextIndex = Math.floor(Math.random() * CHAT_MESSAGES.length);
     if (CHAT_MESSAGES.length > 1 && nextIndex === lastMessageIndexRef.current) {
       nextIndex = (nextIndex + 1) % CHAT_MESSAGES.length;
@@ -41,6 +67,7 @@ export default function ChatBubble() {
 
     setCurrentMessage(CHAT_MESSAGES[nextIndex]);
     setIsOpen(true);
+    setSessionCount(currentCount + 1);
 
     if (dismissTimerRef.current) {
       clearTimeout(dismissTimerRef.current);
@@ -48,48 +75,62 @@ export default function ChatBubble() {
     dismissTimerRef.current = setTimeout(() => {
       setIsOpen(false);
     }, AUTO_DISMISS_MS);
+
+    // Return whether more emissions remain available
+    return currentCount + 1 < MAX_SESSION_EMISSIONS;
   }, []);
 
-  // Periodic 2-minute message emission & initial prompt
+  // Periodic message emission (capped at 4 per session)
   useEffect(() => {
+    if (getSessionCount() >= MAX_SESSION_EMISSIONS) {
+      return;
+    }
+
+    let intervalTimer: NodeJS.Timeout | null = null;
+
     const initialTimer = setTimeout(() => {
-      emitRandomMessage();
+      const canEmitMore = emitRandomMessage();
+      if (!canEmitMore && intervalTimer) {
+        clearInterval(intervalTimer);
+      }
     }, 2500);
 
-    const intervalTimer = setInterval(() => {
-      emitRandomMessage();
+    intervalTimer = setInterval(() => {
+      const canEmitMore = emitRandomMessage();
+      if (!canEmitMore && intervalTimer) {
+        clearInterval(intervalTimer);
+      }
     }, EMIT_INTERVAL_MS);
 
     return () => {
       clearTimeout(initialTimer);
-      clearInterval(intervalTimer);
+      if (intervalTimer) {
+        clearInterval(intervalTimer);
+      }
       if (dismissTimerRef.current) {
         clearTimeout(dismissTimerRef.current);
       }
     };
   }, [emitRandomMessage]);
 
-  // Handle eyes & mouth states (idle blink vs talking animation)
+  // Standardized blink cycle: blinks every 5 seconds for 150ms in both idle and text-bubble states
   useEffect(() => {
-    let blinkTimer: NodeJS.Timeout;
+    let blinkTimeout: NodeJS.Timeout | null = null;
 
-    const runBlinkCycle = () => {
-      const nextDelay = 2200 + Math.random() * 2600;
-      blinkTimer = setTimeout(() => {
-        setIsBlinking(true);
-        setTimeout(() => {
-          setIsBlinking(false);
-          runBlinkCycle();
-        }, 150);
-      }, nextDelay);
-    };
-
-    runBlinkCycle();
+    const blinkInterval = setInterval(() => {
+      setIsBlinking(true);
+      blinkTimeout = setTimeout(() => {
+        setIsBlinking(false);
+      }, BLINK_DURATION_MS);
+    }, BLINK_INTERVAL_MS);
 
     return () => {
-      clearTimeout(blinkTimer);
+      clearInterval(blinkInterval);
+      if (blinkTimeout) {
+        clearTimeout(blinkTimeout);
+      }
     };
-  }, [isOpen]);
+  }, []);
 
   // Pause auto-dismiss timer on hover
   useEffect(() => {

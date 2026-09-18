@@ -126,7 +126,7 @@ export default async function AdminAccessPage() {
                 alignSelf: "center",
               }}
             >
-              Directory
+              Portal
             </Link>
           </div>
         </div>

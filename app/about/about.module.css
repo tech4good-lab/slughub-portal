@@ -1,0 +1,797 @@
+/* About Page CSS Module - Granola.ai Layout with UCSC Community Portal Design Language */
+
+.pageWrapper {
+  position: relative;
+  min-height: 100vh;
+  background-color: #edf4ff;
+  color: #111827;
+  overflow-x: hidden;
+  font-family: inherit;
+}
+
+.contentLayer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Nav Header */
+.navHeader {
+  position: sticky;
+  top: 16px;
+  z-index: 50;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navPill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 20px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.05);
+}
+
+.navBrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #111827;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.brandLogo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  padding: 7px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(17, 24, 39, 0.8);
+  text-decoration: none;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.navLink:hover,
+.navLinkActive {
+  background: rgba(16, 24, 40, 0.05);
+  color: #111827;
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pillBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.pillBtnPrimary {
+  background: #fdf0a6;
+  border-color: #fdf0a6;
+  color: #000;
+  box-shadow: 0 6px 14px rgba(251, 191, 36, 0.16);
+}
+
+.pillBtnPrimary:hover {
+  background: #fbbf24;
+  border-color: #fbbf24;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(251, 191, 36, 0.25);
+}
+
+.pillBtnSecondary {
+  background: #ffffff;
+  border-color: rgba(16, 24, 40, 0.08);
+  color: #111827;
+}
+
+.pillBtnSecondary:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(16, 24, 40, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Sections Common Container */
+.sectionContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+/* 1. HERO SECTION */
+.heroSection {
+  padding-top: 60px;
+  padding-bottom: 80px;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.badgePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 24px;
+}
+
+.badgeTag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fdf0a6;
+  font-size: 11px;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.heroTitle {
+  font-size: clamp(38px, 5.5vw, 68px);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: #111827;
+  margin-bottom: 24px;
+  text-wrap: balance;
+}
+
+.heroSubtitle {
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 1.5;
+  color: rgba(17, 24, 39, 0.68);
+  margin-bottom: 32px;
+  max-width: 540px;
+}
+
+.heroButtons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.heroMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: rgba(17, 24, 39, 0.55);
+}
+
+.heroMetaDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+/* Hero Right Mockup / Notepad Preview */
+.mockupCard {
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(16, 24, 40, 0.08);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.mockupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #fafbfc;
+  border-bottom: 1px solid rgba(16, 24, 40, 0.06);
+}
+
+.windowDots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(16, 24, 40, 0.15);
+}
+
+.mockupTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(17, 24, 39, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mockupBody {
+  padding: 24px;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+}
+
+/* Wireframe / Blank Placeholders */
+.placeholderSlot {
+  background: rgba(16, 24, 40, 0.03);
+  border: 1.5px dashed rgba(16, 24, 40, 0.12);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(17, 24, 39, 0.4);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 16px;
+  text-align: center;
+}
+
+.placeholderTextLine {
+  height: 12px;
+  border-radius: 6px;
+  background: rgba(16, 24, 40, 0.06);
+  width: 100%;
+}
+
+/* 2. RULED NOTEPAD HIGHLIGHTS SECTION */
+.notepadSection {
+  position: relative;
+  background: #ffffff;
+  border-top: 1px solid rgba(16, 24, 40, 0.06);
+  border-bottom: 1px solid rgba(16, 24, 40, 0.06);
+  padding: 80px 20px;
+  overflow: hidden;
+}
+
+.ruledBackground {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(16, 24, 40, 0.04) 0px,
+    rgba(16, 24, 40, 0.04) 1px,
+    transparent 1px,
+    transparent 48px
+  );
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, black 20%, transparent 95%);
+  -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 95%);
+}
+
+.notepadGrid {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.notepadLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sectionHeadline {
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+
+.notepadPoints {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.notepadPoint {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(237, 244, 255, 0.65);
+  border: 1px solid rgba(16, 24, 40, 0.06);
+  border-radius: 16px;
+}
+
+.pointIconWrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fdf0a6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.pointContent h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.pointContent p {
+  font-size: 14px;
+  color: rgba(17, 24, 39, 0.65);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.notepadRight {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 3. BIG TYPOGRAPHIC STATEMENT BANNER */
+.statementSection {
+  padding: 90px 20px;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.statementTag {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(17, 24, 39, 0.45);
+  margin-bottom: 16px;
+}
+
+.statementTitle {
+  font-size: clamp(40px, 8vw, 96px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: #111827;
+  margin-bottom: 20px;
+}
+
+.statementSubtitle {
+  font-size: clamp(16px, 2vw, 22px);
+  color: rgba(17, 24, 39, 0.6);
+  max-width: 620px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* 4. 3-STEP PROCESS GRID ("How it works") */
+.processSection {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionHeaderCenter {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.sectionSubtitle {
+  font-size: 16px;
+  color: rgba(17, 24, 39, 0.6);
+  margin-top: 10px;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.stepCard {
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.06);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 20px rgba(16, 24, 40, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.stepCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 30px rgba(16, 24, 40, 0.08);
+}
+
+.stepBadge {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #edf4ff;
+  border: 1px solid rgba(16, 24, 40, 0.06);
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+.stepTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.stepDesc {
+  font-size: 14px;
+  color: rgba(17, 24, 39, 0.65);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.stepSlot {
+  height: 160px;
+  margin-top: auto;
+}
+
+/* 5. BENTO GRID SHOWCASE */
+.bentoSection {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bentoGridTop {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.bentoGridBottom {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.bentoCard {
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.06);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 10px 20px rgba(16, 24, 40, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+
+.bentoCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 28px rgba(16, 24, 40, 0.07);
+}
+
+.bentoTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.bentoDesc {
+  font-size: 14px;
+  color: rgba(17, 24, 39, 0.65);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 6. TINTED ACCENT BANNER */
+.accentBannerSection {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.accentBanner {
+  background: linear-gradient(135deg, #fdf0a6 0%, #fae885 100%);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 28px;
+  padding: 56px 40px;
+  box-shadow: 0 16px 36px rgba(251, 191, 36, 0.18);
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.accentBannerTitle {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111827;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.accentBannerText {
+  font-size: 16px;
+  color: rgba(17, 24, 39, 0.75);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* 7. COMMUNITY STATS / TESTIMONIALS GRID */
+.statsSection {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.statCard {
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.06);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 10px 20px rgba(16, 24, 40, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.statNumber {
+  font-size: 42px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.statSub {
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.55);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* 8. FINAL CTA BANNER */
+.finalCtaSection {
+  max-width: 1200px;
+  margin: 40px auto 80px;
+  padding: 0 20px;
+}
+
+.finalCtaCard {
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  border-radius: 28px;
+  padding: 64px 32px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(16, 24, 40, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.ctaTitle {
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #111827;
+  margin: 0;
+}
+
+.ctaSubtitle {
+  font-size: 17px;
+  color: rgba(17, 24, 39, 0.65);
+  max-width: 540px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ctaButtons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* 9. MULTI-COLUMN FOOTER */
+.footer {
+  background: #ffffff;
+  border-top: 1px solid rgba(16, 24, 40, 0.06);
+  padding: 64px 20px 32px;
+}
+
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.footerBrandCol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footerBrandTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.footerBrandDesc {
+  font-size: 13.5px;
+  color: rgba(17, 24, 39, 0.55);
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+.footerCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footerColTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.footerLink {
+  font-size: 14px;
+  color: rgba(17, 24, 39, 0.65);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footerLink:hover {
+  color: #111827;
+}
+
+.footerBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 28px;
+  border-top: 1px solid rgba(16, 24, 40, 0.06);
+  font-size: 13px;
+  color: rgba(17, 24, 39, 0.45);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .notepadGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .bentoGridTop {
+    grid-template-columns: 1fr;
+  }
+
+  .bentoGridBottom {
+    grid-template-columns: 1fr;
+  }
+
+  .footerGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .accentBanner {
+    grid-template-columns: 1fr;
+    padding: 36px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stepsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .footerGrid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .footerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

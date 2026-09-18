@@ -127,7 +127,7 @@ function Header({
             fontSize: "clamp(28px, 5vw, 40px)",
           }}
         >
-          Community Directory
+          UCSC Community Portal
         </h1>
       </div>
 

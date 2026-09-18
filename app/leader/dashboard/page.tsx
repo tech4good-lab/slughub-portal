@@ -248,7 +248,7 @@ export default async function LeaderDashboard() {
                 href="/directory"
                 style={{ whiteSpace: "nowrap", flexShrink: 0 }}
               >
-                Directory
+                Portal
               </Link>
               <div style={{ flexShrink: 0, alignSelf: "center" }}>
                 <LogoutButton />

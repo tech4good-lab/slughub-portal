@@ -99,7 +99,7 @@ export default function LoginPage() {
               textDecoration: "none",
             }}
           >
-            Directory
+            Portal
           </Link>
         </div>
 

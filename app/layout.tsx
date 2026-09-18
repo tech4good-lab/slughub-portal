@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = {
   title: "Community Portal",
-  description: "Community directory + leader portal",
+  description: "UCSC Community Portal",
 };
 export default function RootLayout({
   children,
