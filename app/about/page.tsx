@@ -1,6 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
+import Navbar from "@/app/components/Navbar";
 import styles from "./about.module.css";
 
 export const metadata = {
@@ -9,65 +12,19 @@ export const metadata = {
     "Learn about the UCSC Community Portal, student organizations, and campus connections.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const session = await getServerSession(authOptions);
+  const isAdmin = (session as any)?.role === "admin";
+  const isLeader = (session as any)?.role === "leader";
+
   return (
     <main className={styles.pageWrapper}>
       {/* Signature Portal Floating Ambient Bubbles */}
       <DecorativeBubbles />
 
       <div className={styles.contentLayer}>
-        {/* =========================================================
-            HEADER / FLOATING NAVBAR (Granola Pill Nav Style)
-        ========================================================= */}
-        <header className={styles.navHeader}>
-          <nav className={styles.navPill} aria-label="About page navigation">
-            <Link href="/" className={styles.navBrand} title="Back to Home">
-              <Image
-                src="/dashboard-icon.png"
-                alt="SlugPath Logo"
-                width={32}
-                height={32}
-                className={styles.brandLogo}
-              />
-              <span>SlugPath</span>
-            </Link>
-
-            <ul className={styles.navLinks}>
-              <li>
-                <Link href="/" className={styles.navLink}>
-                  Directory
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about"
-                  className={`${styles.navLink} ${styles.navLinkActive}`}
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="https://chat.slughub.cc/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.navLink}
-                >
-                  SlugPath AI
-                </Link>
-              </li>
-            </ul>
-
-            <div className={styles.navActions}>
-              <Link href="/login" className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}>
-                Login
-              </Link>
-              <Link href="/" className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}>
-                Explore Directory
-              </Link>
-            </div>
-          </nav>
-        </header>
+        {/* Navigation Bar (Portal / About in center, Community Lead Login on right) */}
+        <Navbar session={session} isAdmin={isAdmin} isLeader={isLeader} />
 
         {/* =========================================================
             1. HERO SECTION (Granola Split Grid with Mockup Canvas)
@@ -548,13 +505,13 @@ export default function AboutPage() {
               <div className={styles.footerCol}>
                 <span className={styles.footerColTitle}>Navigation</span>
                 <Link href="/" className={styles.footerLink}>
-                  Directory
+                  Portal
                 </Link>
                 <Link href="/about" className={styles.footerLink}>
                   About
                 </Link>
                 <Link href="/login" className={styles.footerLink}>
-                  Leader Login
+                  Community Lead Login
                 </Link>
                 <Link href="/signup" className={styles.footerLink}>
                   Sign Up

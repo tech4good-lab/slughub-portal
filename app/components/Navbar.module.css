@@ -1,0 +1,287 @@
+/* Navbar.module.css - Floating Pill Navigation Bar */
+
+.navHeader {
+  position: sticky;
+  top: 16px;
+  z-index: 50;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px 0 20px;
+  box-sizing: border-box;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  will-change: transform, opacity;
+}
+
+.navVisible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.navHidden {
+  transform: translateY(-130%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.navPill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.05);
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Left: Segmented "Portal" / "About" Toggle */
+.toggleSegment {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(16, 24, 40, 0.05);
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 24, 40, 0.04);
+  flex-shrink: 0;
+}
+
+.segmentBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  color: rgba(17, 24, 39, 0.7);
+  transition: all 0.2s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.segmentBtn:hover {
+  color: #111827;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.segmentBtnActive {
+  background: #ffffff;
+  color: #111827;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
+  border: 1px solid rgba(16, 24, 40, 0.06);
+}
+
+.segmentBtnActive:hover {
+  background: #ffffff;
+  color: #111827;
+}
+
+/* Right Actions Container - Desktop */
+.desktopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Action Button (Yellow Pill) */
+.actionBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: #fdf0a6;
+  border: 1px solid #fdf0a6;
+  color: #000;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.14);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.actionBtn:hover {
+  background: #fbbf24;
+  border-color: #fbbf24;
+  color: #000;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.22);
+}
+
+/* Responsive label switching on desktop/tablet */
+.labelFull {
+  display: inline;
+}
+
+.labelShort {
+  display: none;
+}
+
+@media (max-width: 1080px) and (min-width: 768px) {
+  .labelFull {
+    display: none;
+  }
+  .labelShort {
+    display: inline;
+  }
+  .actionBtn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+/* Right Actions Container - Mobile */
+.mobileActions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Mobile Menu Trigger Button */
+.menuTriggerBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #fdf0a6;
+  border: 1px solid #fdf0a6;
+  color: #000;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.14);
+  transition: all 0.2s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.menuTriggerBtn:hover,
+.menuTriggerBtnActive {
+  background: #fbbf24;
+  border-color: #fbbf24;
+}
+
+/* Floating Mobile Menu Dropdown */
+.mobileDropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 230px;
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 16px 36px rgba(16, 24, 40, 0.12);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 60;
+  animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdownItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.dropdownItem:hover {
+  background: rgba(16, 24, 40, 0.05);
+  color: #000;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: rgba(16, 24, 40, 0.06);
+  margin: 4px 0;
+}
+
+/* Mobile Breakpoint (< 768px) */
+@media (max-width: 768px) {
+  .navHeader {
+    top: 10px;
+    padding: 10px 14px 0 14px;
+  }
+
+  .navPill {
+    height: 54px;
+    padding: 0 10px;
+  }
+
+  .desktopActions {
+    display: none;
+  }
+
+  .mobileActions {
+    display: flex;
+  }
+
+  .labelFull {
+    display: none;
+  }
+
+  .labelShort {
+    display: inline;
+  }
+
+  .segmentBtn {
+    padding: 7px 16px;
+    font-size: 13px;
+  }
+
+  .actionBtn {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .segmentBtn {
+    padding: 6px 12px;
+    font-size: 12.5px;
+  }
+
+  .menuTriggerBtn {
+    padding: 7px 12px;
+    font-size: 12.5px;
+  }
+}

@@ -1,13 +1,10 @@
-import Link from "next/link";
-import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import PendingBadge from "@/app/components/PendingBadge";
 import DirectoryClient from "@/app/components/DirectoryClient";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
 import ChatBubble from "@/app/components/ChatBubble";
-import LogoutButton from "@/app/leader/edit/logout-button";
+import Navbar from "@/app/components/Navbar";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -28,173 +25,55 @@ export default async function HomePage() {
   } catch (error) {
     console.error("Prisma Error loading directory:", error);
     return (
-      <main className="container" style={{ position: "relative", zIndex: 1 }}>
+      <main style={{ minHeight: "100vh", position: "relative", zIndex: 1, backgroundColor: "#edf4ff" }}>
         <DecorativeBubbles />
-        <Header session={session} isAdmin={isAdmin} isLeader={isLeader} />
-        <div className="card">
-          <p className="small">
-            Failed to load communities. Please try again later.
-          </p>
+        <Navbar session={session} isAdmin={isAdmin} isLeader={isLeader} />
+        <div className="container" style={{ paddingTop: 0 }}>
+          <div style={{ marginTop: 44, marginBottom: 28 }}>
+            <h1
+              style={{
+                margin: 0,
+                color: "black",
+                fontSize: "clamp(28px, 5vw, 40px)",
+              }}
+            >
+              UCSC Community Portal
+            </h1>
+          </div>
+          <div className="card">
+            <p className="small">
+              Failed to load communities. Please try again later.
+            </p>
+          </div>
+          <ChatBubble />
         </div>
-        <ChatBubble />
       </main>
     );
   }
 
   return (
-    <main className="container directoryHome" style={{ zIndex: 1 }}>
+    <main style={{ minHeight: "100vh", position: "relative", zIndex: 1, backgroundColor: "#edf4ff" }}>
       <DecorativeBubbles />
-      <Header session={session} isAdmin={isAdmin} isLeader={isLeader} />
+      <Navbar session={session} isAdmin={isAdmin} isLeader={isLeader} />
 
-      <DirectoryClient clubs={clubs} session={session} />
-      <ChatBubble />
+      <div className="container directoryHome" style={{ paddingTop: 0 }}>
+        <div style={{ marginTop: 44, marginBottom: 28 }}>
+          <h1
+            style={{
+              margin: 0,
+              color: "black",
+              fontSize: "clamp(28px, 5vw, 40px)",
+            }}
+          >
+            UCSC Community Portal
+          </h1>
+        </div>
+
+        <DirectoryClient clubs={clubs} session={session} />
+        <ChatBubble />
+      </div>
     </main>
   );
 }
 
-function Header({
-  session,
-  isAdmin,
-  isLeader,
-}: {
-  session: any;
-  isAdmin: boolean;
-  isLeader: boolean;
-}) {
-  return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 32,
-        marginTop: 16,
-        flexWrap: "wrap",
-        gap: 16,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        {/* Preserved SlugPath button code:
-        <Link
-          className="btn"
-          href="https://ucsantacruz.co1.qualtrics.com/jfe/form/SV_a5BfIizH1QCOAVE"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Sign up for the SlugPath waiting list"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0px",
-            backgroundColor: "#b0dbf6",
-            height: "45px",
-            padding: "4px",
-            borderRadius: "16px",
-            overflow: "hidden",
-            userSelect: "none",
-            border: "1px solid #b0dbf6",
-          }}
-        >
-          <Image
-            src="/dashboard-icon.png"
-            alt="SlugPath Logo"
-            width={38}
-            height={38}
-            style={{ 
-              objectFit: "contain",
-              width: "clamp(28px, 4vw, 38px)",
-              height: "clamp(28px, 4vw, 38px)",
-              marginLeft: "5px"
-             }}
-          />
-          <span
-            className="hidden min-[500px]:inline"
-            style={{
-              marginLeft: "3px",
-              fontWeight: "650",
-              fontSize: "clamp(0.75rem, 4vw, 1.1rem)",  // text shrinks
-              marginRight: "7px"
-            }}
-          >
-            SlugPath
-          </span>
-        </Link>
-        */}
 
-        <h1
-          style={{
-            margin: 0,
-            color: "black",
-            fontSize: "clamp(28px, 5vw, 40px)",
-          }}
-        >
-          UCSC Community Portal
-        </h1>
-      </div>
-
-      {/* Buttons Require Scrolling on mobile. */}
-      <nav
-        className="row"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          flexWrap: "nowrap",
-          overflowX: "auto",
-
-        }}
-      >
-        {session ? (
-          <>
-            {isAdmin && (
-              <div
-                className="tooltip-container"
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  paddingTop: "10px",
-                }}
-              >
-                <Link
-                  className="btn"
-                  href="/admin/review"
-                  style={{ position: "relative", whiteSpace: "nowrap" }}
-                >
-                  Community Approvals
-                  <PendingBadge />
-                </Link>
-                <Link
-                  className="btn"
-                  href="/admin/access"
-                  style={{ position: "relative", whiteSpace: "nowrap" }}
-                >
-                  Access Requests
-                  <PendingBadge endpoint="/api/admin/access-requests/pending/count" />
-                </Link>
-              </div>
-            )}
-            {(isAdmin || isLeader) && (
-              <>
-                <Link
-                  className="btn"
-                  href="/leader/dashboard"
-                  style={{ whiteSpace: "nowrap", flexShrink: 0, flexGrow: 0, alignSelf: "flex-end", position: "relative" }}
-                >
-                  Dashboard
-                </Link>
-                <div style={{ flexShrink: 0, alignSelf: "flex-end", position: "relative" }}>
-                  <LogoutButton />
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <Link className="btn" href="/login" style={{ whiteSpace: "nowrap", position: "relative"}}>
-            Community Lead Login
-          </Link>
-        )}
-      </nav>
-    </header>
-  );
-}
