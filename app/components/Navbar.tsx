@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import PendingBadge from "@/app/components/PendingBadge";
 import LogoutButton from "@/app/leader/edit/logout-button";
+import { markPortalTransition } from "@/lib/slugTransition";
 import styles from "./Navbar.module.css";
 
 interface NavbarProps {
@@ -34,15 +35,24 @@ export default function Navbar({
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  // Click outside listener for mobile dropdown
+  // Click outside and Escape key listener for mobile dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMobileMenuOpen(false);
       }
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+    };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   // Smooth Hide on Scroll Down / Show on Scroll Up
@@ -91,21 +101,30 @@ export default function Navbar({
       }`}
     >
       <nav className={styles.navPill} aria-label="Main Navigation">
-        {/* Left: Segmented "Portal" and "About" Navigation Toggle */}
-        <div className={styles.toggleSegment}>
+        {/* Left: Navigation Links */}
+        <div className={styles.navLinks}>
           <Link
             href="/"
-            className={`${styles.segmentBtn} ${
-              isPortalActive ? styles.segmentBtnActive : ""
+            className={`${styles.navLink} ${
+              isPortalActive ? styles.navLinkActive : ""
             }`}
+            aria-current={isPortalActive ? "page" : undefined}
+            suppressHydrationWarning
           >
             Portal
           </Link>
           <Link
             href="/about"
-            className={`${styles.segmentBtn} ${
-              isAboutActive ? styles.segmentBtnActive : ""
+            className={`${styles.navLink} ${
+              isAboutActive ? styles.navLinkActive : ""
             }`}
+            aria-current={isAboutActive ? "page" : undefined}
+            suppressHydrationWarning
+            onClick={() => {
+              if (pathname === "/") {
+                markPortalTransition();
+              }
+            }}
           >
             About
           </Link>
@@ -173,6 +192,7 @@ export default function Navbar({
                 }`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-nav-dropdown"
                 aria-label="Toggle navigation menu"
               >
                 <span>{isAdmin ? "Admin" : "Dashboard"}</span>
@@ -196,7 +216,7 @@ export default function Navbar({
               </button>
 
               {isMobileMenuOpen && (
-                <div className={styles.mobileDropdown}>
+                <div id="mobile-nav-dropdown" className={styles.mobileDropdown}>
                   {isAdmin && (
                     <>
                       <Link
@@ -235,18 +255,7 @@ export default function Navbar({
 
                   <button
                     type="button"
-                    className={styles.dropdownItem}
-                    style={{
-                      width: "100%",
-                      background: "none",
-                      border: "none",
-                      color: "#dc2626",
-                      cursor: "pointer",
-                      textAlign: "left",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
+                    className={`${styles.dropdownItem} ${styles.dropdownLogout}`}
                     onClick={() => signOut({ callbackUrl: "/" })}
                   >
                     <span>Log Out</span>

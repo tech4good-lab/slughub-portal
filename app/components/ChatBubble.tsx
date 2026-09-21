@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { markPortalTransition, checkAndConsumePortalTransition } from "@/lib/slugTransition";
 import styles from "./ChatBubble.module.css";
 
 const CHAT_MESSAGES = [
@@ -19,7 +21,6 @@ const CHAT_MESSAGES = [
 ];
 
 const CHAT_URL = "https://chat.slughub.cc/";
-const ABOUT_URL = "https://chat.slughub.cc/about";
 const EMIT_INTERVAL_MS = 2 * 60 * 1000; // 2 minutes
 const AUTO_DISMISS_MS = 14 * 1000; // 14 seconds display per emission
 const BLINK_INTERVAL_MS = 5000; // Standardized to blink every 5 seconds
@@ -44,19 +45,54 @@ const setSessionCount = (count: number) => {
   } catch {}
 };
 
-export default function ChatBubble() {
-  const [currentMessage, setCurrentMessage] = useState<string>("");
+interface ChatBubbleProps {
+  mode?: "default" | "exit";
+}
+
+export default function ChatBubble({ mode = "default" }: ChatBubbleProps) {
+  const isExitMode = mode === "exit";
+  const [shouldAnimateExit] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    if (!isExitMode) return false;
+    return checkAndConsumePortalTransition();
+  });
+  const [hasExited, setHasExited] = useState<boolean>(false);
+
+  // When on portal page, register transition timestamp so going to /about triggers exit animation
+  useEffect(() => {
+    if (!isExitMode) {
+      markPortalTransition();
+      return () => {
+        markPortalTransition();
+      };
+    }
+  }, [isExitMode]);
+
+  // When in exit mode and legitimately coming from portal, wait for backwards wriggle animation (1.8s) to complete, then unmount
+  useEffect(() => {
+    if (isExitMode && shouldAnimateExit) {
+      const exitTimer = setTimeout(() => {
+        setHasExited(true);
+      }, 1900);
+      return () => clearTimeout(exitTimer);
+    }
+  }, [isExitMode, shouldAnimateExit]);
+
+  const [currentMessage, setCurrentMessage] = useState<string>(() => {
+    return CHAT_MESSAGES[Math.floor(Math.random() * CHAT_MESSAGES.length)];
+  });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isBlinking, setIsBlinking] = useState<boolean>(false);
 
   const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastMessageIndexRef = useRef<number>(-1);
+  const autoEmissionCountRef = useRef<number>(0);
 
-  const emitRandomMessage = useCallback((): boolean => {
-    const currentCount = getSessionCount();
-    if (currentCount >= MAX_SESSION_EMISSIONS) {
-      return false; // Limit reached, no more messages
+  const emitRandomMessage = useCallback((force: boolean = false): boolean => {
+    if (isExitMode) return false;
+    if (!force && autoEmissionCountRef.current >= MAX_SESSION_EMISSIONS) {
+      return false; // Limit reached for automatic background popups
     }
 
     let nextIndex = Math.floor(Math.random() * CHAT_MESSAGES.length);
@@ -67,7 +103,9 @@ export default function ChatBubble() {
 
     setCurrentMessage(CHAT_MESSAGES[nextIndex]);
     setIsOpen(true);
-    setSessionCount(currentCount + 1);
+    if (!force) {
+      autoEmissionCountRef.current += 1;
+    }
 
     if (dismissTimerRef.current) {
       clearTimeout(dismissTimerRef.current);
@@ -76,42 +114,40 @@ export default function ChatBubble() {
       setIsOpen(false);
     }, AUTO_DISMISS_MS);
 
-    // Return whether more emissions remain available
-    return currentCount + 1 < MAX_SESSION_EMISSIONS;
-  }, []);
+    return autoEmissionCountRef.current < MAX_SESSION_EMISSIONS;
+  }, [isExitMode]);
 
-  // Periodic message emission (capped at 4 per session)
+  // Automatic message emission (capped at 4 per session so it doesn't spam)
   useEffect(() => {
-    if (getSessionCount() >= MAX_SESSION_EMISSIONS) {
-      return;
+    if (isExitMode) return;
+
+    // Clear any stale sessionStorage lock from previous buggy version
+    if (typeof window !== "undefined") {
+      try {
+        sessionStorage.removeItem(SESSION_STORAGE_KEY);
+      } catch {}
     }
 
-    let intervalTimer: NodeJS.Timeout | null = null;
-
+    // Initial greeting as slug finishes entering
     const initialTimer = setTimeout(() => {
-      const canEmitMore = emitRandomMessage();
-      if (!canEmitMore && intervalTimer) {
-        clearInterval(intervalTimer);
-      }
-    }, 2500);
+      emitRandomMessage();
+    }, 1800);
 
-    intervalTimer = setInterval(() => {
+    const intervalTimer = setInterval(() => {
       const canEmitMore = emitRandomMessage();
-      if (!canEmitMore && intervalTimer) {
+      if (!canEmitMore) {
         clearInterval(intervalTimer);
       }
     }, EMIT_INTERVAL_MS);
 
     return () => {
       clearTimeout(initialTimer);
-      if (intervalTimer) {
-        clearInterval(intervalTimer);
-      }
+      clearInterval(intervalTimer);
       if (dismissTimerRef.current) {
         clearTimeout(dismissTimerRef.current);
       }
     };
-  }, [emitRandomMessage]);
+  }, [emitRandomMessage, isExitMode]);
 
   // Standardized blink cycle: blinks every 5 seconds for 150ms in both idle and text-bubble states
   useEffect(() => {
@@ -160,10 +196,22 @@ export default function ChatBubble() {
     }
   };
 
+  const handleSlugClick = (e: React.MouseEvent) => {
+    if (!isOpen) {
+      // If the speech bubble is closed, clicking the slug opens it immediately
+      e.preventDefault();
+      emitRandomMessage(true);
+    }
+  };
+
+  if (hasExited || (isExitMode && !shouldAnimateExit)) {
+    return null;
+  }
+
   return (
     <aside className={styles.container} aria-label="SlugPath Chat Assistant">
-      {/* Speech Text Bubble */}
-      {isOpen && (
+      {/* Speech Text Bubble (only in default mode) */}
+      {!isExitMode && isOpen && (
         <div
           className={`${styles.textBubble} ${styles.interactive}`}
           onMouseEnter={() => setIsHovered(true)}
@@ -197,15 +245,16 @@ export default function ChatBubble() {
           <p className={styles.bubbleMessage}>{currentMessage}</p>
 
           <div className={styles.bubbleActions}>
-            <a
-              href={ABOUT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/about"
               className={styles.bubbleLink}
-              title="Learn about SlugPath"
+              title="About UCSC Community Portal"
+              onClick={() => {
+                markPortalTransition();
+              }}
             >
               About
-            </a>
+            </Link>
             <span className={styles.linkSeparator} aria-hidden="true">
               •
             </span>
@@ -236,65 +285,84 @@ export default function ChatBubble() {
         </div>
       )}
 
-      {/* Main Slug Mascot Container (borderless, boxless avatar) */}
-      <div className={`${styles.slugWrapper} ${styles.interactive}`}>
-        <a
-          href={CHAT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.slugButton}
-          aria-label="Open SlugPath Chat"
-          title="Click to chat with SlugPath"
-        >
-          <div className={styles.imageLayerContainer}>
-            {/* 1. Base regular face (idle, eyes open) */}
-            <Image
-              src="/clear_slugpath-icon.png"
-              alt="SlugPath Icon"
-              fill
-              unoptimized
-              priority
-              className={styles.baseFace}
-              draggable={false}
-            />
-
-            {/* 2. Idle blinking overlay (idle, eyes blinking) */}
-            <Image
-              src="/blink_clear_slugpath-icon.png"
-              alt="SlugPath Blinking"
-              fill
-              unoptimized
-              priority
-              className={`${styles.logoImage} ${styles.blinkClearLayer} ${!isOpen && isBlinking ? styles.activeFace : styles.hiddenFace
-                }`}
-              draggable={false}
-            />
-
-            {/* 3. Talking mouth face (text bubble open, eyes open) */}
-            <Image
-              src="/mouth_slugpath-icon.png"
-              alt="SlugPath Talking"
-              fill
-              unoptimized
-              priority
-              className={`${styles.logoImage} ${styles.mouthLayer} ${isOpen ? styles.activeFace : styles.hiddenFace
-                }`}
-              draggable={false}
-            />
-
-            {/* 4. Talking + blinking mouth face (text bubble open, eyes blinking) */}
-            <Image
-              src="/blink_mouth_slugpath-icon.png"
-              alt="SlugPath Talking & Blinking"
-              fill
-              unoptimized
-              priority
-              className={`${styles.logoImage} ${styles.blinkMouthLayer} ${isOpen && isBlinking ? styles.activeFace : styles.hiddenFace
-                }`}
-              draggable={false}
-            />
+      {/* Main Slug Mascot Container */}
+      <div className={`${styles.slugWrapper} ${isExitMode ? "" : styles.interactive}`}>
+        {isExitMode ? (
+          <div className={styles.slugButtonExit} aria-hidden="true">
+            <div className={styles.imageLayerContainer}>
+              <Image
+                src="/clear_slugpath-icon.png"
+                alt="SlugPath Icon"
+                fill
+                unoptimized
+                priority
+                className={styles.baseFace}
+                draggable={false}
+              />
+            </div>
           </div>
-        </a>
+        ) : (
+          <a
+            href={CHAT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.slugButton}
+            onClick={handleSlugClick}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            aria-label="Open SlugPath Chat"
+            title={isOpen ? "Click to chat with SlugPath" : "Click to show tip from SlugPath"}
+          >
+            <div className={styles.imageLayerContainer}>
+              {/* 1. Base regular face (idle, eyes open) */}
+              <Image
+                src="/clear_slugpath-icon.png"
+                alt="SlugPath Icon"
+                fill
+                unoptimized
+                priority
+                className={styles.baseFace}
+                draggable={false}
+              />
+
+              {/* 2. Idle blinking overlay (idle, eyes blinking) */}
+              <Image
+                src="/blink_clear_slugpath-icon.png"
+                alt="SlugPath Blinking"
+                fill
+                unoptimized
+                priority
+                className={`${styles.logoImage} ${styles.blinkClearLayer} ${!isOpen && isBlinking ? styles.activeFace : styles.hiddenFace
+                  }`}
+                draggable={false}
+              />
+
+              {/* 3. Talking mouth face (text bubble open, eyes open) */}
+              <Image
+                src="/mouth_slugpath-icon.png"
+                alt="SlugPath Talking"
+                fill
+                unoptimized
+                priority
+                className={`${styles.logoImage} ${styles.mouthLayer} ${isOpen ? styles.activeFace : styles.hiddenFace
+                  }`}
+                draggable={false}
+              />
+
+              {/* 4. Talking + blinking mouth face (text bubble open, eyes blinking) */}
+              <Image
+                src="/blink_mouth_slugpath-icon.png"
+                alt="SlugPath Talking & Blinking"
+                fill
+                unoptimized
+                priority
+                className={`${styles.logoImage} ${styles.blinkMouthLayer} ${isOpen && isBlinking ? styles.activeFace : styles.hiddenFace
+                  }`}
+                draggable={false}
+              />
+            </div>
+          </a>
+        )}
       </div>
     </aside>
   );

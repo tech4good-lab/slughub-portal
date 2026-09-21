@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import RouteTracker from "@/app/components/RouteTracker";
 
 export const metadata = {
   title: "Community Portal",
@@ -25,6 +26,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <RouteTracker />
         {children}
         <Analytics />
       </body>

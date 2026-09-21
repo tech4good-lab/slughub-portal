@@ -208,6 +208,27 @@
   filter: drop-shadow(0 0 20px rgb(242, 202, 4)) drop-shadow(0 0 20px rgb(242, 202, 4));
 }
 
+/* Slug exiting state: wriggles backwards off-screen */
+.slugButtonExit {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  position: relative;
+  outline: none;
+  cursor: default;
+  padding: 0;
+  box-sizing: border-box;
+  transform-origin: 50% 90%;
+  animation: slugSlideOutBackwards 1.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.18));
+  pointer-events: none;
+}
+
 /* Container for animated face layers */
 .imageLayerContainer {
   position: relative;
@@ -308,6 +329,45 @@
     /* Settled smoothly into home position */
     transform: translateX(0) translateY(0) scale(1, 1) skewX(0deg) rotate(0deg);
     opacity: 1;
+  }
+}
+
+/* Backwards organic slithering with 3 distinct wriggles retreating off the right edge */
+@keyframes slugSlideOutBackwards {
+  0% {
+    /* Home resting position */
+    transform: translateX(0) translateY(0) scale(1, 1) skewX(0deg) rotate(0deg);
+    opacity: 1;
+  }
+  16% {
+    /* Wriggle 1 - Initial backward push: arch body back and bunch up */
+    transform: translateX(35px) translateY(-9px) scale(0.86, 1.16) skewX(3.5deg) rotate(2.5deg);
+    opacity: 1;
+  }
+  33% {
+    /* Wriggle 1 - Backward surge & flatten */
+    transform: translateX(78px) translateY(0px) scale(1.15, 0.86) skewX(-3.5deg) rotate(-2deg);
+    opacity: 1;
+  }
+  50% {
+    /* Wriggle 2 - Strong backward arch & bunch */
+    transform: translateX(122px) translateY(-8.5px) scale(0.86, 1.15) skewX(3deg) rotate(2deg);
+    opacity: 0.95;
+  }
+  67% {
+    /* Wriggle 2 - Second surge backward & flatten */
+    transform: translateX(168px) translateY(0px) scale(1.14, 0.88) skewX(-3deg) rotate(-1.5deg);
+    opacity: 0.8;
+  }
+  83% {
+    /* Wriggle 3 - Final bunch into the edge */
+    transform: translateX(210px) translateY(-6px) scale(0.88, 1.12) skewX(2deg) rotate(1deg);
+    opacity: 0.45;
+  }
+  100% {
+    /* Fully slithered off-screen into the right margin */
+    transform: translateX(270px) translateY(0) scale(1, 1) skewX(0deg) rotate(0deg);
+    opacity: 0;
   }
 }
 

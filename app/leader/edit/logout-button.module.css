@@ -1,0 +1,31 @@
+.logoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 40px;
+  margin: 0;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #7f1d1d;
+  border-radius: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.logoutButton:hover {
+  background: #fecaca;
+  border-color: #f87171;
+  color: #7f1d1d;
+}
+
+.logoutButton:active {
+  background: #fca5a5;
+  border-color: #ef4444;
+}

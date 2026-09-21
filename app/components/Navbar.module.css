@@ -41,49 +41,50 @@
   position: relative;
 }
 
-/* Left: Segmented "Portal" / "About" Toggle */
-.toggleSegment {
+/* Left: Navigation Links (Portal & About) */
+.navLinks {
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: rgba(16, 24, 40, 0.05);
-  padding: 4px;
-  border-radius: 999px;
-  border: 1px solid rgba(16, 24, 40, 0.04);
+  gap: 6px;
   flex-shrink: 0;
 }
 
-.segmentBtn {
+.navLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 20px;
+  padding: 8px 18px;
   border-radius: 999px;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  color: rgba(17, 24, 39, 0.7);
-  transition: all 0.2s ease;
+  color: #374151;
+  background: transparent;
+  transition: all 0.18s ease;
   user-select: none;
   white-space: nowrap;
+  cursor: pointer;
 }
 
-.segmentBtn:hover {
+.navLink:hover {
   color: #111827;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(16, 24, 40, 0.05);
 }
 
-.segmentBtnActive {
-  background: #ffffff;
+.navLinkActive {
   color: #111827;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
-  border: 1px solid rgba(16, 24, 40, 0.06);
+  background: rgba(16, 24, 40, 0.07);
 }
 
-.segmentBtnActive:hover {
-  background: #ffffff;
-  color: #111827;
+.navLinkActive:hover {
+  color: #000000;
+  background: rgba(16, 24, 40, 0.1);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 2px;
 }
 
 /* Right Actions Container - Desktop */
@@ -116,12 +117,25 @@
   box-sizing: border-box;
 }
 
+.actionBtn:visited {
+  color: #000;
+}
+
 .actionBtn:hover {
   background: #fbbf24;
   border-color: #fbbf24;
   color: #000;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(251, 191, 36, 0.22);
+}
+
+.actionBtn:active {
+  color: #000;
+}
+
+.actionBtn:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 2px;
 }
 
 /* Responsive label switching on desktop/tablet */
@@ -181,6 +195,11 @@
   border-color: #fbbf24;
 }
 
+.menuTriggerBtn:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 2px;
+}
+
 /* Floating Mobile Menu Dropdown */
 .mobileDropdown {
   position: absolute;
@@ -229,6 +248,29 @@
   color: #000;
 }
 
+.dropdownItem:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 1px;
+}
+
+.dropdownLogout {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.dropdownLogout:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 .dropdownDivider {
   height: 1px;
   background: rgba(16, 24, 40, 0.06);
@@ -263,25 +305,36 @@
     display: inline;
   }
 
-  .segmentBtn {
-    padding: 7px 16px;
+  .navLink {
+    padding: 8px 14px;
     font-size: 13px;
+    min-height: 38px;
+    box-sizing: border-box;
   }
 
   .actionBtn {
-    padding: 7px 14px;
+    padding: 8px 14px;
     font-size: 13px;
+    min-height: 38px;
   }
 }
 
 @media (max-width: 480px) {
-  .segmentBtn {
-    padding: 6px 12px;
+  .navLink {
+    padding: 7px 11px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  .actionBtn {
+    padding: 7px 12px;
     font-size: 12.5px;
+    min-height: 36px;
   }
 
   .menuTriggerBtn {
-    padding: 7px 12px;
-    font-size: 12.5px;
+    padding: 7px 14px;
+    font-size: 13px;
+    min-height: 36px;
   }
 }

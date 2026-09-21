@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
 import Navbar from "@/app/components/Navbar";
+import ChatBubble from "@/app/components/ChatBubble";
 import styles from "./about.module.css";
 
 export const metadata = {
@@ -14,8 +15,9 @@ export const metadata = {
 
 export default async function AboutPage() {
   const session = await getServerSession(authOptions);
-  const isAdmin = (session as any)?.role === "admin";
-  const isLeader = (session as any)?.role === "leader";
+  const userRole = (session?.user as { role?: string } | undefined)?.role;
+  const isAdmin = userRole === "admin";
+  const isLeader = userRole === "leader";
 
   return (
     <main className={styles.pageWrapper}>
@@ -32,12 +34,7 @@ export default async function AboutPage() {
         <section className={`${styles.sectionContainer} ${styles.heroSection}`}>
           <div className={styles.heroGrid}>
             {/* Left Hero Column */}
-            <div>
-              <div className={styles.badgePill}>
-                <span className={styles.badgeTag}>About</span>
-                <span>UCSC Community Portal &amp; SlugPath</span>
-              </div>
-
+            <div className={styles.heroLeft}>
               <h1 className={styles.heroTitle}>
                 Connecting every Slug to their community.
               </h1>
@@ -49,11 +46,13 @@ export default async function AboutPage() {
 
               <div className={styles.heroButtons}>
                 <Link
-                  href="/"
+                  href="https://chat.slughub.cc/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}
-                  style={{ padding: "12px 26px", fontSize: "15px" }}
+                  style={{ padding: "12px 24px", fontSize: "15px" }}
                 >
-                  Browse Communities
+                  <span>Chat with SlugPath</span>
                   <svg
                     width="16"
                     height="16"
@@ -63,183 +62,113 @@ export default async function AboutPage() {
                     strokeWidth="2.2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    aria-hidden="true"
                   >
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </Link>
 
                 <Link
-                  href="/login"
+                  href="/"
                   className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}
-                  style={{ padding: "12px 22px", fontSize: "15px" }}
+                  style={{ padding: "12px 20px", fontSize: "15px" }}
                 >
-                  Leader Access
+                  Browse Club Directory
                 </Link>
               </div>
 
-              <div className={styles.heroMeta}>
-                <span className={styles.heroMetaDot} aria-hidden="true" />
-                <span>
-                  Verified student communities • Free for all UCSC students
+              <div style={{ marginTop: "14px", display: "inline-flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                <span style={{ fontSize: "12.5px", color: "#64748b" }}>
+                  Participating in the Tech4Good research study?
                 </span>
+                <Link
+                  href="#"
+                  style={{
+                    fontSize: "12px",
+                    color: "#0284c7",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    background: "#f0f9ff",
+                    border: "1px solid #bae6fd",
+                    padding: "3px 10px",
+                    borderRadius: "999px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  <span>Consent Form</span>
+                  <svg
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </Link>
               </div>
             </div>
 
             {/* Right Hero Column: Framed Mockup Canvas */}
-            <div>
-              <div className={styles.mockupCard}>
-                <div className={styles.mockupHeader}>
-                  <div className={styles.windowDots}>
-                    <span className={styles.dot} />
-                    <span className={styles.dot} />
-                    <span className={styles.dot} />
-                  </div>
-                  <span className={styles.mockupTitle}>Canvas Preview</span>
-                </div>
-
-                <div className={styles.mockupBody}>
-                  {/* Blank slot container ready for hero image or interactive component */}
-                  <div
-                    className={styles.placeholderSlot}
-                    style={{ minHeight: "180px" }}
-                  >
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-                      <svg
-                        width="36"
-                        height="36"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="rgba(17,24,39,0.3)"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                        <circle cx="8.5" cy="8.5" r="1.5" />
-                        <polyline points="21 15 16 10 5 21" />
-                      </svg>
-                      <span>Hero Visual / Mockup Placeholder</span>
-                    </div>
-                  </div>
-
-                  <div className={styles.placeholderTextLine} style={{ width: "85%" }} />
-                  <div className={styles.placeholderTextLine} style={{ width: "95%" }} />
-                  <div className={styles.placeholderTextLine} style={{ width: "70%" }} />
-
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 12,
-                      marginTop: "auto",
-                      paddingTop: 16,
-                      borderTop: "1px solid rgba(16,24,40,0.06)",
-                    }}
-                  >
-                    <div
-                      className={styles.placeholderSlot}
-                      style={{ flex: 1, padding: "10px", fontSize: "12px" }}
-                    >
-                      Feature Slot A
-                    </div>
-                    <div
-                      className={styles.placeholderSlot}
-                      style={{ flex: 1, padding: "10px", fontSize: "12px" }}
-                    >
-                      Feature Slot B
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-            2. RULED NOTEPAD HIGHLIGHTS (Granola Iconic Notepad Paper)
-        ========================================================= */}
-        <section className={styles.notepadSection}>
-          <div className={styles.ruledBackground} aria-hidden="true" />
-          <div className={styles.notepadGrid}>
-            <div className={styles.notepadLeft}>
-              <h2 className={styles.sectionHeadline}>
-                Designed for student life, built for genuine connection.
-              </h2>
-
-              <div className={styles.notepadPoints}>
-                <div className={styles.notepadPoint}>
-                  <div className={styles.pointIconWrap}>🎓</div>
-                  <div className={styles.pointContent}>
-                    <h4>Campus-wide Discovery</h4>
-                    <p>
-                      Explore academic, cultural, social, and professional
-                      organizations in one unified, searchable directory.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={styles.notepadPoint}>
-                  <div className={styles.pointIconWrap}>✨</div>
-                  <div className={styles.pointContent}>
-                    <h4>AI-Assisted Guidance</h4>
-                    <p>
-                      Chat with SlugPath to find communities aligned with your
-                      major, passions, and personal goals.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={styles.notepadPoint}>
-                  <div className={styles.pointIconWrap}>🔒</div>
-                  <div className={styles.pointContent}>
-                    <h4>Verified Organizations</h4>
-                    <p>
-                      Official leadership listings and up-to-date links to
-                      Discord, Instagram, and regular meeting spots.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.notepadRight}>
-              <div
-                className={styles.placeholderSlot}
-                style={{ minHeight: "360px", background: "#ffffff" }}
+            <div className={styles.heroRight}>
+              <Link
+                href="/"
+                className={styles.mockupCardLink}
+                aria-label="Explore UCSC Club Directory"
               >
-                <div style={{ textAlign: "center", maxWidth: "320px" }}>
-                  <p style={{ fontWeight: 600, color: "#111827", marginBottom: 6 }}>
-                    Notepad Highlight Canvas
-                  </p>
-                  <p style={{ fontSize: "13px", color: "rgba(17,24,39,0.5)" }}>
-                    Placeholder area for interactive preview, architecture
-                    diagram, or campus illustration.
-                  </p>
+                <div className={styles.mockupCard}>
+                  <div className={styles.mockupImageContainer}>
+                    <Image
+                      src="/white_landing_page.png"
+                      alt="UCSC Club Directory Landing Page"
+                      width={2856}
+                      height={1656}
+                      priority
+                      className={styles.mockupImage}
+                    />
+                  </div>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
         </section>
 
         {/* =========================================================
-            3. BIG DISPLAY TYPOGRAPHIC STATEMENT (Granola "For the doers")
+            2. MISSION SECTION
         ========================================================= */}
-        <section className={styles.statementSection}>
-          <p className={styles.statementTag}>Our Mission</p>
-          <h2 className={styles.statementTitle}>For the Slugs.</h2>
-          <p className={styles.statementSubtitle}>
-            Empowering student leaders, emerging creators, and every newcomer at
-            UC Santa Cruz to find their circle and thrive.
-          </p>
+        <section className={styles.missionSection}>
+          <div className={styles.missionCard}>
+            <div className={styles.missionHeader}>
+              <span className={styles.badgeTag}>Our Mission</span>
+            </div>
+            <h2 className={styles.missionTitle}>
+              Starting college shouldn&apos;t mean figuring it all out alone.
+            </h2>
+            <p className={styles.missionText}>
+              Starting college means figuring out a lot at once: keeping up with classes, learning how campus systems work, and finding where you belong. For many students, exploring their interests and finding communities outside the classroom gets pushed to the back burner &mdash; not because it doesn&apos;t matter, but because there&apos;s no clear entry point and no one helping to guide the search. Without someone to help narrow down what to try first, it&apos;s easy to default to doing nothing or to only stick with what you already know.
+            </p>
+          </div>
         </section>
 
+
         {/* =========================================================
-            4. 3-STEP PROCESS GRID (Granola "Before, During, After")
+            4. 3-STEP PROCESS GRID ("How it works")
         ========================================================= */}
         <section className={styles.processSection}>
           <div className={styles.sectionHeaderCenter}>
+            <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>The Process</span>
             <h2 className={styles.sectionHeadline}>How it works</h2>
             <p className={styles.sectionSubtitle}>
-              Three simple steps to connect with organizations and events.
+              SlugPath is a conversational AI platform to help students find their place at UC Santa Cruz.
             </p>
           </div>
 
@@ -249,230 +178,345 @@ export default async function AboutPage() {
               <span className={styles.stepBadge}>Step 01</span>
               <h3 className={styles.stepTitle}>Explore &amp; Search</h3>
               <p className={styles.stepDesc}>
-                Browse clubs by category, interests, or use conversational AI to
-                find groups that match your interests.
+                SlugPath talks with students to figure out what they&apos;re looking for &mdash; their interests, what kind of people they want to meet, and what they&apos;re curious about trying.
               </p>
-              <div className={`${styles.placeholderSlot} ${styles.stepSlot}`}>
-                <span>Step 1 Visual Slot</span>
+              <div className={styles.stepVisualContainer}>
+                <div className={styles.stepCategoryChips}>
+                  <span className={`${styles.stepCategoryChip} ${styles.stepCategoryChipActive}`}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+                    </svg>
+                    Interests
+                  </span>
+                  <span className={styles.stepCategoryChip}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Meet People
+                  </span>
+                  <span className={styles.stepCategoryChip}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10" />
+                      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                    </svg>
+                    Curious to Try
+                  </span>
+                </div>
               </div>
             </div>
 
             {/* Step 2 */}
             <div className={styles.stepCard}>
               <span className={styles.stepBadge}>Step 02</span>
-              <h3 className={styles.stepTitle}>Connect Directly</h3>
+              <h3 className={styles.stepTitle}>Connect</h3>
               <p className={styles.stepDesc}>
-                Access verified Discord servers, social media channels, and
-                meeting schedules with one click.
+                Based on that conversation, it connects them to a specific experience on campus: a club, an event, or a class where they could meet people with similar interests.
               </p>
-              <div className={`${styles.placeholderSlot} ${styles.stepSlot}`}>
-                <span>Step 2 Visual Slot</span>
+              <div className={styles.stepVisualContainer}>
+                <div className={styles.stepConnectCard}>
+                  <div className={styles.stepConnectButton} style={{ background: "#0284c7" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      Club, Event, or Class
+                    </span>
+                  </div>
+                  <div className={styles.stepConnectMeta}>
+                    <span>Targeted Experience</span>
+                    <span>Shared Interests</span>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Step 3 */}
             <div className={styles.stepCard}>
               <span className={styles.stepBadge}>Step 03</span>
-              <h3 className={styles.stepTitle}>Lead &amp; Grow</h3>
+              <h3 className={styles.stepTitle}>Reflect</h3>
               <p className={styles.stepDesc}>
-                Student leaders manage profiles, publish upcoming events, and
-                welcome new members seamlessly.
+                After the student goes, SlugPath checks back in to hear how it went. Then the cycle repeats: explore, visit, and reflect.
               </p>
-              <div className={`${styles.placeholderSlot} ${styles.stepSlot}`}>
-                <span>Step 3 Visual Slot</span>
+              <div className={styles.stepVisualContainer}>
+                <div className={styles.stepReflectPreview}>
+                  <div className={styles.reflectHeader}>
+                    <span className={styles.reflectBadge}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                          <path d="M3 3v5h5" />
+                        </svg>
+                        Check-in
+                      </span>
+                    </span>
+                    <span className={styles.reflectStatus}>&quot;How was it?&quot;</span>
+                  </div>
+                  <div className={styles.reflectCycleText}>
+                    Explore → Visit → Reflect
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* =========================================================
-            5. BENTO FEATURE GRID (Granola "Works Everywhere" Bento)
+            5. KEY CAPABILITIES
         ========================================================= */}
         <section className={styles.bentoSection}>
           <div className={styles.sectionHeaderCenter}>
+            <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>Core Features</span>
             <h2 className={styles.sectionHeadline}>Key Capabilities</h2>
             <p className={styles.sectionSubtitle}>
-              Everything built with the UCSC student experience in mind.
+              Built to listen, adapt, and keep students in complete control.
             </p>
           </div>
 
-          {/* Top Row: 1 Wide Card + 1 Regular Card */}
-          <div className={styles.bentoGridTop}>
-            <div className={styles.bentoCard}>
+          <div className={styles.capabilitiesGrid}>
+            {/* Capability 1: Personalized recommendations */}
+            <div className={styles.capabilityCard}>
               <span className={styles.badgeTag} style={{ width: "fit-content" }}>
-                Feature Spotlight
+                Adapts Over Time
               </span>
-              <h3 className={styles.bentoTitle}>AI-Powered Recommendations</h3>
-              <p className={styles.bentoDesc}>
-                SlugPath understands questions like &quot;What clubs are good for
-                transfer students in CS?&quot; and points you to the right
-                communities.
+              <h3 className={styles.stepTitle}>Personalized recommendations</h3>
+              <p className={styles.stepDesc}>
+                As you talk with SlugPath, it picks up on details about you (your interests, what you&apos;ve enjoyed or not enjoyed, what you&apos;re looking for) and builds a profile from them. That profile is what lets recommendations get more personalized over time and also helps to elicit patterns for what you gravitate towards.
               </p>
-              <div
-                className={styles.placeholderSlot}
-                style={{ height: "180px", marginTop: "12px" }}
-              >
-                <span>Spotlight Feature Mockup Slot</span>
+              <div className={styles.aiChatPreview}>
+                <div className={styles.aiChatUser}>
+                  &quot;I loved robotics projects in high school, but haven&apos;t found smaller project teams here yet.&quot;
+                </div>
+                <div className={styles.aiChatBot}>
+                  <div>
+                    Profile updated with <span className={styles.aiRecPill}>Hands-on Projects</span> and <span className={styles.aiRecPill}>Small Teams</span>. Recommending <span className={styles.aiRecPill}>SlugSat Satellite Team</span> build sessions!
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className={styles.bentoCard}>
+            {/* Capability 2: Memory */}
+            <div className={styles.capabilityCard}>
               <span className={styles.badgeTag} style={{ width: "fit-content" }}>
-                Directory
+                In Your Control
               </span>
-              <h3 className={styles.bentoTitle}>Filter by Interests</h3>
-              <p className={styles.bentoDesc}>
-                Instantly filter by Academic, Cultural, Tech, Arts, Sports, and
-                more.
+              <h3 className={styles.stepTitle}>Memory</h3>
+              <p className={styles.stepDesc}>
+                Since this profile is crucial to SlugPath&apos;s suggestions, accuracy matters. As a user, you are in control of seeing your profile and editing anything that&apos;s wrong. Additionally, the system checks before assuming. When SlugPath draws a conclusion from something you said indirectly, it will ask you to confirm its understanding before saving it, rather than silently storing a guess.
               </p>
-              <div
-                className={styles.placeholderSlot}
-                style={{ height: "180px", marginTop: "12px" }}
-              >
-                <span>Filter UI Mockup Slot</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Row: 3 Equal Bento Cards */}
-          <div className={styles.bentoGridBottom}>
-            <div className={styles.bentoCard}>
-              <h3 className={styles.bentoTitle}>Campus Events</h3>
-              <p className={styles.bentoDesc}>
-                Discover general body meetings, workshops, and hackathons
-                happening this week.
-              </p>
-              <div className={styles.placeholderSlot} style={{ height: "130px" }}>
-                <span>Event Calendar Slot</span>
-              </div>
-            </div>
-
-            <div className={styles.bentoCard}>
-              <h3 className={styles.bentoTitle}>Leader Dashboard</h3>
-              <p className={styles.bentoDesc}>
-                Officers can update descriptions, meeting locations, and social
-                links in real-time.
-              </p>
-              <div className={styles.placeholderSlot} style={{ height: "130px" }}>
-                <span>Dashboard UI Slot</span>
+              <div className={styles.confirmationPreview}>
+                <div className={styles.confirmPrompt}>
+                  <div className={styles.confirmIcon}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: "12.5px", color: "#111827" }}>Checks before assuming</strong>
+                    <p style={{ margin: "2px 0 0", color: "#475569", fontSize: "12px", lineHeight: "1.4" }}>
+                      &quot;It sounds like you prefer creative coding workshops over hackathons. Should I save this to your profile?&quot;
+                    </p>
+                  </div>
+                </div>
+                <div className={styles.confirmActions}>
+                  <span className={styles.confirmBtnPrimary}>✓ Confirm &amp; Save</span>
+                  <span className={styles.confirmBtnSecondary}>Edit Profile</span>
+                </div>
               </div>
             </div>
 
-            <div className={styles.bentoCard}>
-              <h3 className={styles.bentoTitle}>Mobile Friendly</h3>
-              <p className={styles.bentoDesc}>
-                Fully responsive layout designed for quick access on your phone
-                between classes.
+            {/* Capability 3: Follow-up reminder */}
+            <div className={styles.capabilityCard}>
+              <span className={styles.badgeTag} style={{ width: "fit-content" }}>
+                Continuous Reflection
+              </span>
+              <h3 className={styles.stepTitle}>Follow-up reminder</h3>
+              <p className={styles.stepDesc}>
+                When you tell SlugPath you&apos;re planning to attend an event, a meeting, or a class visit, it schedules a follow-up reminder for afterward. That reminder prompts you to come back and tell SlugPath how the visit went: what you liked, what you didn&apos;t, etc. That reflection is what feeds back into your profile and helps to customize future suggestions.
               </p>
-              <div className={styles.placeholderSlot} style={{ height: "130px" }}>
-                <span>Mobile Preview Slot</span>
+              <div className={styles.reminderPreview}>
+                <div className={styles.reminderHeader}>
+                  <div className={styles.reminderBell}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                    </svg>
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: "12.5px", color: "#111827" }}>Scheduled Follow-Up</strong>
+                    <div style={{ fontSize: "11px", color: "#64748b" }}>After Tuesday&apos;s CruzHacks Onboarding</div>
+                  </div>
+                </div>
+                <div className={styles.reminderPromptBox}>
+                  &quot;How was the CruzHacks meeting? What did you enjoy, and what wasn&apos;t quite for you?&quot;
+                </div>
+                <div className={styles.reminderMeta}>
+                  <span>✓ Reflection feeds back into future suggestions</span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* =========================================================
-            6. WARM TINTED ACCENT BANNER (Granola "Memory" Banner)
+            6. GOOD TO KNOW (Reframed Positive Scope & Guardrails)
         ========================================================= */}
-        <section className={styles.accentBannerSection}>
-          <div className={styles.accentBanner}>
-            <div>
-              <h2 className={styles.accentBannerTitle}>
-                A single home for all student organizations.
-              </h2>
-              <p className={styles.accentBannerText}>
-                No more digging through outdated spreadsheets or disconnected
-                chat groups. Everything in one place, updated by the community.
-              </p>
-              <Link
-                href="/"
-                className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}
-                style={{ fontWeight: 700 }}
-              >
-                Explore the Portal Directory →
-              </Link>
-            </div>
-
-            <div>
-              <div
-                className={styles.placeholderSlot}
-                style={{
-                  minHeight: "180px",
-                  background: "rgba(255, 255, 255, 0.6)",
-                  borderColor: "rgba(251, 191, 36, 0.4)",
-                  color: "rgba(17, 24, 39, 0.7)",
-                }}
-              >
-                <span>Accent Banner Visual Slot</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* =========================================================
-            7. STATS & COMMUNITY METRICS GRID
-        ========================================================= */}
-        <section className={styles.statsSection}>
+        <section className={styles.goodToKnowSection}>
           <div className={styles.sectionHeaderCenter}>
-            <h2 className={styles.sectionHeadline}>Community at a Glance</h2>
+            <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>Expectations</span>
+            <h2 className={styles.sectionHeadline}>Good to Know</h2>
             <p className={styles.sectionSubtitle}>
-              Connecting students across all ten residential colleges.
+              SlugPath is built to guide your campus journey responsibly. Here are a few important principles to keep in mind.
             </p>
           </div>
 
-          <div className={styles.statsGrid}>
-            <div className={styles.statCard}>
-              <div className={styles.statNumber}>150+</div>
-              <div className={styles.statLabel}>Active Organizations</div>
-              <p className={styles.statSub}>
-                From engineering teams to cultural coalitions and dance troupes.
+          <div className={styles.goodToKnowGrid}>
+            {/* Item 1 */}
+            <div className={styles.goodToKnowCard}>
+              <div className={styles.goodToKnowTop}>
+                <div className={styles.goodToKnowIcon}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+                    <path d="M6 6h10" />
+                    <path d="M6 10h10" />
+                  </svg>
+                </div>
+                <h3 className={styles.goodToKnowTitle}>Community &amp; Belonging Focus</h3>
+              </div>
+              <p className={styles.goodToKnowText}>
+                SlugPath helps you discover social, cultural, and extracurricular life outside class. For degree requirements and major planning, consult your official College or Major Academic Advisor.
               </p>
             </div>
 
-            <div className={styles.statCard}>
-              <div className={styles.statNumber}>10</div>
-              <div className={styles.statLabel}>Colleges Represented</div>
-              <p className={styles.statSub}>
-                Bridging campus communities across Cowell, Stevenson, Crown, and beyond.
+            {/* Item 2 */}
+            <div className={styles.goodToKnowCard}>
+              <div className={styles.goodToKnowTop}>
+                <div className={styles.goodToKnowIcon}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                  </svg>
+                </div>
+                <h3 className={styles.goodToKnowTitle}>Exploration, Not Enrollment</h3>
+              </div>
+              <p className={styles.goodToKnowText}>
+                We recommend interesting organizations and classes to explore, but cannot check real-time seat counts or live enrollment status on MyUCSC.
               </p>
             </div>
 
-            <div className={styles.statCard}>
-              <div className={styles.statNumber}>100%</div>
-              <div className={styles.statLabel}>Free &amp; Open</div>
-              <p className={styles.statSub}>
-                Built by and for UC Santa Cruz students, open to all campus members.
+            {/* Item 3 */}
+            <div className={styles.goodToKnowCard}>
+              <div className={styles.goodToKnowTop}>
+                <div className={styles.goodToKnowIcon}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                </div>
+                <h3 className={styles.goodToKnowTitle}>Student Project Experience</h3>
+              </div>
+              <p className={styles.goodToKnowText}>
+                Discover student-run project teams, hackathons, and pre-professional societies. For official career coaching and resume reviews, connect with UCSC Career Success.
+              </p>
+            </div>
+
+            {/* Item 4 */}
+            <div className={styles.goodToKnowCard}>
+              <div className={styles.goodToKnowTop}>
+                <div className={styles.goodToKnowIcon}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <polyline points="16 11 18 13 22 9" />
+                  </svg>
+                </div>
+                <h3 className={styles.goodToKnowTitle}>Human-Vetted Directory</h3>
+              </div>
+              <p className={styles.goodToKnowText}>
+                Every organization was manually researched and verified by our student team. If information changes or looks inactive, let us know and we&apos;ll update it promptly.
+              </p>
+            </div>
+
+            {/* Item 5 */}
+            <div className={styles.goodToKnowCard}>
+              <div className={styles.goodToKnowTop}>
+                <div className={styles.goodToKnowIcon}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </div>
+                <h3 className={styles.goodToKnowTitle}>Direct Event Access</h3>
+              </div>
+              <p className={styles.goodToKnowText}>
+                SlugPath surfaces exciting events and meeting dates, then connects you straight to the organization&apos;s official RSVP form or linktree so you retain full control.
+              </p>
+            </div>
+
+            {/* Item 6 */}
+            <div className={styles.goodToKnowCard}>
+              <div className={styles.goodToKnowTop}>
+                <div className={styles.goodToKnowIcon}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                </div>
+                <h3 className={styles.goodToKnowTitle}>Verified Community Links</h3>
+              </div>
+              <p className={styles.goodToKnowText}>
+                We link directly to active club Discord servers and Instagram pages so you can always double-check day-of room changes, rain locations, or schedule shifts.
               </p>
             </div>
           </div>
         </section>
 
         {/* =========================================================
-            8. FINAL CALL TO ACTION (Granola "Unlimited Free" Banner)
+            7. FINAL CALL TO ACTION ("Ready to find your community?")
         ========================================================= */}
         <section className={styles.finalCtaSection}>
           <div className={styles.finalCtaCard}>
             <span className={styles.badgeTag}>Get Started</span>
             <h2 className={styles.ctaTitle}>Ready to find your community?</h2>
             <p className={styles.ctaSubtitle}>
-              Explore student clubs, meet leaders, and discover upcoming campus
-              events on the UCSC Community Portal today.
+              Chat with SlugPath to explore your interests, build your profile,
+              and connect with clubs, events, and people across UC Santa Cruz.
             </p>
 
             <div className={styles.ctaButtons}>
               <Link
-                href="/"
+                href="https://chat.slughub.cc/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}
-                style={{ padding: "12px 28px", fontSize: "15px" }}
-              >
-                Open Community Directory
-              </Link>
-              <Link
-                href="/login"
-                className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}
                 style={{ padding: "12px 24px", fontSize: "15px" }}
               >
-                Officer Login
+                <span>Chat with SlugPath</span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+
+              <Link
+                href="/"
+                className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}
+                style={{ padding: "12px 20px", fontSize: "15px" }}
+              >
+                Browse Club Directory
               </Link>
             </div>
           </div>
@@ -489,9 +533,10 @@ export default async function AboutPage() {
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Image
                     src="/dashboard-icon.png"
-                    alt="Logo"
+                    alt="SlugPath Portal Icon"
                     width={28}
                     height={28}
+                    style={{ width: "auto", height: "auto" }}
                   />
                   <span className={styles.footerBrandTitle}>SlugPath</span>
                 </div>
@@ -568,10 +613,31 @@ export default async function AboutPage() {
 
               {/* Column 4 */}
               <div className={styles.footerCol}>
-                <span className={styles.footerColTitle}>About Slots</span>
-                <span className={styles.footerLink}>Placeholder Link 1</span>
-                <span className={styles.footerLink}>Placeholder Link 2</span>
-                <span className={styles.footerLink}>Placeholder Link 3</span>
+                <span className={styles.footerColTitle}>Student Support</span>
+                <a
+                  href="https://slugsupport.ucsc.edu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.footerLink}
+                >
+                  Slug Support Network
+                </a>
+                <a
+                  href="https://events.ucsc.edu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.footerLink}
+                >
+                  Campus Events Calendar
+                </a>
+                <a
+                  href="https://resourcecenters.ucsc.edu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.footerLink}
+                >
+                  Resource Centers
+                </a>
               </div>
             </div>
 
@@ -584,6 +650,8 @@ export default async function AboutPage() {
           </div>
         </footer>
       </div>
+
+      <ChatBubble mode="exit" />
     </main>
   );
 }
