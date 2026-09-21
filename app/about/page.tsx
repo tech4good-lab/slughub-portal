@@ -36,23 +36,31 @@ export default async function AboutPage() {
             {/* Left Hero Column */}
             <div className={styles.heroLeft}>
               <h1 className={styles.heroTitle}>
-                Connecting every Slug to their community.
+                SlugPath
               </h1>
 
               <p className={styles.heroSubtitle}>
-                The central hub for student organizations, campus events, and
-                community discovery across UC Santa Cruz.
+                An assistant for discovering student organizations, events, and
+                communities across UC Santa Cruz.
               </p>
 
               <div className={styles.heroButtons}>
                 <Link
-                  href="https://chat.slughub.cc/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#"
                   className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}
                   style={{ padding: "12px 24px", fontSize: "15px" }}
                 >
-                  <span>Chat with SlugPath</span>
+                  Consent Form
+                </Link>
+
+                <Link
+                  href="https://chat.slughub.cc/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}
+                  style={{ padding: "12px 20px", fontSize: "15px" }}
+                >
+                  <span>Chat</span>
                   <svg
                     width="16"
                     height="16"
@@ -65,54 +73,6 @@ export default async function AboutPage() {
                     aria-hidden="true"
                   >
                     <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </Link>
-
-                <Link
-                  href="/"
-                  className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}
-                  style={{ padding: "12px 20px", fontSize: "15px" }}
-                >
-                  Browse Club Directory
-                </Link>
-              </div>
-
-              <div style={{ marginTop: "14px", display: "inline-flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                <span style={{ fontSize: "12.5px", color: "#64748b" }}>
-                  Participating in the Tech4Good research study?
-                </span>
-                <Link
-                  href="#"
-                  style={{
-                    fontSize: "12px",
-                    color: "#0284c7",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    background: "#f0f9ff",
-                    border: "1px solid #bae6fd",
-                    padding: "3px 10px",
-                    borderRadius: "999px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    transition: "all 0.15s ease",
-                  }}
-                >
-                  <span>Consent Form</span>
-                  <svg
-                    width="11"
-                    height="11"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
                   </svg>
                 </Link>
               </div>
