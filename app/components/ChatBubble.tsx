@@ -248,12 +248,12 @@ export default function ChatBubble({ mode = "default" }: ChatBubbleProps) {
             <Link
               href="/about"
               className={styles.bubbleLink}
-              title="About UCSC Community Portal"
+              title="About SlugPath"
               onClick={() => {
                 markPortalTransition();
               }}
             >
-              About
+              About SlugPath
             </Link>
             <span className={styles.linkSeparator} aria-hidden="true">
               •

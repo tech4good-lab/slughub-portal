@@ -44,11 +44,11 @@
 }
 
 .pillBtnPrimary {
-  background: #fbbf24;
-  border-color: #fbbf24;
+  background: #fdf0a6;
+  border-color: #fdf0a6;
   color: #000;
-  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.25);
-  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.14);
+  font-weight: 600;
 }
 
 .pillBtnPrimary:visited {
@@ -56,10 +56,10 @@
 }
 
 .pillBtnPrimary:hover {
-  background: #f59e0b;
-  border-color: #f59e0b;
+  background: #fbbf24;
+  border-color: #fbbf24;
   color: #000;
-  box-shadow: 0 8px 22px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.22);
 }
 
 .pillBtnPrimary:active {
@@ -1104,10 +1104,19 @@
   margin-bottom: 48px;
 }
 
+.sectionHeadline {
+  font-size: clamp(40px, 5.2vw, 56px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #111827;
+  margin: 0;
+}
+
 .sectionSubtitle {
-  font-size: 18px;
+  font-size: 19px;
   color: rgba(17, 24, 39, 0.65);
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .stepsGrid {
@@ -1417,13 +1426,28 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
+}
+
+.ctaBadgeTag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #0284c7;
+  background: #edf4ff;
+  border: 1px solid #bfdbfe;
+  padding: 7px 20px;
+  border-radius: 999px;
+  margin-bottom: 4px;
 }
 
 .ctaTitle {
-  font-size: clamp(36px, 5vw, 56px);
+  font-size: clamp(40px, 5.5vw, 62px);
   font-weight: 800;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
   color: #111827;
   margin: 0;
 }

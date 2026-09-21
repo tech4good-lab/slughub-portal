@@ -126,7 +126,7 @@ export default function Navbar({
               }
             }}
           >
-            About
+            About SlugPath
           </Link>
         </div>
 

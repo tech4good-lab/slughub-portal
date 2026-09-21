@@ -52,29 +52,6 @@ export default async function AboutPage() {
                 >
                   Consent Form
                 </Link>
-
-                <Link
-                  href="https://chat.slughub.cc/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}
-                  style={{ padding: "12px 20px", fontSize: "15px" }}
-                >
-                  <span>Chat</span>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </Link>
               </div>
             </div>
 
@@ -125,10 +102,10 @@ export default async function AboutPage() {
         ========================================================= */}
         <section className={styles.processSection}>
           <div className={styles.sectionHeaderCenter}>
-            <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>The Process</span>
+            {/* <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>The Process</span> */}
             <h2 className={styles.sectionHeadline}>How it works</h2>
             <p className={styles.sectionSubtitle}>
-              SlugPath is a conversational AI platform to help students find their place at UC Santa Cruz.
+              SlugPath is a conversational AI platform to help you find your place at UC Santa Cruz.
             </p>
           </div>
 
@@ -136,7 +113,7 @@ export default async function AboutPage() {
             {/* Step 1 */}
             <div className={styles.stepCard}>
               <span className={styles.stepBadge}>Step 01</span>
-              <h3 className={styles.stepTitle}>Explore &amp; Search</h3>
+              <h3 className={styles.stepTitle}>Explore</h3>
               <p className={styles.stepDesc}>
                 SlugPath talks with students to figure out what they&apos;re looking for &mdash; their interests, what kind of people they want to meet, and what they&apos;re curious about trying.
               </p>
@@ -171,7 +148,7 @@ export default async function AboutPage() {
             {/* Step 2 */}
             <div className={styles.stepCard}>
               <span className={styles.stepBadge}>Step 02</span>
-              <h3 className={styles.stepTitle}>Connect</h3>
+              <h3 className={styles.stepTitle}>Visit</h3>
               <p className={styles.stepDesc}>
                 Based on that conversation, it connects them to a specific experience on campus: a club, an event, or a class where they could meet people with similar interests.
               </p>
@@ -229,8 +206,7 @@ export default async function AboutPage() {
         ========================================================= */}
         <section className={styles.bentoSection}>
           <div className={styles.sectionHeaderCenter}>
-            <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>Core Features</span>
-            <h2 className={styles.sectionHeadline}>Key Capabilities</h2>
+            <h2 className={styles.sectionHeadline}>Core Features</h2>
             <p className={styles.sectionSubtitle}>
               Built to listen, adapt, and keep students in complete control.
             </p>
@@ -244,7 +220,7 @@ export default async function AboutPage() {
               </span>
               <h3 className={styles.stepTitle}>Personalized recommendations</h3>
               <p className={styles.stepDesc}>
-                As you talk with SlugPath, it picks up on details about you (your interests, what you&apos;ve enjoyed or not enjoyed, what you&apos;re looking for) and builds a profile from them. That profile is what lets recommendations get more personalized over time and also helps to elicit patterns for what you gravitate towards.
+                The more you chat, the better SlugPath gets at understanding what excites you. It learns your hobbies, vibe, and goals to recommend communities you&apos;ll actually love joining.
               </p>
               <div className={styles.aiChatPreview}>
                 <div className={styles.aiChatUser}>
@@ -265,7 +241,7 @@ export default async function AboutPage() {
               </span>
               <h3 className={styles.stepTitle}>Memory</h3>
               <p className={styles.stepDesc}>
-                Since this profile is crucial to SlugPath&apos;s suggestions, accuracy matters. As a user, you are in control of seeing your profile and editing anything that&apos;s wrong. Additionally, the system checks before assuming. When SlugPath draws a conclusion from something you said indirectly, it will ask you to confirm its understanding before saving it, rather than silently storing a guess.
+                You&apos;re always in the driver&apos;s seat. SlugPath asks before saving any takeaways from your chats, and you can view or edit your profile anytime so it always reflects you.
               </p>
               <div className={styles.confirmationPreview}>
                 <div className={styles.confirmPrompt}>
@@ -296,7 +272,7 @@ export default async function AboutPage() {
               </span>
               <h3 className={styles.stepTitle}>Follow-up reminder</h3>
               <p className={styles.stepDesc}>
-                When you tell SlugPath you&apos;re planning to attend an event, a meeting, or a class visit, it schedules a follow-up reminder for afterward. That reminder prompts you to come back and tell SlugPath how the visit went: what you liked, what you didn&apos;t, etc. That reflection is what feeds back into your profile and helps to customize future suggestions.
+                Heading to a club meeting or campus event? SlugPath checks in afterward to hear what you loved and what didn&apos;t fit—using your feedback to make each new suggestion spot-on.
               </p>
               <div className={styles.reminderPreview}>
                 <div className={styles.reminderHeader}>
@@ -322,125 +298,14 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        {/* =========================================================
-            6. GOOD TO KNOW (Reframed Positive Scope & Guardrails)
-        ========================================================= */}
-        <section className={styles.goodToKnowSection}>
-          <div className={styles.sectionHeaderCenter}>
-            <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>Expectations</span>
-            <h2 className={styles.sectionHeadline}>Good to Know</h2>
-            <p className={styles.sectionSubtitle}>
-              SlugPath is built to guide your campus journey responsibly. Here are a few important principles to keep in mind.
-            </p>
-          </div>
 
-          <div className={styles.goodToKnowGrid}>
-            {/* Item 1 */}
-            <div className={styles.goodToKnowCard}>
-              <div className={styles.goodToKnowTop}>
-                <div className={styles.goodToKnowIcon}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
-                    <path d="M6 6h10" />
-                    <path d="M6 10h10" />
-                  </svg>
-                </div>
-                <h3 className={styles.goodToKnowTitle}>Community &amp; Belonging Focus</h3>
-              </div>
-              <p className={styles.goodToKnowText}>
-                SlugPath helps you discover social, cultural, and extracurricular life outside class. For degree requirements and major planning, consult your official College or Major Academic Advisor.
-              </p>
-            </div>
-
-            {/* Item 2 */}
-            <div className={styles.goodToKnowCard}>
-              <div className={styles.goodToKnowTop}>
-                <div className={styles.goodToKnowIcon}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="10" />
-                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-                  </svg>
-                </div>
-                <h3 className={styles.goodToKnowTitle}>Exploration, Not Enrollment</h3>
-              </div>
-              <p className={styles.goodToKnowText}>
-                We recommend interesting organizations and classes to explore, but cannot check real-time seat counts or live enrollment status on MyUCSC.
-              </p>
-            </div>
-
-            {/* Item 3 */}
-            <div className={styles.goodToKnowCard}>
-              <div className={styles.goodToKnowTop}>
-                <div className={styles.goodToKnowIcon}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                  </svg>
-                </div>
-                <h3 className={styles.goodToKnowTitle}>Student Project Experience</h3>
-              </div>
-              <p className={styles.goodToKnowText}>
-                Discover student-run project teams, hackathons, and pre-professional societies. For official career coaching and resume reviews, connect with UCSC Career Success.
-              </p>
-            </div>
-
-            {/* Item 4 */}
-            <div className={styles.goodToKnowCard}>
-              <div className={styles.goodToKnowTop}>
-                <div className={styles.goodToKnowIcon}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <polyline points="16 11 18 13 22 9" />
-                  </svg>
-                </div>
-                <h3 className={styles.goodToKnowTitle}>Human-Vetted Directory</h3>
-              </div>
-              <p className={styles.goodToKnowText}>
-                Every organization was manually researched and verified by our student team. If information changes or looks inactive, let us know and we&apos;ll update it promptly.
-              </p>
-            </div>
-
-            {/* Item 5 */}
-            <div className={styles.goodToKnowCard}>
-              <div className={styles.goodToKnowTop}>
-                <div className={styles.goodToKnowIcon}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </div>
-                <h3 className={styles.goodToKnowTitle}>Direct Event Access</h3>
-              </div>
-              <p className={styles.goodToKnowText}>
-                SlugPath surfaces exciting events and meeting dates, then connects you straight to the organization&apos;s official RSVP form or linktree so you retain full control.
-              </p>
-            </div>
-
-            {/* Item 6 */}
-            <div className={styles.goodToKnowCard}>
-              <div className={styles.goodToKnowTop}>
-                <div className={styles.goodToKnowIcon}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                </div>
-                <h3 className={styles.goodToKnowTitle}>Verified Community Links</h3>
-              </div>
-              <p className={styles.goodToKnowText}>
-                We link directly to active club Discord servers and Instagram pages so you can always double-check day-of room changes, rain locations, or schedule shifts.
-              </p>
-            </div>
-          </div>
-        </section>
 
         {/* =========================================================
             7. FINAL CALL TO ACTION ("Ready to find your community?")
         ========================================================= */}
         <section className={styles.finalCtaSection}>
           <div className={styles.finalCtaCard}>
-            <span className={styles.badgeTag}>Get Started</span>
+            <span className={styles.ctaBadgeTag}>Get Started</span>
             <h2 className={styles.ctaTitle}>Ready to find your community?</h2>
             <p className={styles.ctaSubtitle}>
               Chat with SlugPath to explore your interests, build your profile,
