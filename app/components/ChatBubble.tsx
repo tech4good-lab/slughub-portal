@@ -7,17 +7,10 @@ import { markPortalTransition, checkAndConsumePortalTransition } from "@/lib/slu
 import styles from "./ChatBubble.module.css";
 
 const CHAT_MESSAGES = [
-  "Need help figuring out the right club for you? Chat with SlugPath!",
-  "Having some trouble searching? Ask SlugPath for some recommendations!",
-  "Chat with SlugPath to find some communities to search up",
-  "Ask SlugPath about any clubs that you find interesting",
-  "Looking to get involved on campus? Ask SlugPath where to start",
-  "Want to meet people with similar hobbies or majors? Chat with SlugPath!",
-  "Not sure if any club events fit in your schedule? Ask SlugPath for help",
-  "Curious about what clubs can help you achieve your goals? SlugPath has answers!",
-  "Looking for opportunities related to your major? Ask SlugPath to guide you",
-  "Tell SlugPath what you're passionate about and find your community",
-  "Share your interests with SlugPath to get personalized recommendations",
+  "Hi, I'm SlugPath. Need some help finding the right club? Let's chat!",
+  "There's lots of opportunities at UCSC, let me help you find them!",
+  "Looking to get involved on campus? Ask me where to start.",
+  "College flies by fast, so make the most of it! Ask me how to get involved.",
 ];
 
 const CHAT_URL = "https://chat.slughub.cc/";
@@ -42,7 +35,7 @@ const setSessionCount = (count: number) => {
   if (typeof window === "undefined") return;
   try {
     sessionStorage.setItem(SESSION_STORAGE_KEY, String(count));
-  } catch {}
+  } catch { }
 };
 
 interface ChatBubbleProps {
@@ -125,7 +118,7 @@ export default function ChatBubble({ mode = "default" }: ChatBubbleProps) {
     if (typeof window !== "undefined") {
       try {
         sessionStorage.removeItem(SESSION_STORAGE_KEY);
-      } catch {}
+      } catch { }
     }
 
     // Initial greeting as slug finishes entering
@@ -253,7 +246,7 @@ export default function ChatBubble({ mode = "default" }: ChatBubbleProps) {
                 markPortalTransition();
               }}
             >
-              About SlugPath
+              About me
             </Link>
             <span className={styles.linkSeparator} aria-hidden="true">
               •
