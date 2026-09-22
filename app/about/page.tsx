@@ -49,8 +49,8 @@ export default async function AboutPage() {
               </h1>
 
               <p className={styles.heroSubtitle}>
-                An assistant for discovering student organizations, events, and
-                communities across UC Santa Cruz.
+                Start with a conversation.
+                Find where you fit.
               </p>
 
               <div className={styles.heroButtons}>
@@ -88,14 +88,14 @@ export default async function AboutPage() {
         <section className={styles.missionSection}>
           <div className={styles.missionCard}>
             <h2 className={styles.missionTitle}>
-              Starting college shouldn&apos;t mean figuring it all out alone.
+              Not sure what to check out first? Start here.
             </h2>
             <div className={styles.missionText}>
               <p style={{ margin: "0 0 14px" }}>
-                Starting college means figuring out a lot at once: keeping up with classes, learning how campus systems work, and finding where you belong. For many students, exploring their interests and finding communities outside the classroom gets pushed to the back burner &mdash; not because it doesn&apos;t matter, but because there&apos;s <strong>no clear entry point</strong> and no one helping to guide the search.
+                Between clubs, events, classes, and communities, there&apos;s a lot going on at UCSC, and it&apos;s not always easy to know where to look.
               </p>
               <p style={{ margin: 0 }}>
-                Without someone to help narrow down what to try first, it&apos;s easy to default to doing nothing or to only stick with what you already know. <strong>SlugPath exists to change that.</strong>
+                Chat with SlugPath to talk through what you&apos;re into and find a few things worth trying.
               </p>
             </div>
           </div>
@@ -110,7 +110,7 @@ export default async function AboutPage() {
             {/* <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>The Process</span> */}
             <h2 className={styles.sectionHeadline}>How it works</h2>
             <p className={styles.sectionSubtitle}>
-              SlugPath is a conversational AI platform to help you find your place at UC Santa Cruz.
+              SlugPath is an AI companion designed to help you find where you belong at UC Santa Cruz.
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export default async function AboutPage() {
             <div className={styles.stepCard}>
               <h3 className={styles.stepTitle}>Explore</h3>
               <p className={styles.stepDesc}>
-                SlugPath talks with students to figure out what they&apos;re looking for &mdash; their interests, what kind of people they want to meet, and what they&apos;re curious about trying.
+                Talk with SlugPath about what you&apos;re looking for: your interests, what kind of people you want to meet, and what you&apos;re curious about trying.
               </p>
               <div className={styles.stepVisualContainer}>
                 <div className={styles.stepCategoryChips}>
@@ -153,7 +153,7 @@ export default async function AboutPage() {
             <div className={styles.stepCard}>
               <h3 className={styles.stepTitle}>Visit</h3>
               <p className={styles.stepDesc}>
-                Based on that conversation, it connects them to a specific experience on campus: a club, an event, or a class where they could meet people with similar interests.
+                Based on your conversation, SlugPath suggests specific experiences on campus: a club, event, or class where you can meet people with shared interests.
               </p>
               <div className={styles.stepVisualContainer}>
                 <div className={styles.stepConnectCard}>
@@ -178,7 +178,7 @@ export default async function AboutPage() {
             <div className={styles.stepCard}>
               <h3 className={styles.stepTitle}>Reflect</h3>
               <p className={styles.stepDesc}>
-                After the student goes, SlugPath checks back in to hear how it went. Then the cycle repeats: explore, visit, and reflect.
+                After you go, SlugPath checks in to hear how it went. Then the cycle continues: explore, visit, and reflect.
               </p>
               <div className={styles.stepVisualContainer}>
                 <div className={styles.stepReflectPreview}>
@@ -272,7 +272,7 @@ export default async function AboutPage() {
         <section id="get-started" className={styles.finalCtaSection}>
           <div className={styles.finalCtaCard}>
             <h2 className={styles.ctaTitle} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
-              <span>Ready to try out SlugPath?</span>
+              <span>Ready to chat with SlugPath?</span>
               <Image
                 src="/slugpath_logo.png"
                 alt="SlugPath Mascot"
