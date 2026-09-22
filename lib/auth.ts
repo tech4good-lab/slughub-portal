@@ -116,7 +116,9 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session as any).userId = token.userId;
         (session as any).role = token.role;
-        (session as any).userName = token.name;  // ← add this
+        (session as any).userName = token.name;
+        (session.user as any).id = token.userId;
+        (session.user as any).role = token.role;
       }
       return session;
     },
