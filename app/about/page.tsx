@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
 import Navbar from "@/app/components/Navbar";
 import ChatBubble from "@/app/components/ChatBubble";
+import Footer from "@/app/components/Footer";
 import styles from "./about.module.css";
 
 export const metadata = {
@@ -322,6 +323,7 @@ export default async function AboutPage() {
           </div>
         </section>
 
+        <Footer style={{ marginTop: 40, padding: "20px 0 32px" }} />
       </div>
 
       <ChatBubble mode="exit" />
