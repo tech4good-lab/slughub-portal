@@ -133,6 +133,12 @@
   color: #000;
 }
 
+.actionBtnActive {
+  background: #fbbf24;
+  border-color: #fbbf24;
+  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.28);
+}
+
 .actionBtn:focus-visible {
   outline: 2px solid #0284c7;
   outline-offset: 2px;
@@ -245,6 +251,12 @@
 
 .dropdownItem:hover {
   background: rgba(16, 24, 40, 0.05);
+  color: #000;
+}
+
+.dropdownItemActive {
+  background: rgba(16, 24, 40, 0.08);
+  font-weight: 700;
   color: #000;
 }
 

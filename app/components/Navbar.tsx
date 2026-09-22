@@ -22,7 +22,11 @@ export default function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const isAboutActive = pathname === "/about";
-  const isDirectoryActive = pathname === "/" || (!isAboutActive && !pathname?.startsWith("/about"));
+  const isLeaderActive = pathname?.startsWith("/leader");
+  const isAdminReviewActive = pathname?.startsWith("/admin/review");
+  const isAdminAccessActive = pathname?.startsWith("/admin/access");
+  const isDirectoryActive =
+    pathname === "/" || pathname === "/directory" || pathname?.startsWith("/clubs");
 
   const [isVisible, setIsVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -114,7 +118,7 @@ export default function Navbar({
               }
             }}
           >
-            About SlugPath
+            SlugPath
           </Link>
         </div>
 
@@ -125,9 +129,12 @@ export default function Navbar({
               {isAdmin && (
                 <>
                   <Link
-                    className={styles.actionBtn}
+                    className={`${styles.actionBtn} ${
+                      isAdminReviewActive ? styles.actionBtnActive : ""
+                    }`}
                     href="/admin/review"
                     title="Community Approvals"
+                    aria-current={isAdminReviewActive ? "page" : undefined}
                   >
                     <span className={styles.labelFull}>Community Approvals</span>
                     <span className={styles.labelShort}>Approvals</span>
@@ -135,9 +142,12 @@ export default function Navbar({
                   </Link>
 
                   <Link
-                    className={styles.actionBtn}
+                    className={`${styles.actionBtn} ${
+                      isAdminAccessActive ? styles.actionBtnActive : ""
+                    }`}
                     href="/admin/access"
                     title="Access Requests"
+                    aria-current={isAdminAccessActive ? "page" : undefined}
                   >
                     <span className={styles.labelFull}>Access Requests</span>
                     <span className={styles.labelShort}>Access</span>
@@ -148,9 +158,12 @@ export default function Navbar({
 
               {(isAdmin || isLeader) && (
                 <Link
-                  className={styles.actionBtn}
+                  className={`${styles.actionBtn} ${
+                    isLeaderActive ? styles.actionBtnActive : ""
+                  }`}
                   href="/leader/dashboard"
                   title="Leadership"
+                  aria-current={isLeaderActive ? "page" : undefined}
                 >
                   Leadership
                 </Link>
@@ -209,7 +222,9 @@ export default function Navbar({
                     <>
                       <Link
                         href="/admin/review"
-                        className={styles.dropdownItem}
+                        className={`${styles.dropdownItem} ${
+                          isAdminReviewActive ? styles.dropdownItemActive : ""
+                        }`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <span>Community Approvals</span>
@@ -220,7 +235,9 @@ export default function Navbar({
 
                       <Link
                         href="/admin/access"
-                        className={styles.dropdownItem}
+                        className={`${styles.dropdownItem} ${
+                          isAdminAccessActive ? styles.dropdownItemActive : ""
+                        }`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <span>Access Requests</span>
@@ -233,7 +250,9 @@ export default function Navbar({
 
                   <Link
                     href="/leader/dashboard"
-                    className={styles.dropdownItem}
+                    className={`${styles.dropdownItem} ${
+                      isLeaderActive ? styles.dropdownItemActive : ""
+                    }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <span>My Communities</span>
