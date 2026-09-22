@@ -65,17 +65,19 @@ export default async function AboutPage() {
               </div>
             </div>
 
-            {/* Right Hero Column: Framed Mockup Canvas */}
+            {/* Right Hero Column: Framed Video Canvas */}
             <div className={styles.heroRight}>
               <div className={styles.mockupCard}>
                 <div className={styles.mockupImageContainer}>
-                  <Image
-                    src="/white_landing_page.png"
-                    alt="UCSC Community Portal Landing Page"
-                    width={2856}
-                    height={1656}
-                    priority
-                    className={styles.mockupImage}
+                  <video
+                    src="/slugpath-promo.mp4"
+                    controls
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className={styles.mockupVideo}
                   />
                 </div>
               </div>
