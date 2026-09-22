@@ -8,7 +8,7 @@ import styles from "./ChatBubble.module.css";
 
 const CHAT_MESSAGES = [
   "Hi, I'm SlugPath. Need some help finding the right club? Let's chat!",
-  "There's lots of opportunities at UCSC, let me help you find them!",
+  "There's lots of opportunities here at UCSC, let me help you find them!",
   "Looking to get involved on campus? Ask me where to start.",
   "College flies by fast, so make the most of it! Ask me how to get involved.",
 ];
