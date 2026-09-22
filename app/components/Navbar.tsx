@@ -150,9 +150,9 @@ export default function Navbar({
                 <Link
                   className={styles.actionBtn}
                   href="/leader/dashboard"
-                  title="Leader Dashboard"
+                  title="Leadership"
                 >
-                  Dashboard
+                  Leadership
                 </Link>
               )}
 
@@ -183,7 +183,7 @@ export default function Navbar({
                 aria-controls="mobile-nav-dropdown"
                 aria-label="Toggle navigation menu"
               >
-                <span>{isAdmin ? "Admin" : "Dashboard"}</span>
+                <span>{isAdmin ? "Admin" : "Leadership"}</span>
                 <svg
                   width="12"
                   height="12"
@@ -236,7 +236,7 @@ export default function Navbar({
                     className={styles.dropdownItem}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <span>Leader Dashboard</span>
+                    <span>My Communities</span>
                   </Link>
 
                   <div className={styles.dropdownDivider} />
