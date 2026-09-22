@@ -1,7 +1,7 @@
 .container {
   position: fixed;
-  bottom: max(24px, env(safe-area-inset-bottom, 24px));
-  right: max(24px, env(safe-area-inset-right, 24px));
+  bottom: max(-20px, calc(env(safe-area-inset-bottom, 0px) - 20px));
+  right: max(6px, calc(env(safe-area-inset-right, 0px) + 6px));
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -384,8 +384,8 @@
 /* Mobile Screens */
 @media (max-width: 640px) {
   .container {
-    bottom: max(16px, env(safe-area-inset-bottom, 16px));
-    right: max(16px, env(safe-area-inset-right, 16px));
+    bottom: max(-14px, calc(env(safe-area-inset-bottom, 0px) - 14px));
+    right: max(2px, calc(env(safe-area-inset-right, 0px) + 2px));
   }
 
   .textBubble {
@@ -404,5 +404,23 @@
   .slugWrapper {
     width: 92px;
     height: 90px;
+  }
+
+  .bubbleActions {
+    margin-top: 10px;
+    gap: 6px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+
+  .bubbleLink {
+    font-size: 11.5px;
+    padding: 2px 4px;
+    margin-left: -4px;
+    white-space: nowrap;
+  }
+
+  .linkSeparator {
+    font-size: 10px;
   }
 }
