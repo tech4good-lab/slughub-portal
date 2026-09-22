@@ -27,23 +27,40 @@ function requireAuth(session: any) {
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  const role = (session as any)?.role;
+  const userId = (session as any)?.userId;
 
-  if (role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const count = await prisma.accessRequest.count({
+    const records = await prisma.accessRequest.findMany({
       where: {
-        status: "pending",
+        requesterUserId: userId,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 
-    return NextResponse.json({ count });
+    const latestByClubId = new Map<string, any>();
+    for (const r of records) {
+      if (!r.clubId) continue;
+      if (!latestByClubId.has(r.clubId)) {
+        latestByClubId.set(r.clubId, r);
+      }
+    }
+
+    return NextResponse.json({
+      byClubId: Object.fromEntries(latestByClubId.entries()),
+      requests: Array.from(latestByClubId.values()),
+    });
   } catch (error) {
-    console.error("Prisma Error getting pending access request count:", error);
-    return NextResponse.json({ count: 0 });
+    console.error("Prisma Error fetching user access requests:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch access requests" },
+      { status: 500 },
+    );
   }
 }
 
