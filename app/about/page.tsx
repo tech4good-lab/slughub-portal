@@ -8,9 +8,9 @@ import ChatBubble from "@/app/components/ChatBubble";
 import styles from "./about.module.css";
 
 export const metadata = {
-  title: "About — UCSC Community Directory",
+  title: "About | UCSC Community Portal",
   description:
-    "Learn about the UCSC Community Directory, student organizations, and campus connections.",
+    "Learn about the UCSC Community Portal, student organizations, and campus connections.",
 };
 
 export default async function AboutPage() {
@@ -50,7 +50,7 @@ export default async function AboutPage() {
 
               <p className={styles.heroSubtitle}>
                 Start with a conversation.
-                Find where you fit.
+                Find your communities.
               </p>
 
               <div className={styles.heroButtons}>
@@ -70,7 +70,7 @@ export default async function AboutPage() {
                 <div className={styles.mockupImageContainer}>
                   <Image
                     src="/white_landing_page.png"
-                    alt="UCSC Club Directory Landing Page"
+                    alt="UCSC Community Portal Landing Page"
                     width={2856}
                     height={1656}
                     priority
@@ -92,10 +92,10 @@ export default async function AboutPage() {
             </h2>
             <div className={styles.missionText}>
               <p style={{ margin: "0 0 14px" }}>
-                Between clubs, events, classes, and communities, there&apos;s a lot going on at UCSC, and it&apos;s not always easy to know where to look.
+                Between events, classes, and communities, there&apos;s a lot going on at UCSC, and it&apos;s not always easy to know where to look.
               </p>
               <p style={{ margin: 0 }}>
-                Chat with SlugPath to talk through what you&apos;re into and find a few things worth trying.
+                Even if you aren&apos;t sure what you&apos;re looking for yet, chat with SlugPath to talk through what sounds interesting and find a few low-stakes things worth trying.
               </p>
             </div>
           </div>
@@ -110,7 +110,7 @@ export default async function AboutPage() {
             {/* <span className={styles.badgeTag} style={{ marginBottom: "12px", display: "inline-block" }}>The Process</span> */}
             <h2 className={styles.sectionHeadline}>How it works</h2>
             <p className={styles.sectionSubtitle}>
-              SlugPath is an AI companion designed to help you find where you belong at UC Santa Cruz.
+              SlugPath is an AI companion designed to help you explore what UC Santa Cruz has to offer and find your communities.
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export default async function AboutPage() {
             <div className={styles.stepCard}>
               <h3 className={styles.stepTitle}>Explore</h3>
               <p className={styles.stepDesc}>
-                Talk with SlugPath about what you&apos;re looking for: your interests, what kind of people you want to meet, and what you&apos;re curious about trying.
+                Talk with SlugPath about your interests, the kind of environment you thrive in, and what you&apos;re curious to try.
               </p>
               <div className={styles.stepVisualContainer}>
                 <div className={styles.stepCategoryChips}>
@@ -153,7 +153,7 @@ export default async function AboutPage() {
             <div className={styles.stepCard}>
               <h3 className={styles.stepTitle}>Visit</h3>
               <p className={styles.stepDesc}>
-                Based on your conversation, SlugPath suggests specific experiences on campus: a club, event, or class where you can meet people with shared interests.
+                Based on your conversation, SlugPath points you toward concrete places to check out, like a club meeting, an upcoming event, or a class you can sit in on, with zero pressure to commit.
               </p>
               <div className={styles.stepVisualContainer}>
                 <div className={styles.stepConnectCard}>
@@ -178,7 +178,7 @@ export default async function AboutPage() {
             <div className={styles.stepCard}>
               <h3 className={styles.stepTitle}>Reflect</h3>
               <p className={styles.stepDesc}>
-                After you go, SlugPath checks in to hear how it went. Then the cycle continues: explore, visit, and reflect.
+                After you check something out, SlugPath checks in to hear how it felt. It remembers your takeaways so each conversation builds on the last, helping you figure out what actually fits.
               </p>
               <div className={styles.stepVisualContainer}>
                 <div className={styles.stepReflectPreview}>
@@ -215,11 +215,11 @@ export default async function AboutPage() {
           </div>
 
           <div className={styles.capabilitiesGrid}>
-            {/* Capability 1: Personalized recommendations */}
+            {/* Capability 1: A guide that remembers */}
             <div className={styles.capabilityCard}>
-              <h3 className={styles.stepTitle}>Personalized recommendations</h3>
+              <h3 className={styles.stepTitle}>A guide that remembers</h3>
               <p className={styles.stepDesc}>
-                The more you chat, the better SlugPath gets at understanding what excites you. It learns your hobbies, vibe, and goals to recommend communities you&apos;ll actually love joining.
+                SlugPath remembers what you&apos;ve talked about over time. It keeps track of what you&apos;re curious about and how past events felt, so future suggestions actually make sense for where you are.
               </p>
               <div className={styles.aiChatPreview}>
                 <div className={styles.aiChatUser}>
@@ -234,11 +234,11 @@ export default async function AboutPage() {
             </div>
 
 
-            {/* Capability 3: Follow-up reminder */}
+            {/* Capability 2: Timely check-ins */}
             <div className={styles.capabilityCard}>
-              <h3 className={styles.stepTitle}>Follow-up reminder</h3>
+              <h3 className={styles.stepTitle}>Timely check-ins</h3>
               <p className={styles.stepDesc}>
-                Heading to a club meeting or campus event? SlugPath checks in afterward to hear what you loved and what didn&apos;t fit—using your feedback to make each new suggestion spot-on.
+                Planning to check out a community, event, or class? SlugPath can follow up afterward to hear what worked and what felt off, so you have space to process the experience.
               </p>
               <div className={styles.reminderPreview}>
                 <div className={styles.reminderHeader}>
@@ -291,43 +291,14 @@ export default async function AboutPage() {
               </h3>
 
               <p className={styles.studyDescription}>
-                Want to help shape the future of student discovery at UC Santa Cruz? Enroll in the <strong>Tech4Good research study</strong>! It&apos;s a <strong>5-week commitment</strong> where all you need to do is chat with SlugPath a few times a week and make an honest effort to explore the campus &mdash; by checking out communities, attending campus events, or auditing a class. As a thank-you for your time and reflections, you&apos;ll receive a <strong>$30 gift card</strong> upon completing the study!
+                The Tech4Good Lab is running a 5-week study to understand how to best design tools that help students explore campus life and figure out what fits. Participation involves chatting with SlugPath and exploring in person, whether that is checking out a community, attending a campus event, or sitting in on a class. You&apos;ll complete four brief surveys over the 5 weeks to share how it went, and you&apos;ll receive a $30 gift card upon completing the study.
               </p>
 
-              <div className={styles.studyPerks}>
-                <div className={styles.studyPerkItem}>
-                  <span className={styles.studyPerkIcon}>📅</span>
-                  <div>
-                    <strong>5-Week Commitment</strong>
-                    <span>Light weekly engagement</span>
-                  </div>
-                </div>
-                <div className={styles.studyPerkItem}>
-                  <span className={styles.studyPerkIcon}>💬</span>
-                  <div>
-                    <strong>Chat with SlugPath</strong>
-                    <span>A few times each week</span>
-                  </div>
-                </div>
-                <div className={styles.studyPerkItem}>
-                  <span className={styles.studyPerkIcon}>🧭</span>
-                  <div>
-                    <strong>Explore</strong>
-                    <span>Communities, events, or classes</span>
-                  </div>
-                </div>
-                <div className={styles.studyPerkItem}>
-                  <span className={styles.studyPerkIcon}>🎁</span>
-                  <div>
-                    <strong>$30 Gift Card</strong>
-                    <span>Awarded upon study completion</span>
-                  </div>
-                </div>
-              </div>
-
               <div className={styles.studyActions}>
-                <Link
-                  href="#"
+                <a
+                  href="https://ucsantacruz.co1.qualtrics.com/jfe/form/SV_a5BfIizH1QCOAVE"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}
                   style={{ padding: "10px 22px", fontSize: "14.5px" }}
                 >
@@ -345,7 +316,7 @@ export default async function AboutPage() {
                   >
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
-                </Link>
+                </a>
               </div>
             </div>
           </div>
