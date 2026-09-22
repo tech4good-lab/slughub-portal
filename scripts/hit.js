@@ -1,6 +1,6 @@
 (async () => {
   const fetch = (...a) => import('node-fetch').then(m => m.default(...a));
-  const base = 'http://localhost:3000';
+  const base = process.env.BASE_URL || 'http://localhost:3001';
   const endpoints = ['/api/clubs', '/api/admin/clubs/pending', '/api/admin/access-requests/pending', '/api/access-requests'];
   const iterations = parseInt(process.argv[2], 10) || 20;
 

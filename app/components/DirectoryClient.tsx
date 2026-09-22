@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Club } from "@prisma/client";
+import Footer from "@/app/components/Footer";
 
 type Props = {
   clubs: Club[];
@@ -74,9 +76,18 @@ function normalizeList(input: any): string[] {
   return single ? [single] : [];
 }
 
+// In-memory filter state: persists across client-side navigation (e.g. Directory -> About -> Directory),
+// but resets to defaults (verified checked) when the site is reloaded or re-entered.
+let inMemoryStatusSelected: string[] | null = null;
+let inMemoryTypeSelected: string[] | null = null;
+
 export default function DirectoryClient({ clubs, session }: Props) {
-  const [typeSelected, setTypeSelected] = useState<string[]>([]);
-  const [statusSelected, setStatusSelected] = useState<string[]>([]);
+  const [typeSelected, setTypeSelected] = useState<string[]>(
+    () => inMemoryTypeSelected ?? []
+  );
+  const [statusSelected, setStatusSelected] = useState<string[]>(
+    () => inMemoryStatusSelected ?? ["verified"]
+  );
   const [isMounted, setIsMounted] = useState(false);
 
   const [query, setQuery] = useState("");
@@ -85,20 +96,19 @@ export default function DirectoryClient({ clubs, session }: Props) {
 
   useEffect(() => {
     setIsMounted(true);
-
-    const savedType = localStorage.getItem("typeSelected");
-    if (savedType) setTypeSelected(JSON.parse(savedType));
-
-    const savedStatus = localStorage.getItem("statusSelected");
-    if (savedStatus) setStatusSelected(JSON.parse(savedStatus));
+    // Clear any legacy localStorage values so they don't override the fresh default on reload
+    try {
+      localStorage.removeItem("statusSelected");
+      localStorage.removeItem("typeSelected");
+    } catch {
+      // ignore
+    }
   }, []);
 
   useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem("typeSelected", JSON.stringify(typeSelected));
-      localStorage.setItem("statusSelected", JSON.stringify(statusSelected));
-    }
-  }, [typeSelected, statusSelected, isMounted]);
+    inMemoryStatusSelected = statusSelected;
+    inMemoryTypeSelected = typeSelected;
+  }, [typeSelected, statusSelected]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -347,32 +357,7 @@ export default function DirectoryClient({ clubs, session }: Props) {
           )}
 
           {/* Credit */}
-          <div style={{ marginTop: 36, textAlign: "center" }}>
-            <p
-              style={{
-                fontSize: 16,
-                fontWeight: 500,
-                color: "rgba(0,0,0,0.6)",
-                WebkitTextStroke: "0.4px black",
-              }}
-            >
-              A{" "}
-              <a
-                href="https://tech4good.soe.ucsc.edu/"
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  color: "#FDF0A6",
-                  textDecoration: "none",
-                  fontWeight: "1000",
-                  WebkitTextStroke: "0.3px black",
-                }}
-              >
-                Tech4Good
-              </a>{" "}
-              project
-            </p>
-          </div>
+          <Footer style={{ marginTop: 36, padding: "0 0 28px" }} />
         </section>
       </div>
     </>

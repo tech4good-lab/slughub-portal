@@ -1,9 +1,10 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import RouteTracker from "@/app/components/RouteTracker";
 
 export const metadata = {
-  title: "Community Portal",
-  description: "Community directory + leader portal",
+  title: "Community Directory",
+  description: "UCSC Community Directory",
 };
 export default function RootLayout({
   children,
@@ -20,11 +21,12 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@700;800&family=Sarabun:wght@400;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body>
+        <RouteTracker />
         {children}
         <Analytics />
       </body>

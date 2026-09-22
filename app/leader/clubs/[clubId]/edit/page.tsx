@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
 import { Club } from "@prisma/client";
+import Navbar from "@/app/components/Navbar";
+import DecorativeBubbles from "@/app/components/DecorativeBubbles";
+import Footer from "@/app/components/Footer";
 
 type ClubDraft = {
   name: string;
@@ -56,6 +60,14 @@ export default function EditClubPage() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    (async () => {
+      const s = await getSession();
+      setSession(s);
+    })();
+  }, []);
 
   useEffect(() => {
     if (!clubId) return;
@@ -89,7 +101,7 @@ export default function EditClubPage() {
         return;
       }
       if (res.status === 403) {
-        setErr("Forbidden: you don’t have access to edit this community.");
+        setErr("Forbidden: you do not have access to edit this community.");
         setLoading(false);
         return;
       }
@@ -169,210 +181,400 @@ export default function EditClubPage() {
       } catch {
         // ignore
       }
-      setMsg("Submitted! Your new community is pending admin approval.");
-    } else {
-      setMsg("Saved! Your changes are live.");
+      router.push("/leader/dashboard");
+      router.refresh();
+      return;
     }
 
+    setMsg("Saved! Your community profile has been updated.");
     setSaving(false);
-
-    router.push("/leader/dashboard");
     router.refresh();
+  };
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "1px solid rgba(16,24,40,0.18)",
+    fontSize: 14,
+    fontFamily: "Sarabun",
+    boxSizing: "border-box",
+    background: "#f9fafb",
+    color: "#111827",
+    outline: "none",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#374151",
+    marginBottom: 6,
+    fontFamily: "Sarabun",
   };
 
   if (loading) {
     return (
-      <main className="container clubEdit">
-        <div className="card">
-          <p className="small">Loading...</p>
+      <div
+        style={{
+          minHeight: "100dvh",
+          background: "#EDF4FF",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "clamp(12px, 3vw, 20px)",
+          boxSizing: "border-box",
+          position: "relative",
+        }}
+      >
+        <DecorativeBubbles />
+        <Navbar session={session} />
+        <div style={{ margin: "auto", zIndex: 10, textAlign: "center", color: "#4b5563" }}>
+          Loading community details...
         </div>
-      </main>
+        <Footer />
+      </div>
     );
   }
 
   return (
-    <main className="container clubEdit">
-      <div className="row" style={{ justifyContent: "space-between" }}>
-        <h1>Edit Community Profile</h1>
-        <div className="row">
-          <Link className="btn" href="/leader/dashboard">
-            Dashboard
-          </Link>
-          <Link className="btn" href="/">
-            Directory
-          </Link>
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: "#EDF4FF",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "clamp(12px, 3vw, 20px)",
+        boxSizing: "border-box",
+        overflowX: "hidden",
+        position: "relative",
+      }}
+    >
+      <DecorativeBubbles />
+      <Navbar session={session} />
+
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+          margin: "30px 0 40px",
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 700,
+            background: "white",
+            borderRadius: 25,
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            padding: "clamp(16px, 4vw, 40px)",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 20,
+              paddingBottom: 20,
+              borderBottom: "1px solid rgba(16,24,40,0.08)",
+              gap: 16,
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+              <img
+                src="/dashboard-icon.png"
+                alt="Dashboard Icon"
+                style={{ width: 44, height: 44 }}
+              />
+              <div>
+                <h1
+                  style={{
+                    color: "black",
+                    fontSize: "24px",
+                    fontFamily: "Sarabun",
+                    fontWeight: "700",
+                    margin: 0,
+                  }}
+                >
+                  Edit Community Profile
+                </h1>
+                <p
+                  style={{
+                    color: "#666",
+                    fontSize: 14,
+                    fontFamily: "Sarabun",
+                    fontWeight: "400",
+                    margin: "4px 0 0 0",
+                  }}
+                >
+                  Update your community information, contact, and links.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/leader/dashboard"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 34,
+                padding: "0 16px",
+                background: "#f3f4f6",
+                borderRadius: 20,
+                color: "#374151",
+                fontSize: 13,
+                fontFamily: "Sarabun",
+                fontWeight: "600",
+                textDecoration: "none",
+              }}
+            >
+              Back to Dashboard
+            </Link>
+          </div>
+
+          <form onSubmit={onSave} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div>
+              <label style={labelStyle}>Community Name *</label>
+              <input
+                style={inputStyle}
+                value={draft.name}
+                onChange={(e) => set("name", e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Description *</label>
+              <textarea
+                required
+                style={{ ...inputStyle, minHeight: 90, resize: "vertical" }}
+                rows={4}
+                value={draft.description}
+                onChange={(e) => set("description", e.target.value)}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: 16,
+              }}
+            >
+              <div>
+                <label style={labelStyle}>Point of Contact Name *</label>
+                <input
+                  style={inputStyle}
+                  value={draft.contactName}
+                  onChange={(e) => set("contactName", e.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label style={labelStyle}>Point of Contact Email *</label>
+                <input
+                  type="email"
+                  style={inputStyle}
+                  value={draft.contactEmail}
+                  onChange={(e) => set("contactEmail", e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Community Type</label>
+              <select
+                style={{ ...inputStyle, cursor: "pointer" }}
+                value={draft.communityType}
+                onChange={(e) => set("communityType", e.target.value)}
+                required
+              >
+                {COMMUNITY_TYPE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ borderTop: "1px solid rgba(16,24,40,0.08)", paddingTop: 14 }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  color: "#6b7280",
+                  marginBottom: 12,
+                }}
+              >
+                Community Links (Optional)
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                  gap: 14,
+                }}
+              >
+                <div>
+                  <label style={labelStyle}>Calendar URL</label>
+                  <input
+                    style={inputStyle}
+                    value={draft.calendarUrl}
+                    onChange={(e) => set("calendarUrl", e.target.value)}
+                    placeholder="https://calendar.google.com/..."
+                  />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Discord URL</label>
+                  <input
+                    style={inputStyle}
+                    value={draft.discordUrl}
+                    onChange={(e) => set("discordUrl", e.target.value)}
+                    placeholder="https://discord.gg/..."
+                  />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Website URL</label>
+                  <input
+                    style={inputStyle}
+                    value={draft.websiteUrl}
+                    onChange={(e) => set("websiteUrl", e.target.value)}
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Instagram URL</label>
+                  <input
+                    style={inputStyle}
+                    value={draft.instagramUrl}
+                    onChange={(e) => set("instagramUrl", e.target.value)}
+                    placeholder="https://instagram.com/..."
+                  />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>LinkedIn URL</label>
+                  <input
+                    style={inputStyle}
+                    value={draft.linkedinUrl}
+                    onChange={(e) => set("linkedinUrl", e.target.value)}
+                    placeholder="https://linkedin.com/..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            {err && (
+              <div
+                style={{
+                  padding: "10px 14px",
+                  background: "#fef2f2",
+                  border: "1px solid #fecaca",
+                  borderRadius: 10,
+                  color: "#b91c1c",
+                  fontSize: 13,
+                  fontFamily: "Sarabun",
+                }}
+              >
+                {err}
+              </div>
+            )}
+
+            {msg && (
+              <div
+                style={{
+                  padding: "10px 14px",
+                  background: "#f0fdf4",
+                  border: "1px solid #bbf7d0",
+                  borderRadius: 10,
+                  color: "#166534",
+                  fontSize: 13,
+                  fontFamily: "Sarabun",
+                }}
+              >
+                {msg}
+              </div>
+            )}
+
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                marginTop: 8,
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
+            >
+              <button
+                type="submit"
+                disabled={saving}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 40,
+                  padding: "0 24px",
+                  background: "#FDF0A6",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  borderRadius: 20,
+                  color: "#000",
+                  fontSize: 14,
+                  fontFamily: "Sarabun",
+                  fontWeight: "600",
+                  border: "none",
+                  cursor: saving ? "not-allowed" : "pointer",
+                  opacity: saving ? 0.7 : 1,
+                }}
+              >
+                {saving
+                  ? "Saving..."
+                  : clubId === "draft"
+                    ? "Submit for Approval"
+                    : "Save Changes"}
+              </button>
+
+              <Link
+                href="/leader/dashboard"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 40,
+                  padding: "0 20px",
+                  background: "#f3f4f6",
+                  borderRadius: 20,
+                  color: "#374151",
+                  fontSize: 14,
+                  fontFamily: "Sarabun",
+                  fontWeight: "600",
+                  textDecoration: "none",
+                }}
+              >
+                Cancel
+              </Link>
+            </div>
+          </form>
         </div>
       </div>
 
-      <form className="card" style={{ marginTop: 14 }} onSubmit={onSave}>
-        <label className="label">Community Name *</label>
-        <input
-          className="input"
-          value={draft.name}
-          onChange={(e) => set("name", e.target.value)}
-        />
-
-        <div style={{ height: 10 }} />
-
-        <label className="label">Description *</label>
-        <textarea
-          required
-          className="input"
-          rows={4}
-          value={draft.description}
-          onChange={(e) => set("description", e.target.value)}
-        />
-
-        <div style={{ height: 10 }} />
-
-        <hr />
-
-        <label className="label">Point of Contact Name *</label>
-        <input
-          className="input"
-          value={draft.contactName}
-          onChange={(e) => set("contactName", e.target.value)}
-          required
-        />
-
-        <div style={{ height: 10 }} />
-
-        <label className="label">Point of Contact Email *</label>
-        <input
-          className="input"
-          value={draft.contactEmail}
-          onChange={(e) => set("contactEmail", e.target.value)}
-          required
-        />
-
-        <div style={{ height: 10 }} />
-
-        <label className="label">Community type</label>
-        <select
-          className="input"
-          value={draft.communityType}
-          onChange={(e) => set("communityType", e.target.value)}
-          required
-        >
-          {COMMUNITY_TYPE_OPTIONS.map((opt: any) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-
-        <hr />
-
-        <label className="label">Calendar URL</label>
-        <input
-          className="input"
-          value={draft.calendarUrl}
-          onChange={(e) => set("calendarUrl", e.target.value)}
-          placeholder="https://..."
-        />
-
-        <div style={{ height: 10 }} />
-
-        <label className="label">Discord URL</label>
-        <input
-          className="input"
-          value={draft.discordUrl}
-          onChange={(e) => set("discordUrl", e.target.value)}
-          placeholder="https://..."
-        />
-
-        <div style={{ height: 10 }} />
-
-        <label className="label">Website URL</label>
-        <input
-          className="input"
-          value={draft.websiteUrl}
-          onChange={(e) => set("websiteUrl", e.target.value)}
-          placeholder="https://..."
-        />
-
-        <div style={{ height: 10 }} />
-
-        <label className="label">Instagram URL</label>
-        <input
-          className="input"
-          value={draft.instagramUrl}
-          onChange={(e) => set("instagramUrl", e.target.value)}
-          placeholder="https://..."
-        />
-
-        <div style={{ height: 10 }} />
-
-        <label className="label">LinkedIn URL</label>
-        <input
-          className="input"
-          value={draft.linkedinUrl}
-          onChange={(e) => set("linkedinUrl", e.target.value)}
-          placeholder="https://..."
-        />
-
-        {err && (
-          <p className="small" style={{ marginTop: 10 }}>
-            {err}
-          </p>
-        )}
-        {msg && (
-          <p className="small" style={{ marginTop: 10 }}>
-            {msg}
-          </p>
-        )}
-
-        <div className="row" style={{ marginTop: 12 }}>
-          <button
-            className="btn btnPrimary"
-            type="submit"
-            disabled={saving}
-            style={{
-              padding: "8px 16px",
-              background: "#FDF0A6",
-              border: "1px solid #FDF0A6",
-              borderRadius: 20,
-              color: "#000",
-              fontFamily: "Sarabun",
-              fontSize: 14,
-              fontWeight: 600,
-              lineHeight: "1",
-              textDecoration: "none",
-              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
-            }}
-          >
-            {saving
-            ? "Saving..."
-            : clubId === "draft"
-              ? "Submit for Approval"
-              : "Save Changes"}
-          </button>
-          <Link
-            role="button"
-            className="btn btnPrimary"
-            style={{
-              padding: "8px 16px",
-              background: "#FDF0A6",
-              border: "1px solid #FDF0A6",
-              borderRadius: 20,
-              color: "#000",
-              fontFamily: "Sarabun",
-              fontSize: 14,
-              fontWeight: 600,
-              lineHeight: "1",
-              textDecoration: "none",
-              boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
-            }}
-            href="/leader/dashboard"
-          >
-            Cancel
-          </Link>
-        </div>
-
-        <p className="small" style={{ marginTop: 10 }}>
-          Tip: include full URLs with https://
-        </p>
-      </form>
-    </main>
+      <Footer />
+    </div>
   );
 }

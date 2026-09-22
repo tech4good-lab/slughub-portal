@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -13,18 +13,45 @@ async function safeJson(res: Response) {
   }
 }
 
-const accessBtnStyle = {
-  padding: "8px 16px",
+const cardStyle: React.CSSProperties = {
+  background: "white",
+  borderRadius: 25,
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+  padding: "clamp(20px, 4vw, 32px)",
+  color: "#111827",
+  fontFamily: "Sarabun",
+};
+
+const textareaStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "12px 14px",
+  borderRadius: 12,
+  border: "1px solid rgba(16, 24, 40, 0.18)",
+  fontSize: 14,
+  fontFamily: "Sarabun",
+  boxSizing: "border-box",
+  background: "#f9fafb",
+  color: "#111827",
+  outline: "none",
+  resize: "vertical",
+  marginTop: 10,
+};
+
+const buttonStyle: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: 38,
+  padding: "0 22px",
   background: "#FDF0A6",
-  border: "1px solid #FDF0A6",
   borderRadius: 20,
   color: "#000",
   fontFamily: "Sarabun",
   fontSize: 14,
   fontWeight: 600,
-  lineHeight: "1",
-  textDecoration: "none",
-  boxShadow: "0 6px 14px rgba(251,191,36,0.14)",
+  border: "none",
+  cursor: "pointer",
+  boxShadow: "0 2px 6px rgba(251, 191, 36, 0.2)",
 };
 
 export default function RequestAccess({ clubId }: { clubId: string }) {
@@ -65,32 +92,33 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
         setInfo(data);
         sessionStorage.setItem("accessRequestsMine", JSON.stringify(data));
       }
-    } catch (e) {
+    } catch {
       setErr("Network error loading status.");
     } finally {
       setLoading(false);
       setLoaded(true);
     }
   };
+
   useEffect(() => {
     setLoaded(false);
     setInfo(null);
     load();
   }, [clubId]);
 
-    const submit = async () => {
+  const submit = async () => {
     if (!message.trim()) {
-      setErr("Please fill out the field above.");
+      setErr("Please provide some context or evidence.");
       return;
     }
     setBusy(true);
     setErr(null);
     setMsg(null);
-    
+
     const res = await fetch("/api/access-requests", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ clubId, message }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clubId, message }),
     });
 
     const data = await safeJson(res);
@@ -128,18 +156,10 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
     }
   };
 
-  if (loading) {
+  if (loading || !loaded) {
     return (
-      <div className="card" style={{ marginTop: 14 }}>
-        <p className="small">Loading access status...</p>
-      </div>
-    );
-  }
-
-  if (!loaded) {
-    return (
-      <div className="card" style={{ marginTop: 14 }}>
-        <p className="small">Loading access status...</p>
+      <div style={{ ...cardStyle, textAlign: "center", color: "#6b7280", fontSize: 14 }}>
+        Loading access status...
       </div>
     );
   }
@@ -150,22 +170,30 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
   if (status === "approved") {
     return (
       <div
-        className="card"
-        style={{ marginTop: 14, border: "1px solid rgba(34,197,94,0.25)" }}
+        style={{
+          ...cardStyle,
+          border: "1px solid #bbf7d0",
+          background: "#f0fdf4",
+        }}
       >
-        <h3 style={{ marginTop: 0 }}>You have leader access</h3>
-        <p className="small" style={{ marginTop: 8 }}>
-          This community should appear in your dashboard.
-        </p>
-        <div className="row" style={{ marginTop: 12 }}>
-          <Link
-            className="btn btnPrimary"
-            href="/leader/dashboard"
-            style={accessBtnStyle}
-          >
-            Go to Dashboard
-          </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+          <span style={{ fontSize: 18 }}>✅</span>
+          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#166534" }}>
+            You have leader access
+          </h3>
         </div>
+        <p style={{ margin: "4px 0 16px 0", color: "#15803d", fontSize: 14 }}>
+          This community is linked to your account and appears in your dashboard.
+        </p>
+        <Link
+          href="/leader/dashboard"
+          style={{
+            ...buttonStyle,
+            textDecoration: "none",
+          }}
+        >
+          Go to Dashboard
+        </Link>
       </div>
     );
   }
@@ -173,12 +201,20 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
   if (status === "pending") {
     return (
       <div
-        className="card"
-        style={{ marginTop: 14, border: "1px solid rgba(251,191,36,0.25)" }}
+        style={{
+          ...cardStyle,
+          border: "1px solid #fde68a",
+          background: "#fffbeb",
+        }}
       >
-        <h3 style={{ marginTop: 0 }}>Leader access request: Pending</h3>
-        <p className="small" style={{ marginTop: 8 }}>
-          Your request is awaiting admin review.
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+          <span style={{ fontSize: 18 }}>⏳</span>
+          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#92400e" }}>
+            Leader access request: Pending
+          </h3>
+        </div>
+        <p style={{ margin: "4px 0 0 0", color: "#78350f", fontSize: 14 }}>
+          Your request has been submitted and is awaiting administrator review.
         </p>
       </div>
     );
@@ -187,44 +223,73 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
   if (status === "rejected") {
     return (
       <div
-        className="card"
-        style={{ marginTop: 14, border: "1px solid rgba(239,68,68,0.25)" }}
+        style={{
+          ...cardStyle,
+          border: "1px solid #fecaca",
+          background: "white",
+        }}
       >
-        <h3 style={{ marginTop: 0 }}>Leader access request: Rejected</h3>
-        <p className="small" style={{ marginTop: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+          <span style={{ fontSize: 18 }}>⚠️</span>
+          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#b91c1c" }}>
+            Leader access request: Needs Review
+          </h3>
+        </div>
+        <p style={{ margin: "4px 0 14px 0", color: "#6b7280", fontSize: 14 }}>
           {request?.reviewNotes
             ? `Admin note: ${request.reviewNotes}`
-            : "You can submit another request with more info."}
+            : "You can submit another request with additional details or evidence."}
         </p>
 
-        <label className="label" style={{ marginTop: 12 }}>
-          Message (optional)
+        <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151" }}>
+          Message / Evidence
         </label>
         <textarea
-          className="input"
+          style={textareaStyle}
           rows={3}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Add context (e.g., proof you're an officer, role, email, etc.)"
+          placeholder="Add context (e.g. proof you are an officer, role, official UCSC email, etc.)"
         />
 
         {err && (
-          <p className="small" style={{ marginTop: 10 }}>
+          <div
+            style={{
+              marginTop: 10,
+              padding: "8px 12px",
+              background: "#fef2f2",
+              borderRadius: 8,
+              color: "#b91c1c",
+              fontSize: 13,
+            }}
+          >
             {err}
-          </p>
+          </div>
         )}
         {msg && (
-          <p className="small" style={{ marginTop: 10 }}>
+          <div
+            style={{
+              marginTop: 10,
+              padding: "8px 12px",
+              background: "#f0fdf4",
+              borderRadius: 8,
+              color: "#166534",
+              fontSize: 13,
+            }}
+          >
             {msg}
-          </p>
+          </div>
         )}
 
-        <div className="row" style={{ marginTop: 12 }}>
+        <div style={{ marginTop: 14 }}>
           <button
-            className="btn btnPrimary"
             onClick={submit}
             disabled={busy}
-            style={accessBtnStyle}
+            style={{
+              ...buttonStyle,
+              opacity: busy ? 0.7 : 1,
+              cursor: busy ? "not-allowed" : "pointer",
+            }}
           >
             {busy ? "Submitting..." : "Request again"}
           </button>
@@ -236,43 +301,119 @@ export default function RequestAccess({ clubId }: { clubId: string }) {
   const unauth = !!info?.unauth;
 
   return (
-    <div className="card" style={{ marginTop: 14 }}>
-      <h3 style={{ marginTop: 0 }}>Are you a leader in this community? Please provide evidence of your role and request access.</h3>
-      {unauth && (
-        <p className="small" style={{ marginTop: 8 }}>
-          Sign in to request leader access.
-        </p>
-      )}
+    <div style={cardStyle}>
+      <h3
+        style={{
+          margin: 0,
+          fontSize: 18,
+          fontWeight: 700,
+          color: "#111827",
+          lineHeight: 1.4,
+        }}
+      >
+        Are you a leader in this community?
+      </h3>
+      <p
+        style={{
+          margin: "6px 0 14px 0",
+          color: "#4b5563",
+          fontSize: 14,
+          lineHeight: 1.5,
+        }}
+      >
+        Provide proof or context regarding your role to request dashboard management access.
+      </p>
 
-      <textarea
-        className="input"
-        rows={3}
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Examples of evidence include your name being on an official webpage, email references, or even a link to your community's Discord Server."
-      />
-
-      {err && (
-        <p className="small" style={{ marginTop: 10 }}>
-          {err}
-        </p>
-      )}
-      {msg && (
-        <p className="small" style={{ marginTop: 10 }}>
-          {msg}
-        </p>
-      )}
-
-      <div className="row" style={{ marginTop: 12 }}>
-        <button
-          className="btn btnPrimary"
-          onClick={submit}
-          disabled={busy || unauth}
-          style={accessBtnStyle}
+      {unauth ? (
+        <div
+          style={{
+            padding: "14px 18px",
+            background: "#eff6ff",
+            border: "1px solid #bfdbfe",
+            borderRadius: 14,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 12,
+          }}
         >
-          {busy ? "Submitting..." : "Request access"}
-        </button>
-      </div>
+          <span style={{ fontSize: 14, color: "#1e40af", fontWeight: 500 }}>
+            Please sign in with your UCSC account to request leader access.
+          </span>
+          <Link
+            href="/login"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: 34,
+              padding: "0 18px",
+              background: "#FDF0A6",
+              borderRadius: 18,
+              color: "#000",
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            Sign in
+          </Link>
+        </div>
+      ) : (
+        <>
+          <textarea
+            style={textareaStyle}
+            rows={3}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Examples of evidence include your name being on an official webpage, email references, or a link to your community's Discord / social accounts."
+          />
+
+          {err && (
+            <div
+              style={{
+                marginTop: 10,
+                padding: "8px 12px",
+                background: "#fef2f2",
+                borderRadius: 8,
+                color: "#b91c1c",
+                fontSize: 13,
+              }}
+            >
+              {err}
+            </div>
+          )}
+          {msg && (
+            <div
+              style={{
+                marginTop: 10,
+                padding: "8px 12px",
+                background: "#f0fdf4",
+                borderRadius: 8,
+                color: "#166534",
+                fontSize: 13,
+              }}
+            >
+              {msg}
+            </div>
+          )}
+
+          <div style={{ marginTop: 14 }}>
+            <button
+              onClick={submit}
+              disabled={busy}
+              style={{
+                ...buttonStyle,
+                opacity: busy ? 0.7 : 1,
+                cursor: busy ? "not-allowed" : "pointer",
+              }}
+            >
+              {busy ? "Submitting..." : "Request access"}
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

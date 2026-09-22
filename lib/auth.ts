@@ -1,5 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
 
 export const authOptions: NextAuthOptions = {
@@ -9,10 +10,75 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
+    ...(process.env.NODE_ENV === "development"
+      ? [
+          CredentialsProvider({
+            id: "dev-login",
+            name: "Simulated Dev Login",
+            credentials: {
+              role: { label: "Role", type: "text" },
+              email: { label: "Email", type: "text" },
+            },
+            async authorize(credentials) {
+              if (process.env.NODE_ENV !== "development") {
+                return null;
+              }
+
+              const role = credentials?.role === "leader" ? "leader" : "admin";
+              const email = (
+                credentials?.email ||
+                (role === "admin" ? "superkaush@gmail.com" : "leader@ucsc.edu")
+              )
+                .toLowerCase()
+                .trim();
+              const name = role === "admin" ? "Admin (Dev Test)" : "Leader (Dev Test)";
+
+              try {
+                let user = await prisma.user.findUnique({ where: { email } });
+                if (!user) {
+                  user = await prisma.user.create({
+                    data: {
+                      email,
+                      name,
+                      role,
+                    },
+                  });
+                } else if (user.role !== role) {
+                  user = await prisma.user.update({
+                    where: { email },
+                    data: { role },
+                  });
+                }
+
+                return {
+                  id: user.id,
+                  email: user.email,
+                  name: user.name ?? name,
+                  role: user.role,
+                };
+              } catch (e) {
+                console.warn("Dev login DB warning, falling back to simulated session:", e);
+                return {
+                  id: "dev-" + role + "-id",
+                  email,
+                  name,
+                  role,
+                };
+              }
+            },
+          }),
+        ]
+      : []),
   ],
-  debug: true,
+  debug: process.env.NODE_ENV === "development",
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user, account }) {
+      if (account?.provider === "dev-login" || account?.provider === "credentials") {
+        if (process.env.NODE_ENV !== "development") {
+          return false;
+        }
+        return true;
+      }
       if (!user.email) return false;
       const email = user.email.toLowerCase().trim();
 
@@ -61,7 +127,9 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session as any).userId = token.userId;
         (session as any).role = token.role;
-        (session as any).userName = token.name;  // ← add this
+        (session as any).userName = token.name;
+        (session.user as any).id = token.userId;
+        (session.user as any).role = token.role;
       }
       return session;
     },
