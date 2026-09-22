@@ -107,7 +107,7 @@ export default function LoginPage() {
               textDecoration: "none",
             }}
           >
-            Portal
+            Directory
           </Link>
         </div>
 

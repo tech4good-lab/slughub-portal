@@ -3,8 +3,8 @@ import { Analytics } from "@vercel/analytics/next";
 import RouteTracker from "@/app/components/RouteTracker";
 
 export const metadata = {
-  title: "Community Portal",
-  description: "UCSC Community Portal",
+  title: "Community Directory",
+  description: "UCSC Community Directory",
 };
 export default function RootLayout({
   children,

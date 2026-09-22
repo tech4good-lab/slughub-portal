@@ -22,7 +22,7 @@ export default function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const isAboutActive = pathname === "/about";
-  const isPortalActive = pathname === "/" || (!isAboutActive && !pathname?.startsWith("/about"));
+  const isDirectoryActive = pathname === "/" || (!isAboutActive && !pathname?.startsWith("/about"));
 
   const [isVisible, setIsVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -35,61 +35,49 @@ export default function Navbar({
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  // Click outside and Escape key listener for mobile dropdown
+  // Handle click outside to close dropdown
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMobileMenuOpen(false);
       }
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsMobileMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleKeyDown);
+    }
+    if (isMobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [isMobileMenuOpen]);
 
-  // Smooth Hide on Scroll Down / Show on Scroll Up
+  // Hide on scroll down, show on scroll up
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      // Always show when near the top of the page
-      if (currentScrollY <= 25) {
-        setIsVisible(true);
-        lastScrollY.current = currentScrollY;
-        return;
-      }
-
-      // Hide when scrolling down, show when scrolling up
-      if (currentScrollY > lastScrollY.current + 8) {
-        setIsVisible(false);
-        setIsMobileMenuOpen(false); // also collapse open dropdown on scroll down
-      } else if (currentScrollY < lastScrollY.current - 8) {
-        setIsVisible(true);
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    const onScroll = () => {
       if (!ticking.current) {
         window.requestAnimationFrame(() => {
-          handleScroll();
+          const currentScrollY = window.scrollY;
+
+          // Always show near the top of the page
+          if (currentScrollY < 40) {
+            setIsVisible(true);
+          } else if (currentScrollY > lastScrollY.current + 6) {
+            // Scrolling DOWN by more than 6px -> hide navbar
+            setIsVisible(false);
+            setIsMobileMenuOpen(false);
+          } else if (currentScrollY < lastScrollY.current - 6) {
+            // Scrolling UP by more than 6px -> show navbar
+            setIsVisible(true);
+          }
+
+          lastScrollY.current = currentScrollY;
           ticking.current = false;
         });
         ticking.current = true;
       }
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const isAuthenticated = Boolean(session) && (isAdmin || isLeader);
@@ -106,12 +94,12 @@ export default function Navbar({
           <Link
             href="/"
             className={`${styles.navLink} ${
-              isPortalActive ? styles.navLinkActive : ""
+              isDirectoryActive ? styles.navLinkActive : ""
             }`}
-            aria-current={isPortalActive ? "page" : undefined}
+            aria-current={isDirectoryActive ? "page" : undefined}
             suppressHydrationWarning
           >
-            Portal
+            Directory
           </Link>
           <Link
             href="/about"

@@ -37,7 +37,7 @@ export default async function HomePage() {
                 fontSize: "clamp(28px, 5vw, 40px)",
               }}
             >
-              UCSC Community Portal
+              UCSC Community Directory
             </h1>
           </div>
           <div className="card">
@@ -65,7 +65,7 @@ export default async function HomePage() {
               fontSize: "clamp(28px, 5vw, 40px)",
             }}
           >
-            UCSC Community Portal
+            UCSC Community Directory
           </h1>
         </div>
 

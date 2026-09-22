@@ -164,17 +164,35 @@
 .heroMeta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-size: 13.5px;
-  font-weight: 500;
-  color: #475569;
+  font-weight: 600;
+  color: #334155;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(16, 24, 40, 0.08);
+  border-radius: 999px;
+  padding: 6px 14px;
 }
 
 .heroMetaDot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
 }
 
 .mockupCardLink {
@@ -194,12 +212,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.mockupCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 24px 48px rgba(16, 24, 40, 0.12);
+  cursor: default;
 }
 
 .mockupImageContainer {
@@ -221,11 +234,6 @@
   object-position: top center;
   transform: scale(1.04);
   transform-origin: top center;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.mockupCard:hover .mockupImage {
-  transform: scale(1.08);
 }
 
 .mockupHeader {
@@ -1217,7 +1225,7 @@
 
 .capabilitiesGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 }
 
@@ -1432,14 +1440,14 @@
 .ctaBadgeTag {
   display: inline-flex;
   align-items: center;
-  font-size: 16px;
+  font-size: 14.5px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #0284c7;
-  background: #edf4ff;
-  border: 1px solid #bfdbfe;
-  padding: 7px 20px;
+  letter-spacing: 0.05em;
+  color: #854d0e;
+  background: #fdf0a6;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  padding: 6px 18px;
   border-radius: 999px;
   margin-bottom: 4px;
 }
@@ -1467,6 +1475,132 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 8px;
+}
+
+/* Tech4Good Research Study Callout */
+.studyCard {
+  width: 100%;
+  max-width: 760px;
+  margin-top: 24px;
+  background: linear-gradient(135deg, #fffef7 0%, #ffffff 100%);
+  border: 1.5px solid rgba(245, 158, 11, 0.35);
+  border-radius: 22px;
+  padding: 32px 30px;
+  text-align: left;
+  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.studyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.studyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #fdf0a6;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  font-size: 13px;
+  font-weight: 700;
+  color: #854d0e;
+}
+
+.rewardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #047857;
+}
+
+.studyTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.studyDescription {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: #374151;
+  margin: 0;
+}
+
+.studyDescription strong {
+  color: #111827;
+}
+
+.studyPerks {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.studyPerkItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid rgba(16, 24, 40, 0.07);
+  border-radius: 12px;
+}
+
+.studyPerkIcon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.studyPerkItem div {
+  display: flex;
+  flex-direction: column;
+}
+
+.studyPerkItem strong {
+  font-size: 13.5px;
+  color: #111827;
+  line-height: 1.25;
+}
+
+.studyPerkItem span {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.studyActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+  .studyCard {
+    padding: 24px 18px;
+  }
+  .studyPerks {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* 9. MULTI-COLUMN FOOTER */

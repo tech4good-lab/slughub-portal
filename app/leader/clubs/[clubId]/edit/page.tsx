@@ -199,7 +199,7 @@ export default function EditClubPage() {
             Dashboard
           </Link>
           <Link className="btn" href="/">
-            Portal
+            Directory
           </Link>
         </div>
       </div>

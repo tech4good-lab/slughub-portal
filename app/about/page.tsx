@@ -8,9 +8,9 @@ import ChatBubble from "@/app/components/ChatBubble";
 import styles from "./about.module.css";
 
 export const metadata = {
-  title: "About — UCSC Community Portal",
+  title: "About — UCSC Community Directory",
   description:
-    "Learn about the UCSC Community Portal, student organizations, and campus connections.",
+    "Learn about the UCSC Community Directory, student organizations, and campus connections.",
 };
 
 export default async function AboutPage() {
@@ -21,11 +21,11 @@ export default async function AboutPage() {
 
   return (
     <main className={styles.pageWrapper}>
-      {/* Signature Portal Floating Ambient Bubbles */}
+      {/* Signature Directory Floating Ambient Bubbles */}
       <DecorativeBubbles />
 
       <div className={styles.contentLayer}>
-        {/* Navigation Bar (Portal / About in center, Community Lead Login on right) */}
+        {/* Navigation Bar (Directory / About in center, Community Lead Login on right) */}
         <Navbar session={session} isAdmin={isAdmin} isLeader={isLeader} />
 
         {/* =========================================================
@@ -46,7 +46,7 @@ export default async function AboutPage() {
 
               <div className={styles.heroButtons}>
                 <Link
-                  href="#"
+                  href="#research-study"
                   className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}
                   style={{ padding: "12px 24px", fontSize: "15px" }}
                 >
@@ -57,24 +57,18 @@ export default async function AboutPage() {
 
             {/* Right Hero Column: Framed Mockup Canvas */}
             <div className={styles.heroRight}>
-              <Link
-                href="/"
-                className={styles.mockupCardLink}
-                aria-label="Explore UCSC Club Directory"
-              >
-                <div className={styles.mockupCard}>
-                  <div className={styles.mockupImageContainer}>
-                    <Image
-                      src="/white_landing_page.png"
-                      alt="UCSC Club Directory Landing Page"
-                      width={2856}
-                      height={1656}
-                      priority
-                      className={styles.mockupImage}
-                    />
-                  </div>
+              <div className={styles.mockupCard}>
+                <div className={styles.mockupImageContainer}>
+                  <Image
+                    src="/white_landing_page.png"
+                    alt="UCSC Club Directory Landing Page"
+                    width={2856}
+                    height={1656}
+                    priority
+                    className={styles.mockupImage}
+                  />
                 </div>
-              </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -90,9 +84,14 @@ export default async function AboutPage() {
             <h2 className={styles.missionTitle}>
               Starting college shouldn&apos;t mean figuring it all out alone.
             </h2>
-            <p className={styles.missionText}>
-              Starting college means figuring out a lot at once: keeping up with classes, learning how campus systems work, and finding where you belong. For many students, exploring their interests and finding communities outside the classroom gets pushed to the back burner &mdash; not because it doesn&apos;t matter, but because there&apos;s no clear entry point and no one helping to guide the search. Without someone to help narrow down what to try first, it&apos;s easy to default to doing nothing or to only stick with what you already know.
-            </p>
+            <div className={styles.missionText}>
+              <p style={{ margin: "0 0 14px" }}>
+                Starting college means figuring out a lot at once: keeping up with classes, learning how campus systems work, and finding where you belong. For many students, exploring their interests and finding communities outside the classroom gets pushed to the back burner &mdash; not because it doesn&apos;t matter, but because there&apos;s <strong>no clear entry point</strong> and no one helping to guide the search.
+              </p>
+              <p style={{ margin: 0 }}>
+                Without someone to help narrow down what to try first, it&apos;s easy to default to doing nothing or to only stick with what you already know. <strong>SlugPath exists to change that.</strong>
+              </p>
+            </div>
           </div>
         </section>
 
@@ -234,36 +233,6 @@ export default async function AboutPage() {
               </div>
             </div>
 
-            {/* Capability 2: Memory */}
-            <div className={styles.capabilityCard}>
-              <span className={styles.badgeTag} style={{ width: "fit-content" }}>
-                In Your Control
-              </span>
-              <h3 className={styles.stepTitle}>Memory</h3>
-              <p className={styles.stepDesc}>
-                You&apos;re always in the driver&apos;s seat. SlugPath asks before saving any takeaways from your chats, and you can view or edit your profile anytime so it always reflects you.
-              </p>
-              <div className={styles.confirmationPreview}>
-                <div className={styles.confirmPrompt}>
-                  <div className={styles.confirmIcon}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                  </div>
-                  <div>
-                    <strong style={{ fontSize: "12.5px", color: "#111827" }}>Checks before assuming</strong>
-                    <p style={{ margin: "2px 0 0", color: "#475569", fontSize: "12px", lineHeight: "1.4" }}>
-                      &quot;It sounds like you prefer creative coding workshops over hackathons. Should I save this to your profile?&quot;
-                    </p>
-                  </div>
-                </div>
-                <div className={styles.confirmActions}>
-                  <span className={styles.confirmBtnPrimary}>✓ Confirm &amp; Save</span>
-                  <span className={styles.confirmBtnSecondary}>Edit Profile</span>
-                </div>
-              </div>
-            </div>
 
             {/* Capability 3: Follow-up reminder */}
             <div className={styles.capabilityCard}>
@@ -344,136 +313,74 @@ export default async function AboutPage() {
                 Browse Club Directory
               </Link>
             </div>
+
+            {/* Tech4Good Research Study Callout */}
+            <div id="research-study" className={styles.studyCard}>
+              <h3 className={styles.studyTitle}>
+                Participate in our 5-week campus study &amp; earn a $30 gift card
+              </h3>
+
+              <p className={styles.studyDescription}>
+                Want to help shape the future of student discovery at UC Santa Cruz? Enroll in the <strong>Tech4Good research study</strong>! It&apos;s a <strong>5-week commitment</strong> where all you need to do is chat with SlugPath a few times a week and make an honest effort to explore the campus &mdash; by checking out communities, attending campus events, or auditing a class. As a thank-you for your time and reflections, you&apos;ll receive a <strong>$30 gift card</strong> upon completing the study!
+              </p>
+
+              <div className={styles.studyPerks}>
+                <div className={styles.studyPerkItem}>
+                  <span className={styles.studyPerkIcon}>📅</span>
+                  <div>
+                    <strong>5-Week Commitment</strong>
+                    <span>Light weekly engagement</span>
+                  </div>
+                </div>
+                <div className={styles.studyPerkItem}>
+                  <span className={styles.studyPerkIcon}>💬</span>
+                  <div>
+                    <strong>Chat with SlugPath</strong>
+                    <span>A few times each week</span>
+                  </div>
+                </div>
+                <div className={styles.studyPerkItem}>
+                  <span className={styles.studyPerkIcon}>🧭</span>
+                  <div>
+                    <strong>Explore</strong>
+                    <span>Communities, events, or classes</span>
+                  </div>
+                </div>
+                <div className={styles.studyPerkItem}>
+                  <span className={styles.studyPerkIcon}>🎁</span>
+                  <div>
+                    <strong>$30 Gift Card</strong>
+                    <span>Awarded upon study completion</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.studyActions}>
+                <Link
+                  href="#"
+                  className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}
+                  style={{ padding: "10px 22px", fontSize: "14.5px" }}
+                >
+                  <span>Enroll via Consent Form</span>
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* =========================================================
-            9. MULTI-COLUMN FOOTER (Granola Directory Footer)
-        ========================================================= */}
-        <footer className={styles.footer}>
-          <div className={styles.footerContainer}>
-            <div className={styles.footerGrid}>
-              {/* Brand Column */}
-              <div className={styles.footerBrandCol}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <Image
-                    src="/dashboard-icon.png"
-                    alt="SlugPath Portal Icon"
-                    width={28}
-                    height={28}
-                    style={{ width: "auto", height: "auto" }}
-                  />
-                  <span className={styles.footerBrandTitle}>SlugPath</span>
-                </div>
-                <p className={styles.footerBrandDesc}>
-                  The official community directory and discovery engine for UC
-                  Santa Cruz students and organizations.
-                </p>
-              </div>
-
-              {/* Column 1 */}
-              <div className={styles.footerCol}>
-                <span className={styles.footerColTitle}>Navigation</span>
-                <Link href="/" className={styles.footerLink}>
-                  Portal
-                </Link>
-                <Link href="/about" className={styles.footerLink}>
-                  About
-                </Link>
-                <Link href="/login" className={styles.footerLink}>
-                  Community Lead Login
-                </Link>
-                <Link href="/signup" className={styles.footerLink}>
-                  Sign Up
-                </Link>
-              </div>
-
-              {/* Column 2 */}
-              <div className={styles.footerCol}>
-                <span className={styles.footerColTitle}>Resources</span>
-                <Link
-                  href="https://chat.slughub.cc/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.footerLink}
-                >
-                  SlugPath AI
-                </Link>
-                <Link href="/" className={styles.footerLink}>
-                  Campus Events
-                </Link>
-                <Link href="/" className={styles.footerLink}>
-                  Club Categories
-                </Link>
-              </div>
-
-              {/* Column 3 */}
-              <div className={styles.footerCol}>
-                <span className={styles.footerColTitle}>Campus</span>
-                <a
-                  href="https://www.ucsc.edu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.footerLink}
-                >
-                  UC Santa Cruz
-                </a>
-                <a
-                  href="https://soar.ucsc.edu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.footerLink}
-                >
-                  SOAR / Student Life
-                </a>
-                <a
-                  href="https://tech4good.soe.ucsc.edu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.footerLink}
-                >
-                  Tech4Good Lab
-                </a>
-              </div>
-
-              {/* Column 4 */}
-              <div className={styles.footerCol}>
-                <span className={styles.footerColTitle}>Student Support</span>
-                <a
-                  href="https://slugsupport.ucsc.edu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.footerLink}
-                >
-                  Slug Support Network
-                </a>
-                <a
-                  href="https://events.ucsc.edu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.footerLink}
-                >
-                  Campus Events Calendar
-                </a>
-                <a
-                  href="https://resourcecenters.ucsc.edu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.footerLink}
-                >
-                  Resource Centers
-                </a>
-              </div>
-            </div>
-
-            <div className={styles.footerBottom}>
-              <span>
-                &copy; {new Date().getFullYear()} UCSC Community Portal • SlugPath
-              </span>
-              <span>Built with ❤️ for UC Santa Cruz</span>
-            </div>
-          </div>
-        </footer>
       </div>
 
       <ChatBubble mode="exit" />

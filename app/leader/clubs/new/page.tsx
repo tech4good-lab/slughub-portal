@@ -134,7 +134,7 @@ export default function NewClubPage() {
         <h1>Create New Community</h1>
         <div className="row">
           <Link className="btn" href="/leader/dashboard">Dashboard</Link>
-          <Link className="btn" href="/directory">Portal</Link>
+          <Link className="btn" href="/directory">Directory</Link>
         </div>
       </div>
 

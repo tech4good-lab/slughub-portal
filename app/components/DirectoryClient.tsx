@@ -76,7 +76,7 @@ function normalizeList(input: any): string[] {
 
 export default function DirectoryClient({ clubs, session }: Props) {
   const [typeSelected, setTypeSelected] = useState<string[]>([]);
-  const [statusSelected, setStatusSelected] = useState<string[]>([]);
+  const [statusSelected, setStatusSelected] = useState<string[]>(["verified"]);
   const [isMounted, setIsMounted] = useState(false);
 
   const [query, setQuery] = useState("");
@@ -87,10 +87,24 @@ export default function DirectoryClient({ clubs, session }: Props) {
     setIsMounted(true);
 
     const savedType = localStorage.getItem("typeSelected");
-    if (savedType) setTypeSelected(JSON.parse(savedType));
+    if (savedType) {
+      try {
+        setTypeSelected(JSON.parse(savedType));
+      } catch {
+        // ignore parse error
+      }
+    }
 
     const savedStatus = localStorage.getItem("statusSelected");
-    if (savedStatus) setStatusSelected(JSON.parse(savedStatus));
+    if (savedStatus !== null) {
+      try {
+        setStatusSelected(JSON.parse(savedStatus));
+      } catch {
+        setStatusSelected(["verified"]);
+      }
+    } else {
+      setStatusSelected(["verified"]);
+    }
   }, []);
 
   useEffect(() => {
