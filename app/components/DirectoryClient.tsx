@@ -76,9 +76,18 @@ function normalizeList(input: any): string[] {
   return single ? [single] : [];
 }
 
+// In-memory filter state: persists across client-side navigation (e.g. Directory -> About -> Directory),
+// but resets to defaults (verified checked) when the site is reloaded or re-entered.
+let inMemoryStatusSelected: string[] | null = null;
+let inMemoryTypeSelected: string[] | null = null;
+
 export default function DirectoryClient({ clubs, session }: Props) {
-  const [typeSelected, setTypeSelected] = useState<string[]>([]);
-  const [statusSelected, setStatusSelected] = useState<string[]>(["verified"]);
+  const [typeSelected, setTypeSelected] = useState<string[]>(
+    () => inMemoryTypeSelected ?? []
+  );
+  const [statusSelected, setStatusSelected] = useState<string[]>(
+    () => inMemoryStatusSelected ?? ["verified"]
+  );
   const [isMounted, setIsMounted] = useState(false);
 
   const [query, setQuery] = useState("");
@@ -87,34 +96,19 @@ export default function DirectoryClient({ clubs, session }: Props) {
 
   useEffect(() => {
     setIsMounted(true);
-
-    const savedType = localStorage.getItem("typeSelected");
-    if (savedType) {
-      try {
-        setTypeSelected(JSON.parse(savedType));
-      } catch {
-        // ignore parse error
-      }
-    }
-
-    const savedStatus = localStorage.getItem("statusSelected");
-    if (savedStatus !== null) {
-      try {
-        setStatusSelected(JSON.parse(savedStatus));
-      } catch {
-        setStatusSelected(["verified"]);
-      }
-    } else {
-      setStatusSelected(["verified"]);
+    // Clear any legacy localStorage values so they don't override the fresh default on reload
+    try {
+      localStorage.removeItem("statusSelected");
+      localStorage.removeItem("typeSelected");
+    } catch {
+      // ignore
     }
   }, []);
 
   useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem("typeSelected", JSON.stringify(typeSelected));
-      localStorage.setItem("statusSelected", JSON.stringify(statusSelected));
-    }
-  }, [typeSelected, statusSelected, isMounted]);
+    inMemoryStatusSelected = statusSelected;
+    inMemoryTypeSelected = typeSelected;
+  }, [typeSelected, statusSelected]);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
