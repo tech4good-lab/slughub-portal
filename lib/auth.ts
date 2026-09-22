@@ -10,62 +10,73 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
-    CredentialsProvider({
-      id: "dev-login",
-      name: "Simulated Dev Login",
-      credentials: {
-        role: { label: "Role", type: "text" },
-        email: { label: "Email", type: "text" },
-      },
-      async authorize(credentials) {
-        const role = credentials?.role === "leader" ? "leader" : "admin";
-        const email = (
-          credentials?.email ||
-          (role === "admin" ? "superkaush@gmail.com" : "leader@ucsc.edu")
-        )
-          .toLowerCase()
-          .trim();
-        const name = role === "admin" ? "Admin (Dev Test)" : "Leader (Dev Test)";
+    ...(process.env.NODE_ENV === "development"
+      ? [
+          CredentialsProvider({
+            id: "dev-login",
+            name: "Simulated Dev Login",
+            credentials: {
+              role: { label: "Role", type: "text" },
+              email: { label: "Email", type: "text" },
+            },
+            async authorize(credentials) {
+              if (process.env.NODE_ENV !== "development") {
+                return null;
+              }
 
-        try {
-          let user = await prisma.user.findUnique({ where: { email } });
-          if (!user) {
-            user = await prisma.user.create({
-              data: {
-                email,
-                name,
-                role,
-              },
-            });
-          } else if (user.role !== role) {
-            user = await prisma.user.update({
-              where: { email },
-              data: { role },
-            });
-          }
+              const role = credentials?.role === "leader" ? "leader" : "admin";
+              const email = (
+                credentials?.email ||
+                (role === "admin" ? "superkaush@gmail.com" : "leader@ucsc.edu")
+              )
+                .toLowerCase()
+                .trim();
+              const name = role === "admin" ? "Admin (Dev Test)" : "Leader (Dev Test)";
 
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name ?? name,
-            role: user.role,
-          };
-        } catch (e) {
-          console.warn("Dev login DB warning, falling back to simulated session:", e);
-          return {
-            id: "dev-" + role + "-id",
-            email,
-            name,
-            role,
-          };
-        }
-      },
-    }),
+              try {
+                let user = await prisma.user.findUnique({ where: { email } });
+                if (!user) {
+                  user = await prisma.user.create({
+                    data: {
+                      email,
+                      name,
+                      role,
+                    },
+                  });
+                } else if (user.role !== role) {
+                  user = await prisma.user.update({
+                    where: { email },
+                    data: { role },
+                  });
+                }
+
+                return {
+                  id: user.id,
+                  email: user.email,
+                  name: user.name ?? name,
+                  role: user.role,
+                };
+              } catch (e) {
+                console.warn("Dev login DB warning, falling back to simulated session:", e);
+                return {
+                  id: "dev-" + role + "-id",
+                  email,
+                  name,
+                  role,
+                };
+              }
+            },
+          }),
+        ]
+      : []),
   ],
-  debug: true,
+  debug: process.env.NODE_ENV === "development",
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "dev-login" || account?.provider === "credentials") {
+        if (process.env.NODE_ENV !== "development") {
+          return false;
+        }
         return true;
       }
       if (!user.email) return false;
