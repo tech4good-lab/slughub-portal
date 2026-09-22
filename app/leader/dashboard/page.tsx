@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -6,10 +7,10 @@ import { prisma } from "@/lib/prisma";
 import type { CSSProperties } from "react";
 import EventsCacheClient from "@/app/components/EventsCacheClient";
 import ClubsCacheClient from "@/app/components/ClubsCacheClient";
-import LogoutButton from "@/app/leader/edit/logout-button";
 import DeleteClubButton from "./delete-club-button";
-import PendingBadge from "@/app/components/PendingBadge";
 import ClubsSearchList from "./clubs-list";
+import Navbar from "@/app/components/Navbar";
+import DecorativeBubbles from "@/app/components/DecorativeBubbles";
 
 export const dynamic = "force-dynamic";
 
@@ -80,90 +81,22 @@ export default async function LeaderDashboard() {
       className="leaderDashboard"
       style={{
         minHeight: "100dvh",
-        background: "rgb(237, 244, 255)",
+        background: "#edf4ff",
+        position: "relative",
+        zIndex: 1,
         overflowX: "hidden",
-        overflowY: "auto",
         display: "flex",
         flexDirection: "column",
-        padding: "clamp(12px, 3vw, 20px)",
       }}
     >
       <ClubsCacheClient clubs={clubs as any[]} />
       <EventsCacheClient events={Object.values(eventsByClub).flat() as any[]} />
 
-      {/* Decorative bubbles */}
-      <div
-        style={{
-          position: "absolute",
-          width: 60,
-          height: 60,
-          left: "10%",
-          top: "5%",
-          opacity: 0.4,
-          background: "#D0E2FF",
-          borderRadius: "50%",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          width: 30,
-          height: 30,
-          left: "65%",
-          top: "3%",
-          opacity: 0.5,
-          background: "#FDF0A6",
-          borderRadius: "50%",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          width: 50,
-          height: 50,
-          left: "75%",
-          top: "12%",
-          opacity: 0.3,
-          background: "#D0E2FF",
-          borderRadius: "50%",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          width: 70,
-          height: 70,
-          left: "80%",
-          top: "55%",
-          opacity: 0.4,
-          background: "#D0E2FF",
-          borderRadius: "50%",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          width: 35,
-          height: 35,
-          left: "85%",
-          top: "75%",
-          opacity: 0.5,
-          background: "#FDF0A6",
-          borderRadius: "50%",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          width: 25,
-          height: 25,
-          left: "15%",
-          top: "80%",
-          opacity: 0.4,
-          background: "#D0E2FF",
-          borderRadius: "50%",
-        }}
-      />
+      {/* Signature Floating Ambient Bubbles */}
+      <DecorativeBubbles />
+
+      {/* Floating Pill Navigation Bar */}
+      <Navbar session={session} isAdmin={isAdmin} isLeader={!isAdmin} />
 
       {/* Main card container */}
       <div
@@ -174,6 +107,7 @@ export default async function LeaderDashboard() {
           position: "relative",
           zIndex: 10,
           minHeight: 0,
+          padding: "clamp(16px, 3vw, 28px) clamp(12px, 3vw, 20px) 40px",
         }}
       >
         <div
@@ -182,19 +116,19 @@ export default async function LeaderDashboard() {
             maxWidth: 900,
             background: "white",
             borderRadius: 25,
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-            padding: "clamp(16px, 4vw, 40px)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+            padding: "clamp(20px, 4vw, 40px)",
             display: "flex",
             flexDirection: "column",
           }}
         >
           {/* Header */}
-          <header
+          <div
             style={{
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 10,
+              alignItems: "flex-start",
+              marginBottom: 18,
               flexWrap: "wrap",
               gap: 16,
             }}
@@ -202,107 +136,51 @@ export default async function LeaderDashboard() {
             <div>
               <h1
                 style={{
-                  margin: 0,
+                  margin: "0 0 6px 0",
                   color: "black",
                   fontSize: "clamp(24px, 5vw, 32px)",
-                }}
-              >
-                Dashboard
-              </h1>
-            </div>
-
-            {/* Nav requires scrolling on mobile/smaller devices */}
-            <nav
-              className="row"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                flexWrap: "nowrap",
-                overflowX: "auto",
-                overflowY: "visible",
-                paddingBottom: "4px",
-                paddingTop: "9px",
-              }}
-            >
-              {isAdmin && (
-                <>
-                  <Link
-                    className="btn"
-                    href="/admin/review"
-                    style={{ whiteSpace: "nowrap", flexShrink: 0 }}
-                  >
-                    Community Approvals
-                  </Link>
-                  <Link
-                    className="btn"
-                    href="/admin/access"
-                    style={{ whiteSpace: "nowrap", flexShrink: 0}}
-                  >
-                    Access Requests
-                  </Link>
-                </>
-              )}
-              <Link
-                className="btn"
-                href="/directory"
-                style={{ whiteSpace: "nowrap", flexShrink: 0 }}
-              >
-                Directory
-              </Link>
-              <div style={{ flexShrink: 0, alignSelf: "center" }}>
-                <LogoutButton />
-              </div>
-            </nav>
-          </header>
-
-          {/* Logged in info and divider */}
-          <div style={{ marginBottom: 24 }}>
-            <p
-              style={{
-                color: "black",
-                fontSize: 14,
-                fontFamily: "Sarabun",
-                margin: "0 0 12px 0",
-              }}
-            >
-              Logged in as: {session?.user?.email} | {role ?? "<role>"}
-            </p>
-            <div style={{ width: "100%", height: 0.5, background: "#333333" }} />
-          </div>
-
-          {/* Section header */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 30,
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
-            <div style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 20,
-              width: "100%",
-            }}>
-                <h2
-                style={{
-                  fontSize: 24,
-                  fontFamily: "Sarabun",
+                  fontFamily: "Sarabun, sans-serif",
                   fontWeight: 700,
-                  margin: 0,
-                  color: "black",
                 }}
               >
                 My Communities
-              </h2>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              </h1>
+
+              <p
+                style={{
+                  color: "#4b5563",
+                  fontSize: 14,
+                  fontFamily: "Sarabun, sans-serif",
+                  margin: 0,
+                }}
+              >
+                Logged in as: <strong style={{ color: "#111827" }}>{session?.user?.email}</strong>
+                {role ? ` (${role})` : ""}
+              </p>
+            </div>
+
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+              <Link
+                href="/leader/clubs/new"
+                style={{
+                  padding: "8px 20px",
+                  background: "#FDF0A6",
+                  border: "none",
+                  borderRadius: 20,
+                  color: "black",
+                  fontSize: 14,
+                  fontFamily: "Sarabun",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                }}
+              >
+                Create New Community
+              </Link>
+
+              {(isAdmin || clubs.length > 0) && (
                 <Link
                   href="/leader/events/new"
                   style={{
@@ -322,28 +200,18 @@ export default async function LeaderDashboard() {
                 >
                   Create Event
                 </Link>
-                <Link
-                  href="/leader/clubs/new"
-                  style={{
-                    padding: "8px 20px",
-                    background: "#FDF0A6",
-                    border: "none",
-                    borderRadius: 20,
-                    color: "black",
-                    fontSize: 14,
-                    fontFamily: "Sarabun",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
-                  }}
-                >
-                  Create New Community
-                </Link>
-              </div>
+              )}
             </div>
           </div>
+
+          <div
+            style={{
+              width: "100%",
+              height: 1,
+              background: "rgba(16, 24, 40, 0.08)",
+              marginBottom: 24,
+            }}
+          />
 
           {/* Clubs list */}
           <div
@@ -364,30 +232,46 @@ export default async function LeaderDashboard() {
       <div
         style={{
           textAlign: "center",
-          fontSize: 14,
-          fontFamily: "Sarabun",
-          color: "#333",
-          marginTop: 20,
+          fontSize: 16,
+          fontWeight: 500,
+          color: "#4b5563",
+          marginTop: 24,
+          padding: "16px 0 28px",
           position: "relative",
           zIndex: 10,
-          WebkitTextStroke: "0.4px black",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 7,
+          flexWrap: "wrap",
         }}
       >
-        A{" "}
+        <span>A</span>
         <a
           href="https://tech4good.soe.ucsc.edu/"
           target="_blank"
           rel="noreferrer"
           style={{
-            color: "#FDF0A6",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            color: "#1e1e1e",
             textDecoration: "none",
-            fontWeight: "1000",
-            WebkitTextStroke: "0.3px black",
+            fontFamily: "'Nunito Sans', 'Helvetica Neue', sans-serif",
+            fontWeight: 700,
+            fontSize: 17,
+            letterSpacing: "-0.04em",
           }}
         >
-          Tech4Good
-        </a>{" "}
-        project
+          <Image
+            src="/tech4good-smile-small.png"
+            alt="Tech4Good Smile"
+            width={22}
+            height={22}
+          />
+          <span>TECH4GOOD LAB</span>
+        </a>
+        <span>project</span>
       </div>
     </div>
   );
