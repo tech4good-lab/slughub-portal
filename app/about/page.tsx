@@ -35,7 +35,16 @@ export default async function AboutPage() {
           <div className={styles.heroGrid}>
             {/* Left Hero Column */}
             <div className={styles.heroLeft}>
-              <h1 className={styles.heroTitle}>
+              <h1 className={styles.heroTitle} style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
+                <Image
+                  src="/slugpath_logo.png"
+                  alt="SlugPath Mascot"
+                  width={80}
+                  height={80}
+                  style={{ borderRadius: 18 }}
+                  priority
+                  unoptimized
+                />
                 SlugPath
               </h1>
 
@@ -46,11 +55,11 @@ export default async function AboutPage() {
 
               <div className={styles.heroButtons}>
                 <Link
-                  href="#research-study"
+                  href="#get-started"
                   className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}
                   style={{ padding: "12px 24px", fontSize: "15px" }}
                 >
-                  Consent Form
+                  Join the Study!
                 </Link>
               </div>
             </div>
@@ -78,9 +87,6 @@ export default async function AboutPage() {
         ========================================================= */}
         <section className={styles.missionSection}>
           <div className={styles.missionCard}>
-            <div className={styles.missionHeader}>
-              <span className={styles.badgeTag}>Our Mission</span>
-            </div>
             <h2 className={styles.missionTitle}>
               Starting college shouldn&apos;t mean figuring it all out alone.
             </h2>
@@ -111,7 +117,6 @@ export default async function AboutPage() {
           <div className={styles.stepsGrid}>
             {/* Step 1 */}
             <div className={styles.stepCard}>
-              <span className={styles.stepBadge}>Step 01</span>
               <h3 className={styles.stepTitle}>Explore</h3>
               <p className={styles.stepDesc}>
                 SlugPath talks with students to figure out what they&apos;re looking for &mdash; their interests, what kind of people they want to meet, and what they&apos;re curious about trying.
@@ -146,7 +151,6 @@ export default async function AboutPage() {
 
             {/* Step 2 */}
             <div className={styles.stepCard}>
-              <span className={styles.stepBadge}>Step 02</span>
               <h3 className={styles.stepTitle}>Visit</h3>
               <p className={styles.stepDesc}>
                 Based on that conversation, it connects them to a specific experience on campus: a club, an event, or a class where they could meet people with similar interests.
@@ -172,7 +176,6 @@ export default async function AboutPage() {
 
             {/* Step 3 */}
             <div className={styles.stepCard}>
-              <span className={styles.stepBadge}>Step 03</span>
               <h3 className={styles.stepTitle}>Reflect</h3>
               <p className={styles.stepDesc}>
                 After the student goes, SlugPath checks back in to hear how it went. Then the cycle repeats: explore, visit, and reflect.
@@ -214,9 +217,6 @@ export default async function AboutPage() {
           <div className={styles.capabilitiesGrid}>
             {/* Capability 1: Personalized recommendations */}
             <div className={styles.capabilityCard}>
-              <span className={styles.badgeTag} style={{ width: "fit-content" }}>
-                Adapts Over Time
-              </span>
               <h3 className={styles.stepTitle}>Personalized recommendations</h3>
               <p className={styles.stepDesc}>
                 The more you chat, the better SlugPath gets at understanding what excites you. It learns your hobbies, vibe, and goals to recommend communities you&apos;ll actually love joining.
@@ -236,9 +236,6 @@ export default async function AboutPage() {
 
             {/* Capability 3: Follow-up reminder */}
             <div className={styles.capabilityCard}>
-              <span className={styles.badgeTag} style={{ width: "fit-content" }}>
-                Continuous Reflection
-              </span>
               <h3 className={styles.stepTitle}>Follow-up reminder</h3>
               <p className={styles.stepDesc}>
                 Heading to a club meeting or campus event? SlugPath checks in afterward to hear what you loved and what didn&apos;t fit—using your feedback to make each new suggestion spot-on.
@@ -272,47 +269,20 @@ export default async function AboutPage() {
         {/* =========================================================
             7. FINAL CALL TO ACTION ("Ready to find your community?")
         ========================================================= */}
-        <section className={styles.finalCtaSection}>
+        <section id="get-started" className={styles.finalCtaSection}>
           <div className={styles.finalCtaCard}>
-            <span className={styles.ctaBadgeTag}>Get Started</span>
-            <h2 className={styles.ctaTitle}>Ready to find your community?</h2>
-            <p className={styles.ctaSubtitle}>
-              Chat with SlugPath to explore your interests, build your profile,
-              and connect with clubs, events, and people across UC Santa Cruz.
-            </p>
-
-            <div className={styles.ctaButtons}>
-              <Link
-                href="https://chat.slughub.cc/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${styles.pillBtn} ${styles.pillBtnPrimary}`}
-                style={{ padding: "12px 24px", fontSize: "15px" }}
-              >
-                <span>Chat with SlugPath</span>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-
-              <Link
-                href="/"
-                className={`${styles.pillBtn} ${styles.pillBtnSecondary}`}
-                style={{ padding: "12px 20px", fontSize: "15px" }}
-              >
-                Browse Club Directory
-              </Link>
-            </div>
+            <h2 className={styles.ctaTitle} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
+              <span>Ready to try out SlugPath?</span>
+              <Image
+                src="/slugpath_logo.png"
+                alt="SlugPath Mascot"
+                width={68}
+                height={68}
+                style={{ borderRadius: 15 }}
+                priority
+                unoptimized
+              />
+            </h2>
 
             {/* Tech4Good Research Study Callout */}
             <div id="research-study" className={styles.studyCard}>

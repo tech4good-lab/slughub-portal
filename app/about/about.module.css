@@ -1,5 +1,9 @@
 /* About Page CSS Module - Granola.ai Layout with UCSC Community Portal Design Language */
 
+:global(html) {
+  scroll-behavior: smooth;
+}
+
 .pageWrapper {
   position: relative;
   min-height: 100vh;
@@ -1066,7 +1070,7 @@
   box-shadow: 0 12px 30px rgba(16, 24, 40, 0.04);
   position: relative;
   overflow: hidden;
-  border-left: 5px solid #fbbf24;
+  border-left: 5px solid #fdf0a6;
 }
 
 .missionHeader {
