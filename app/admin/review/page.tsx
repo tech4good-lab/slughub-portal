@@ -12,5 +12,5 @@ export default async function AdminReviewPage() {
 
   const email = (session as any)?.user?.email ?? "";
 
-  return <PendingApprovals email={email} />;
+  return <PendingApprovals email={email} session={session} />;
 }

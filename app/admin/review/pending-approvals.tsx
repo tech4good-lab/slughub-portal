@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { linkPillStyle } from "../../clubs/[clubId]/page";
 import Link from "next/link";
+import Image from "next/image";
+import DecorativeBubbles from "@/app/components/DecorativeBubbles";
+import Navbar from "@/app/components/Navbar";
 
 type PendingClub = {
   recordId: string;
@@ -32,7 +35,7 @@ async function safeJson(res: Response) {
   }
 }
 
-export default function PendingApprovals({ email }: { email?: string }) {
+export default function PendingApprovals({ email, session }: { email?: string; session?: any }) {
   const [clubs, setClubs] = useState<PendingClub[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -86,12 +89,43 @@ export default function PendingApprovals({ email }: { email?: string }) {
   if (loading) {
     return (
       <div
-        className="card"
-        style={{ marginTop: 14, background: "#fff", color: "#000" }}
+        style={{
+          minHeight: "100dvh",
+          background: "#edf4ff",
+          position: "relative",
+          zIndex: 1,
+          overflowX: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
-        <p className="small" style={{ color: "#000" }}>
-          Loading pending communities…
-        </p>
+        <DecorativeBubbles />
+        <Navbar session={session} isAdmin={true} isLeader={false} />
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "40px 20px",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 900,
+              background: "white",
+              borderRadius: 25,
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+              padding: "40px",
+              textAlign: "center",
+              color: "#6b7280",
+              fontFamily: "Sarabun, sans-serif",
+            }}
+          >
+            Loading pending communities…
+          </div>
+        </div>
       </div>
     );
   }
@@ -100,241 +134,96 @@ export default function PendingApprovals({ email }: { email?: string }) {
     <div
       style={{
         minHeight: "100dvh",
-        background: "#EDF4FF",
+        background: "#edf4ff",
+        position: "relative",
+        zIndex: 1,
+        overflowX: "hidden",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "clamp(12px, 3vw, 20px)",
-        overflow: "hidden",
+        flexDirection: "column",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          overflow: "hidden",
-          pointerEvents: "none",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            width: 41,
-            height: 41,
-            left: "5%",
-            top: "15%",
-            opacity: 0.5,
-            background: "#D0E2FF",
-            borderRadius: "50%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 100,
-            height: 100,
-            left: "75%",
-            top: "10%",
-            opacity: 0.4,
-            background: "#D0E2FF",
-            borderRadius: "50%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 60,
-            height: 60,
-            left: "10%",
-            top: "70%",
-            opacity: 0.4,
-            background: "#D0E2FF",
-            borderRadius: "50%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 39,
-            height: 39,
-            left: "80%",
-            top: "75%",
-            opacity: 0.5,
-            background: "#FDF0A6",
-            borderRadius: "50%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 22,
-            height: 22,
-            left: "12%",
-            top: "50%",
-            opacity: 0.4,
-            background: "#D0E2FF",
-            borderRadius: "50%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 75,
-            height: 75,
-            left: "85%",
-            top: "45%",
-            opacity: 0.3,
-            background: "#D0E2FF",
-            borderRadius: "50%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 17,
-            height: 17,
-            left: "15%",
-            top: "85%",
-            opacity: 0.5,
-            background: "#D0E2FF",
-            borderRadius: "50%",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 26,
-            height: 26,
-            left: "82%",
-            top: "65%",
-            opacity: 0.4,
-            background: "#FDF0A6",
-            borderRadius: "50%",
-          }}
-        />
-      </div>
+      {/* Signature Floating Ambient Bubbles */}
+      <DecorativeBubbles />
 
+      {/* Floating Pill Navigation Bar */}
+      <Navbar session={session} isAdmin={true} isLeader={false} />
+
+      {/* Main card container */}
       <div
         style={{
-          width: "100%",
-          maxWidth: 900,
-          background: "white",
-          borderRadius: 25,
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-          padding: "clamp(16px, 4vw, 40px)",
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
           position: "relative",
           zIndex: 10,
+          minHeight: 0,
+          padding: "clamp(16px, 3vw, 28px) clamp(12px, 3vw, 20px) 40px",
         }}
       >
-        {err && (
-          <div
-            style={{
-              marginBottom: 20,
-              padding: 15,
-              background: "#FEE2E2",
-              border: "1px solid rgba(239,68,68,0.25)",
-              borderRadius: 10,
-              color: "#DC2626",
-              fontSize: 14,
-              fontFamily: "Sarabun",
-            }}
-          >
-            {err}
-          </div>
-        )}
-
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            width: "100%",
+            maxWidth: 900,
+            background: "white",
+            borderRadius: 25,
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+            padding: "clamp(20px, 4vw, 40px)",
             position: "relative",
-            gap: 16,
-            flexWrap: "wrap",
-            marginBottom: 10,
-            paddingBottom: 24,
-            borderBottom: "1px solid rgba(16,24,40,0.08)",
+            zIndex: 10,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
-            <div>
-              <div
-                className="admin-text"
-                style={{
-                  color: "black",
-                  fontSize: "clamp(20px, 5vw, 25px)",
-                  fontFamily: "Sarabun",
-                  fontWeight: "700",
-                  margin: 0,
-                }}
-              >
-                Admin: Pending Community Approvals
-              </div>
-              <div
-                style={{
-                  color: "#666",
-                  fontSize: 13,
-                  fontFamily: "Sarabun",
-                  fontWeight: "400",
-                  margin: "4px 0 0 0",
-                }}
-              >
-                Logged in as: {email ?? "<email>"}
-              </div>
+          {err && (
+            <div
+              style={{
+                marginBottom: 20,
+                padding: 15,
+                background: "#FEE2E2",
+                border: "1px solid rgba(239,68,68,0.25)",
+                borderRadius: 10,
+                color: "#DC2626",
+                fontSize: 14,
+                fontFamily: "Sarabun",
+              }}
+            >
+              {err}
             </div>
+          )}
+
+          {/* Header */}
+          <div style={{ marginBottom: 18 }}>
+            <h1
+              style={{
+                margin: "0 0 6px 0",
+                color: "black",
+                fontSize: "clamp(24px, 5vw, 32px)",
+                fontFamily: "Sarabun, sans-serif",
+                fontWeight: 700,
+              }}
+            >
+              Admin: Pending Community Approvals
+            </h1>
+            <p
+              style={{
+                color: "#6b7280",
+                fontSize: 14,
+                fontFamily: "Sarabun, sans-serif",
+                margin: 0,
+              }}
+            >
+              Logged in as: <strong style={{ color: "#111827" }}>{email}</strong> (admin)
+            </p>
           </div>
 
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              flexWrap: "wrap",
+              width: "100%",
+              height: 1,
+              background: "rgba(16, 24, 40, 0.08)",
+              marginBottom: 24,
             }}
-          >
-            <Link
-              className="btn auth-header-link"
-              href="/admin/access"
-              style={{
-                ...linkPillStyle,
-                display: "flex",
-                minWidth: 40,
-                padding: "0 16px",
-                height: 38,
-                background: "#FDF0A6",
-                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                borderRadius: 20,
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Access Requests
-            </Link>
-
-            <Link
-              className="btn auth-header-link"
-              href="/directory"
-              style={{
-                ...linkPillStyle,
-                display: "flex",
-                minWidth: 40,
-                padding: "0 16px",
-                height: 38,
-                background: "#FDF0A6",
-                // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                borderRadius: 20,
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Directory
-            </Link>
-          </div>
-        </div>
+          />
 
         <div>
           {clubs.length === 0 ? (
@@ -448,6 +337,53 @@ export default function PendingApprovals({ email }: { email?: string }) {
             ))
           )}
         </div>
+      </div>
+    </div>
+
+    {/* Footer */}
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: 16,
+          fontWeight: 500,
+          color: "#4b5563",
+          marginTop: "auto",
+          padding: "16px 0 28px",
+          position: "relative",
+          zIndex: 10,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 7,
+          flexWrap: "wrap",
+        }}
+      >
+        <span>A</span>
+        <a
+          href="https://tech4good.soe.ucsc.edu/"
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            color: "#1e1e1e",
+            textDecoration: "none",
+            fontFamily: "'Nunito Sans', 'Helvetica Neue', sans-serif",
+            fontWeight: 700,
+            fontSize: 17,
+            letterSpacing: "-0.04em",
+          }}
+        >
+          <Image
+            src="/tech4good-smile-small.png"
+            alt="Tech4Good Smile"
+            width={22}
+            height={22}
+          />
+          <span>TECH4GOOD LAB</span>
+        </a>
+        <span>project</span>
       </div>
     </div>
   );
