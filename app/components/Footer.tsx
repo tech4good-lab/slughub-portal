@@ -1,4 +1,5 @@
 import Image from "next/image";
+import styles from "./Footer.module.css";
 
 interface FooterProps {
   style?: React.CSSProperties;
@@ -8,50 +9,27 @@ interface FooterProps {
 export default function Footer({ style, className }: FooterProps) {
   return (
     <footer
-      className={className}
-      style={{
-        textAlign: "center",
-        fontSize: 16,
-        fontWeight: 500,
-        color: "#4b5563",
-        marginTop: "auto",
-        padding: "16px 0 28px",
-        position: "relative",
-        zIndex: 10,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 7,
-        flexWrap: "wrap",
-        ...style,
-      }}
+      className={`${styles.footer}${className ? ` ${className}` : ""}`}
+      style={style}
     >
-      <span>A</span>
+      <span className={styles.prefix}>A</span>
       <a
         href="https://tech4good.soe.ucsc.edu/"
         target="_blank"
         rel="noreferrer"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          color: "#1e1e1e",
-          textDecoration: "none",
-          fontFamily: "'Nunito Sans', 'Helvetica Neue', sans-serif",
-          fontWeight: 700,
-          fontSize: 17,
-          letterSpacing: "-0.04em",
-        }}
+        className={styles.link}
       >
         <Image
           src="/tech4good-smile-small.png"
           alt="Tech4Good Smile"
-          width={22}
-          height={22}
+          width={18}
+          height={18}
+          className={styles.icon}
         />
         <span>TECH4GOOD LAB</span>
       </a>
-      <span>project</span>
+      <span className={styles.suffix}>project</span>
     </footer>
   );
 }
+

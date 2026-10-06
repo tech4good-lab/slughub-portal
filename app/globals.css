@@ -727,6 +727,10 @@ a:hover {
   display: none;
 }
 
+.directoryDropdown[open] {
+  z-index: 20;
+}
+
 .directoryDropdown[open] .directoryDropdownSummary {
   border-color: #fdf0a6;
   box-shadow: 0 6px 14px rgba(251, 191, 36, 0.14);
