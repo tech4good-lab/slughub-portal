@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendMail } from "@/lib/mail";
+import { revalidatePath } from "next/cache";
 
 export async function POST(
   req: NextRequest,
@@ -42,20 +43,17 @@ export async function POST(
       );
     }
 
-    try {
-      const club = await prisma.club.findUnique({ where: { id: clubId } });
-      if (club && club.status !== "approved") {
-        await prisma.club.update({
-          where: { id: clubId },
-          data: {
-            communityStatus: "verified",
-            status: "approved",
-            reviewedAt: new Date(),
-          },
-        });
-      }
-    } catch (e) {
-      console.warn("Failed to update club status during approval", e);
+    const club = await prisma.club.findUnique({ where: { id: clubId } });
+    if (club) {
+      await prisma.club.update({
+        where: { id: clubId },
+        data: {
+          communityStatus: "verified",
+          status: "approved",
+          reviewedAt: new Date(),
+          updatedAt: new Date(),
+        },
+      });
     }
 
     await prisma.clubMember.upsert({
@@ -104,6 +102,15 @@ export async function POST(
       }
     } catch (e) {
       console.error("Failed to trigger approval email", e);
+    }
+
+    try {
+      revalidatePath("/");
+      revalidatePath(`/clubs/${clubId}`);
+      revalidatePath("/admin/access");
+      revalidatePath("/leader/dashboard");
+    } catch (revalidateErr) {
+      console.warn("Failed to revalidate paths during approval", revalidateErr);
     }
 
     return NextResponse.json({
