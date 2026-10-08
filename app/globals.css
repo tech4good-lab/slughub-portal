@@ -643,7 +643,7 @@ a:hover {
 /* Directory (home) specific styling - lightweight, page-scoped overrides */
 .directoryHome {
   position: relative;
-  background: #edf4ff; /* match leader dashboard light blue */
+  background: transparent;
   padding-top: 8px; /* small offset so header sits nicely */
 }
 
