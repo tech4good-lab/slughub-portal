@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -15,6 +16,10 @@ export const metadata = {
 };
 
 export default async function AboutPage() {
+  // SlugPath study recruitment is paused; send visitors to the directory.
+  // Remove this redirect to bring the page back.
+  redirect("/");
+
   const session = await getServerSession(authOptions);
   const userRole = (session?.user as { role?: string } | undefined)?.role;
   const isAdmin = userRole === "admin";

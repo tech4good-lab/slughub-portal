@@ -3,7 +3,6 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import DirectoryClient from "@/app/components/DirectoryClient";
 import DecorativeBubbles from "@/app/components/DecorativeBubbles";
-import ChatBubble from "@/app/components/ChatBubble";
 import Navbar from "@/app/components/Navbar";
 
 export default async function HomePage() {
@@ -45,7 +44,6 @@ export default async function HomePage() {
               Failed to load communities. Please try again later.
             </p>
           </div>
-          <ChatBubble />
         </div>
       </main>
     );
@@ -70,7 +68,6 @@ export default async function HomePage() {
         </div>
 
         <DirectoryClient clubs={clubs} session={session} />
-        <ChatBubble />
       </div>
     </main>
   );

@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import PendingBadge from "@/app/components/PendingBadge";
 import LogoutButton from "@/app/leader/edit/logout-button";
-import { markPortalTransition } from "@/lib/slugTransition";
 import styles from "./Navbar.module.css";
 
 interface NavbarProps {
@@ -21,7 +20,6 @@ export default function Navbar({
   isLeader = false,
 }: NavbarProps) {
   const pathname = usePathname();
-  const isAboutActive = pathname === "/about";
   const isLeaderActive = pathname?.startsWith("/leader");
   const isAdminReviewActive = pathname?.startsWith("/admin/review");
   const isAdminAccessActive = pathname?.startsWith("/admin/access");
@@ -104,21 +102,6 @@ export default function Navbar({
             suppressHydrationWarning
           >
             Directory
-          </Link>
-          <Link
-            href="/about"
-            className={`${styles.navLink} ${
-              isAboutActive ? styles.navLinkActive : ""
-            }`}
-            aria-current={isAboutActive ? "page" : undefined}
-            suppressHydrationWarning
-            onClick={() => {
-              if (pathname === "/") {
-                markPortalTransition();
-              }
-            }}
-          >
-            SlugPath
           </Link>
         </div>
 
