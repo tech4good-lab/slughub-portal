@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendMail } from "@/lib/mail";
+import { revalidatePath } from "next/cache";
 
 export async function POST(
   req: Request,
@@ -26,7 +27,9 @@ export async function POST(
       },
       data: {
         status: "approved",
+        communityStatus: "verified",
         reviewedAt: new Date(),
+        updatedAt: new Date(),
         reviewNotes: reviewNotes,
       },
     });
@@ -51,6 +54,15 @@ export async function POST(
       }
     } catch (mailError) {
       console.error("Failed to send approval email:", mailError);
+    }
+
+    try {
+      revalidatePath("/");
+      revalidatePath(`/clubs/${id}`);
+      revalidatePath("/admin/review");
+      revalidatePath("/leader/dashboard");
+    } catch (revalidateErr) {
+      console.warn("Failed to revalidate paths after club approval", revalidateErr);
     }
 
     return NextResponse.json({
